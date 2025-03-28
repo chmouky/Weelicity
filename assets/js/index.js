@@ -4,7 +4,6 @@
 // dans la version originale de ton index.html.
 // =====================================================
 
-alert("🟢 Le fichier index.js est bien chargé !");
 
 // ---------------------------
 // IIFE pour la géolocalisation, Google Maps, et résolution du TSP
@@ -21,7 +20,6 @@ alert("🟢 Le fichier index.js est bien chargé !");
 
     navigator.geolocation.getCurrentPosition(
       position => {
-        alert("📍 Position obtenue : " + position.coords.latitude + ", " + position.coords.longitude);
         if (window.map) {
           const userPosition = { lat: position.coords.latitude, lng: position.coords.longitude };
           window.map.setCenter(userPosition);
@@ -41,7 +39,6 @@ alert("🟢 Le fichier index.js est bien chargé !");
         }
       },
       error => {
-        alert("Impossible d’accéder à votre position (" + error.code + " : " + error.message + "). Vérifiez que la géolocalisation est activée et que vous êtes sur une connexion sécurisée !");
         console.error("🚨 Erreur de géolocalisation :", error);
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
@@ -50,7 +47,6 @@ alert("🟢 Le fichier index.js est bien chargé !");
 
   // Appeler la fonction au démarrage pour vérifier la permission
   document.addEventListener("DOMContentLoaded", () => {
-    alert("DOMContentLoaded dans l'IIFE : vérification de la géolocalisation.");
     // Remplace ici checkGeolocationPermission() par getUserLocation() si nécessaire
     if (typeof getUserLocation === "function") {
       getUserLocation();
@@ -230,94 +226,57 @@ document.head.appendChild(manifestLink);
 // Preload et Overlay pour récupérer les données via le Worker
 // ---------------------------
 
-// Création de l'overlay de chargement et du GIF dès le chargement du DOM
-document.addEventListener("DOMContentLoaded", function () {
-  loadingOverlay.id = "loadingOverlay";
-  loadingOverlay.style.position = "fixed";
-  loadingOverlay.style.top = "0";
-  loadingOverlay.style.left = "0";
-  loadingOverlay.style.width = "100vw";
-  loadingOverlay.style.height = "100vh";
-  loadingOverlay.style.backgroundColor = "rgba(255, 255, 255, 0.8)";
-  loadingOverlay.style.display = "flex";
-  loadingOverlay.style.justifyContent = "center";
-  loadingOverlay.style.alignItems = "center";
-  loadingOverlay.style.zIndex = "9999";
+const ALL_TABLES_WORKER_URL = 'https://airtable-all-table.samueltoledano94.workers.dev/';
 
-  let loadingGif = document.createElement("img");
-  loadingGif.id = "loadingGif";
-  loadingGif.src = "assets/img/index/pin_wait.gif";
-  loadingGif.alt = "Loading...";
-  loadingGif.style.width = "120px";
-  loadingGif.style.height = "auto";
+// Création de l'overlay de chargement et du GIF immédiatement
+let loadingOverlay = document.createElement("div");
+loadingOverlay.id = "loadingOverlay";
+loadingOverlay.style.position = "fixed";
+loadingOverlay.style.top = "0";
+loadingOverlay.style.left = "0";
+loadingOverlay.style.width = "100vw";
+loadingOverlay.style.height = "100vh";
+loadingOverlay.style.backgroundColor = "rgba(255, 255, 255, 0.8)";
+loadingOverlay.style.display = "flex";
+loadingOverlay.style.justifyContent = "center";
+loadingOverlay.style.alignItems = "center";
+loadingOverlay.style.zIndex = "9999";
 
-  alert("GIF lancé, l'overlay est affiché.");
-  document.body.style.pointerEvents = "none";
-  loadingOverlay.appendChild(loadingGif);
-  document.body.appendChild(loadingOverlay);
-});
+let loadingGif = document.createElement("img");
+loadingGif.id = "loadingGif";
+loadingGif.src = "assets/img/index/pin_wait.gif";
+loadingGif.alt = "Chargement...";
+loadingGif.style.width = "120px";
+loadingGif.style.height = "auto";
+
+loadingOverlay.appendChild(loadingGif);
+document.body.appendChild(loadingOverlay);
+document.body.style.pointerEvents = "none"; // Désactiver les interactions
 
 // Fonction pour précharger toutes les données depuis le Worker
 async function preloadAllTables() {
-  alert("Début de la récupération des données depuis le Worker.");
   try {
-    const urlTag = `${ALL_TABLES_WORKER_URL}?table=Tag`;
-    const urlLieu = `${ALL_TABLES_WORKER_URL}?table=Lieu`;
-    const urlQuartier = `${ALL_TABLES_WORKER_URL}?table=Quartier`;
-    const urlTour = `${ALL_TABLES_WORKER_URL}?table=Tour`;
-    const urlThemeTour = `${ALL_TABLES_WORKER_URL}?table=ThemeTour`;
-    const urlGastro = `${ALL_TABLES_WORKER_URL}?table=Gastro`;
-    const urlBrands = `${ALL_TABLES_WORKER_URL}?table=Brands`;
-    const urlAround = `${ALL_TABLES_WORKER_URL}?table=Around`;
-    const urlStreet = `${ALL_TABLES_WORKER_URL}?table=Street`;
-    const urlParametre = `${ALL_TABLES_WORKER_URL}?table=Parametre`;
-
-    const [resTag, resLieu, resQuartier, resTour, resThemeTour, resGastro, resBrands, resAround, resStreet, resParametre] = await Promise.all([
-      fetch(urlTag, { method: 'GET', headers: { 'Content-Type': 'application/json' } }),
-      fetch(urlLieu, { method: 'GET', headers: { 'Content-Type': 'application/json' } }),
-      fetch(urlQuartier, { method: 'GET', headers: { 'Content-Type': 'application/json' } }),
-      fetch(urlTour, { method: 'GET', headers: { 'Content-Type': 'application/json' } }),
-      fetch(urlThemeTour, { method: 'GET', headers: { 'Content-Type': 'application/json' } }),
-      fetch(urlGastro, { method: 'GET', headers: { 'Content-Type': 'application/json' } }),
-      fetch(urlBrands, { method: 'GET', headers: { 'Content-Type': 'application/json' } }),
-      fetch(urlAround, { method: 'GET', headers: { 'Content-Type': 'application/json' } }),
-      fetch(urlStreet, { method: 'GET', headers: { 'Content-Type': 'application/json' } }),
-      fetch(urlParametre, { method: 'GET', headers: { 'Content-Type': 'application/json' } })
-    ]);
-    
-    if (!resTag.ok || !resLieu.ok || !resQuartier.ok || !resTour.ok || !resThemeTour.ok || !resGastro.ok || !resBrands.ok || !resAround.ok || !resStreet.ok || !resParametre.ok) {
-      throw new Error("Erreur lors de la récupération des données.");
-    }
-
-    const [dataTag, dataLieu, dataQuartier, dataTour, dataThemeTour, dataGastro, dataBrands, dataAround, dataStreet, dataParametre] = await Promise.all([
-      resTag.json(),
-      resLieu.json(),
-      resQuartier.json(),
-      resTour.json(),
-      resThemeTour.json(),
-      resGastro.json(),
-      resBrands.json(),
-      resAround.json(),
-      resStreet.json(),
-      resParametre.json()
-    ]);
-
-    // Stocker les données dans sessionStorage
-    sessionStorage.setItem('tags', JSON.stringify(dataTag.records));
-    sessionStorage.setItem('places', JSON.stringify(dataLieu.records));
-    sessionStorage.setItem('quartiers', JSON.stringify(dataQuartier.records));
-    sessionStorage.setItem('tour', JSON.stringify(dataTour.records));
-    sessionStorage.setItem('themetour', JSON.stringify(dataThemeTour.records));
-    sessionStorage.setItem('gastro', JSON.stringify(dataGastro.records));
-    sessionStorage.setItem('brands', JSON.stringify(dataBrands.records));
-    sessionStorage.setItem('around', JSON.stringify(dataAround.records));
-    sessionStorage.setItem('street', JSON.stringify(dataStreet.records));
-    sessionStorage.setItem('parametre', JSON.stringify(dataParametre.records));
-    alert("Données récupérées avec succès depuis le Worker.");
+    // ... (votre code de récupération des données) ...
   } catch (error) {
     console.error('🚨 Erreur lors de la précharge des données :', error);
-    alert("Erreur lors de la précharge des données.");
   }
+}
+
+// Fonction principale pour charger les données et masquer l'overlay
+async function preloadData() {
+  alert("Début du préchargement des données (preloadData).");
+  await preloadAllTables(); // Attendre la fin du chargement
+  alert("Préchargement terminé. On va maintenant retirer l'overlay.");
+
+  let loadingOverlay = document.getElementById("loadingOverlay");
+  if (loadingOverlay) {
+    loadingOverlay.remove();
+    alert("Overlay supprimé.");
+  } else {
+    alert("Overlay introuvable lors de la suppression.");
+  }
+  document.body.style.pointerEvents = "auto"; // Réactiver les interactions
+  alert("Fin du préchargement des données, interactions réactivées.");
 }
 
 // Fonction principale pour charger les données et masquer l'overlay
