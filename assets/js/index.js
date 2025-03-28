@@ -222,13 +222,7 @@ function getDistanceMatrix(locations) {
   return matrix;
 }
 
-// Ajout du manifest dynamiquement
-const blob = new Blob([JSON.stringify(manifest)], { type: "application/json" });
-const manifestURL = URL.createObjectURL(blob);
-const manifestLink = document.createElement("link");
-manifestLink.rel = "manifest";
-manifestLink.href = manifestURL;
-document.head.appendChild(manifestLink);
+
 
 // ---------------------------
 // Déclaration finale pour le Cookie Banner
