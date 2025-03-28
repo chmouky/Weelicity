@@ -232,8 +232,6 @@ document.head.appendChild(manifestLink);
 
 // Création de l'overlay de chargement et du GIF dès le chargement du DOM
 document.addEventListener("DOMContentLoaded", function () {
-  alert("DOMContentLoaded pour création de l'overlay.");
-  let loadingOverlay = document.createElement("div");
   loadingOverlay.id = "loadingOverlay";
   loadingOverlay.style.position = "fixed";
   loadingOverlay.style.top = "0";
