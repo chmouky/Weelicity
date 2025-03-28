@@ -1,0 +1,20 @@
+{
+	"geolocation": {
+		"data": {
+			"city": "Vitry-sur-Seine",
+			"country": {
+				"code": "FR",
+				"name": "France"
+			},
+			"subdivision": {
+				"code": "IDF",
+				"name": "Île-de-France"
+			},
+			"timezone": "Europe/Paris",
+			"latitude": 48.7866,
+			"longitude": 2.3985,
+			"postalCode": "94400"
+		},
+		"timestamp": 1742915974725
+	}
+}
