@@ -259,3 +259,23 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.error('❌ Erreur Service Worker:', err));
   });
 }
+
+// Ajout du code pour récupérer les données du worker et masquer l'overlay
+document.addEventListener("DOMContentLoaded", () => {
+  fetch('https://airtable-all-table.samueltoledano94.workers.dev/')
+    .then(response => response.json())
+    .then(data => {
+      sessionStorage.setItem('airtableData', JSON.stringify(data));
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      if (loadingOverlay) {
+        loadingOverlay.style.display = 'none';
+      }
+    })
+    .catch(error => {
+      console.error("Erreur lors du chargement des données Airtable :", error);
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      if (loadingOverlay) {
+        loadingOverlay.style.display = 'none';
+      }
+    });
+});
