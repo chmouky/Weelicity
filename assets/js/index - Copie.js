@@ -238,6 +238,7 @@ const ALL_TABLES_WORKER_URL = 'https://airtable-all-table.samueltoledano94.worke
 
 // Création de l'overlay de chargement et du GIF dès le chargement du DOM
 document.addEventListener("DOMContentLoaded", function () {
+  // Crée l'élément overlay
   let loadingOverlay = document.createElement("div");
   loadingOverlay.id = "loadingOverlay";
   loadingOverlay.style.position = "fixed";
@@ -251,18 +252,20 @@ document.addEventListener("DOMContentLoaded", function () {
   loadingOverlay.style.alignItems = "center";
   loadingOverlay.style.zIndex = "9999";
 
+  // Crée l'image du GIF
   let loadingGif = document.createElement("img");
   loadingGif.id = "loadingGif";
   loadingGif.src = "assets/img/index/pin_wait.gif";
-  loadingGif.alt = "Loading...";
+  loadingGif.alt = "Chargement...";
   loadingGif.style.width = "120px";
   loadingGif.style.height = "auto";
 
-
+  alert("GIF lancé, l'overlay est affiché.");
   document.body.style.pointerEvents = "none";
   loadingOverlay.appendChild(loadingGif);
   document.body.appendChild(loadingOverlay);
 });
+
 
 // Fonction pour précharger toutes les données depuis le Worker
 async function preloadAllTables() {
@@ -326,15 +329,21 @@ async function preloadAllTables() {
 
 // Fonction principale pour charger les données et masquer l'overlay
 async function preloadData() {
-  await preloadAllTables();
+  alert("Début du préchargement des données (preloadData).");
+  await preloadAllTables();  // Assure-toi que toutes les requêtes se terminent
+  alert("Préchargement terminé. On va maintenant retirer l'overlay.");
 
   let loadingOverlay = document.getElementById("loadingOverlay");
   if (loadingOverlay) {
-    loadingOverlay.style.display = "none";
     loadingOverlay.remove();
+    alert("Overlay supprimé.");
+  } else {
+    alert("Overlay introuvable lors de la suppression.");
   }
   document.body.style.pointerEvents = "auto";
+  alert("Fin du préchargement des données, interactions réactivées.");
 }
+
 
 // Lancer le préchargement au chargement du DOM
 document.addEventListener("DOMContentLoaded", async () => {

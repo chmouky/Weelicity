@@ -322,25 +322,20 @@ async function preloadAllTables() {
 
 // Fonction principale pour charger les données et masquer l'overlay
 async function preloadData() {
-  alert("Début du préchargement des données (preloadData).");
   await preloadAllTables();
-  alert("Préchargement terminé. On va maintenant retirer l'overlay.");
 
   let loadingOverlay = document.getElementById("loadingOverlay");
   if (loadingOverlay) {
     loadingOverlay.style.display = "none";
     loadingOverlay.remove();
-    alert("Overlay supprimé.");
   } else {
     alert("Overlay introuvable lors de la suppression.");
   }
   document.body.style.pointerEvents = "auto";
-  alert("Fin du préchargement des données, interactions réactivées.");
 }
 
 // Lancer le préchargement au chargement du DOM
 document.addEventListener("DOMContentLoaded", async () => {
-  alert("DOMContentLoaded pour preloadData déclenché.");
   await preloadData();
 });
 
@@ -351,7 +346,6 @@ Static.COOKIE_BANNER_CAPABLE = true;
 
 // Script pour détecter la page active dans la navigation
 document.addEventListener("DOMContentLoaded", function () {
-  alert("DOMContentLoaded pour détection de la page active.");
   const currentPath = window.location.pathname.split("/")[1] || "home"; 
   const buttons = document.querySelectorAll(".custom-nav-button");
 
