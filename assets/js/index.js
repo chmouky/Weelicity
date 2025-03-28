@@ -227,7 +227,6 @@ function getDistanceMatrix(locations) {
 // ---------------------------
 // Déclaration finale pour le Cookie Banner
 // ---------------------------
-Static.COOKIE_BANNER_CAPABLE = true;
 
 // Script pour détecter la page active dans la navigation
 document.addEventListener("DOMContentLoaded", function () {
@@ -254,6 +253,33 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// Ajout du code pour récupérer les données du worker et masquer l'overlay
 document.addEventListener("DOMContentLoaded", () => {
-  alert("✅ DOM chargé – test de base OK");
+  alert("🔄 Début du chargement des données depuis le worker...");
+
+  fetch('https://airtable-all-table.samueltoledano94.workers.dev/')
+    .then(response => {
+      alert("✅ Réponse reçue du worker, conversion en JSON...");
+      return response.json();
+    })
+    .then(data => {
+      alert("📦 Données Airtable récupérées avec succès !");
+      sessionStorage.setItem('airtableData', JSON.stringify(data));
+
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      if (loadingOverlay) {
+        loadingOverlay.style.display = 'none';
+        alert("🙌 Overlay masqué, tout est prêt !");
+      }
+    })
+    .catch(error => {
+      alert("❌ Erreur lors de la récupération des données : " + error.message);
+      console.error("Erreur lors du chargement des données Airtable :", error);
+      
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      if (loadingOverlay) {
+        loadingOverlay.style.display = 'none';
+        alert("⚠️ Overlay masqué malgré l'erreur.");
+      }
+    });
 });
