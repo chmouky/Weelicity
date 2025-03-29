@@ -23,7 +23,14 @@
     <button id="back-button">←</button>
     <button id="continue-btn">Create your tour</button>
   </div>
-
+  <div id="footer-placeholder"></div>
+  <script>
+    fetch("/assets/components/footer.html")
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("footer-placeholder").innerHTML = data;
+      });
+  </script>
   <script src="/assets/js/tags.js" defer></script>
 </body>
 </html>
