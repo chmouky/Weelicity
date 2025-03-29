@@ -24,12 +24,12 @@
     font-size: 2rem;
   }
   
+
   .tag-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 5px;
-    width: 100%;
-    padding-bottom: 80px;
+    gap: 15px; /* ➕ espace entre les cartes */
+    padding: 0 10px 80px 10px; /* ➕ marge à gauche/droite + espace pour bouton */
     background-color: #f9f9f9;
     margin-top: 50px;
   }
