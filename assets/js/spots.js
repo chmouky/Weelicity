@@ -194,7 +194,7 @@ function onGoogleMapsLoaded() {
   name: place.fields.Nom || "Nom inconnu",
   descriptionC: place.fields.DescriptionC || "Description courte indisponible",
   description: place.fields.Description || "Description indisponible",
-  image: place.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image",
+  image: place.fields.URLPhoto2 || "https://via.placeholder.com/300x150?text=Aucune+Image",
   lat: parseFloat(place.fields.Latitude),
   lng: parseFloat(place.fields.Longitude),
   inout: Array.isArray(place.fields.Inout) ? place.fields.Inout : [],   // Ajout du champ Inout
