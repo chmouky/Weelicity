@@ -190,18 +190,19 @@ function onGoogleMapsLoaded() {
 
       // 🏷 Affichage des lieux dans le carrousel
       if (filteredPlacesWithCoords.length > 0) {
-          const carouselData = filteredPlacesWithCoords.map(place => ({
-  name: place.fields.Nom || "Nom inconnu",
-  descriptionC: place.fields.DescriptionC || "Description courte indisponible",
-  description: place.fields.Description || "Description indisponible",
-  image: place.fields.URLPhoto2 
-  ? "assets/img/photos/Lieux/" + place.fields.URLPhoto2 
-  : "https://via.placeholder.com/300x150?text=Aucune+Image",
-  lat: parseFloat(place.fields.Latitude),
-  lng: parseFloat(place.fields.Longitude),
-  inout: Array.isArray(place.fields.Inout) ? place.fields.Inout : [],   // Ajout du champ Inout
-  ticket: Array.isArray(place.fields.Ticket) ? place.fields.Ticket : []   // Ajout du champ Ticket
-}));
+        const rawName = place.fields.URLPhoto2 || "default.jpg";
+        const encodedName = encodeURIComponent(rawName.trim());
+        const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
+        const carouselData = filteredPlacesWithCoords.map(place => ({
+        name: place.fields.Nom || "Nom inconnu",
+        descriptionC: place.fields.DescriptionC || "Description courte indisponible",
+        description: place.fields.Description || "Description indisponible",
+        image: imageUrl, // 👈 ici on utilise imageUrl
+        lat: parseFloat(place.fields.Latitude),
+        lng: parseFloat(place.fields.Longitude),
+        inout: Array.isArray(place.fields.Inout) ? place.fields.Inout : [],   // Ajout du champ Inout
+        ticket: Array.isArray(place.fields.Ticket) ? place.fields.Ticket : []   // Ajout du champ Ticket
+    }));
 
 
   //        alert("📌 Lieux affichés dans le carrousel : \n" + carouselData.map(p => p.name).join("\n"));
@@ -494,10 +495,14 @@ function showPopup(record) {
   titleElement.textContent = record.name || "Nom inconnu";
   descriptionCElement.textContent = record.descriptionC || "Description courte indisponible";
   descriptionElement.textContent = longDescription;
-  popupImageElement.src = record.URLPhoto2 
-  ? "assets/img/photos/Lieux/" + record.URLPhoto2 
-  : "https://via.placeholder.com/300x150?text=Aucune+Image";
+  const rawName = record.fields.URLPhoto2 || "default.jpg";
+    const encodedName = encodeURIComponent(rawName.trim());
+    const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
 
+    popupImageElement.src = imageUrl;
+    popupImageElement.onerror = function () {
+    this.src = "https://via.placeholder.com/300x150?text=Aucune+Image";
+    };
   // 📌 Mise à jour du lien Google
   const popupLinkContainer = document.getElementById("popup-link");
   popupLinkContainer.innerHTML = "";
