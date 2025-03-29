@@ -190,19 +190,23 @@ function onGoogleMapsLoaded() {
 
       // 🏷 Affichage des lieux dans le carrousel
       if (filteredPlacesWithCoords.length > 0) {
-        const rawName = place.fields.URLPhoto2 || "default.jpg";
-        const encodedName = encodeURIComponent(rawName.trim());
-        const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
-        const carouselData = filteredPlacesWithCoords.map(place => ({
-        name: place.fields.Nom || "Nom inconnu",
-        descriptionC: place.fields.DescriptionC || "Description courte indisponible",
-        description: place.fields.Description || "Description indisponible",
-        image: imageUrl, // 👈 ici on utilise imageUrl
-        lat: parseFloat(place.fields.Latitude),
-        lng: parseFloat(place.fields.Longitude),
-        inout: Array.isArray(place.fields.Inout) ? place.fields.Inout : [],   // Ajout du champ Inout
-        ticket: Array.isArray(place.fields.Ticket) ? place.fields.Ticket : []   // Ajout du champ Ticket
-    }));
+        const carouselData = filteredPlacesWithCoords.map(place => {
+            const rawName = place.fields.URLPhoto2 || "default.jpg";
+            const encodedName = encodeURIComponent(rawName.trim());
+            const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
+        
+            return {
+                name: place.fields.Nom || "Nom inconnu",
+                descriptionC: place.fields.DescriptionC || "Description courte indisponible",
+                description: place.fields.Description || "Description indisponible",
+                image: imageUrl,
+                lat: parseFloat(place.fields.Latitude),
+                lng: parseFloat(place.fields.Longitude),
+                inout: Array.isArray(place.fields.Inout) ? place.fields.Inout : [],
+                ticket: Array.isArray(place.fields.Ticket) ? place.fields.Ticket : []
+            };
+        });
+        
 
 
   //        alert("📌 Lieux affichés dans le carrousel : \n" + carouselData.map(p => p.name).join("\n"));
