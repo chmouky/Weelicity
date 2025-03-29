@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fr-FR">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Weelicityx</title>
+
+    <link rel="manifest" href="assets/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Weelicity">
+    <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+
+    <!-- Lien vers la feuille de style principale -->
+    <link rel="stylesheet" href="assets/css/index.css">
+    <!-- Exemple d'inclusion de polices -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,700;1,400;1,700&family=Shrikhand:ital,wght@0,400">
+  </head>
+  <body>
+    <!-- Overlay de chargement, visible dès le démarrage -->
+  <!-- Overlay de chargement dès le chargement -->
+  <div id="loadingOverlay" style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      ">
+      <img id="loadingGif" src="assets/img/index/pin_wait.gif" alt="Chargement..." style="width: 120px; height: auto;">
+  </div>
+
+    <div id="siteWrapper">
+      <header>
+        <!-- En-tête / Navigation simplifiée -->
+        <h1></h1>
+      </header>
+
+      <main id="page" class="container">
+        <!-- Contenu principal -->
+        <section>
+          <div class="content">
+            <!-- Exemple d'une section avec image -->
+            <img src="assets/img/pages/Home.jpg" alt="Accueil de Weelicity">
+            <!-- Tu pourras ajouter ici tes blocs de contenu spécifiques -->
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <!-- Pied de page simplifié -->
+        <p>&copy; 2025 Weelicity</p>
+      </footer>
+    </div>
+
+    <!-- Lien vers le script principal -->
+    <script src="assets/js/index.js" defer></script>
+    <!-- Barre de navigation globale -->
+<div id="custom-footer-navigation">
+  <div class="custom-nav-item">
+    <button class="custom-nav-button" onclick="window.location.href='/index.html'" data-page="home">
+      <img src="assets/img/index/home.png" alt="Home">
+    </button>
+    <p class="nav-label">Home</p>
+  </div>
+  <div class="custom-nav-item">
+    <button class="custom-nav-button" onclick="window.location.href='/pages/tags.html'" data-page="tags">
+      <img src="assets/img/index/SpotMap.png" alt="Your Tour">
+    </button>
+    <p class="nav-label">Visit</p>
+  </div>
+  <div class="custom-nav-item">
+    <button class="custom-nav-button eat-bigger" onclick="window.location.href='/break'" data-page="modeeat break">
+      <img src="assets/img/index/AroundMe.png" alt="Eat">
+    </button>
+    <p class="nav-label">Around Me</p>
+  </div>
+  <div class="custom-nav-item">
+    <button class="custom-nav-button" onclick="window.location.href='/boutonsgeo'" data-page="boutonsgeo">
+      <img src="assets/img/index/ai.png" alt="AI">
+    </button>
+    <p class="nav-label">AI tool</p>
+  </div>
+  <div class="custom-nav-item">
+    <button class="custom-nav-button" onclick="window.location.href='/control'" data-page="control">
+      <img src="assets/img/index/control.png" alt="Control">
+    </button>
+    <p class="nav-label">Control</p>
+  </div>
+</div>
+  </body>
+</html>
