@@ -1,9 +1,15 @@
-* {
+* 
+:root {
+  --theme-color: #7BBFC2;
+}
+{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
   
+
+
   #app {
     font-family: 'Arial', sans-serif;
     background-color: #f9f9f9;
@@ -24,11 +30,22 @@
     font-size: 2rem;
   }
   
-
+  header .page-title {
+    font-family: 'Shrikhand', cursive;
+    font-size: 1.6rem;
+    text-align: center;
+    margin-top: 60px; /* pour éviter le chevauchement avec le bouton retour */
+    padding: 0 20px;   /* marge intérieure pour les petits écrans */
+    line-height: 1.3;
+  }
+  
+  header .highlight {
+    color: var(--theme-color);
+  }
   .tag-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px; /* ➕ espace entre les cartes */
+    gap: 10px; /* ➕ espace entre les cartes */
     padding: 0 10px 80px 10px; /* ➕ marge à gauche/droite + espace pour bouton */
     background-color: #f9f9f9;
     margin-top: 50px;
@@ -55,16 +72,20 @@
   }
   
   .tag-card h3 {
+    font-family: 'Shrikhand', cursive;
+    font-weight: 700; /* Gras */
     font-size: 1rem;
     color: #333;
     margin: 5px;
   }
   
   .tag-card p {
+    font-family: 'Shrikhand', cursive;
     font-size: 0.875rem;
     color: #555;
     margin: 5px;
   }
+  
   
   .tag-card:hover {
     transform: scale(1.05);
@@ -117,7 +138,7 @@
     position: fixed;
     top: 15px;
     left: 15px;
-    background-color: var(--theme-color);
+    background-color: #7BBFC2;
     color: white;
     border: none;
     border-radius: 50%;
@@ -134,8 +155,9 @@
   }
   
   #back-button:hover {
-    background-color: #0056b3;
+    background-color: #559fa1;
   }
+  
   
   #back-button:active {
     transform: scale(0.9);
