@@ -6,6 +6,17 @@ footer {
     background-color: #fff;
   }
   
+/* Ajoute ça dans ton footer.css */
+#footer-placeholder {
+    opacity: 0;
+    transition: opacity 0.4s ease-in;
+  }
+  
+  #footer-placeholder.loaded {
+    opacity: 1;
+  }
+  
+
   /* Conteneur de navigation du bas */
   #custom-footer-navigation {
     position: fixed;

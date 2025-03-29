@@ -30,10 +30,12 @@
     fetch("/assets/components/footer.html")
       .then(response => response.text())
       .then(data => {
-        document.getElementById("footer-placeholder").innerHTML = data;
+        const footer = document.getElementById("footer-placeholder");
+        footer.innerHTML = data;
+        footer.classList.add("loaded"); // 👈 ajoute la classe après le chargement
       });
   </script>
-
+  
   <script src="/assets/js/tags.js" defer></script>
 </body>
 </html>
