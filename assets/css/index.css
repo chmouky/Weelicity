@@ -25,7 +25,7 @@ html, body {
 /* Style de la page */
 body {
   font-family: 'Bitter', serif;
-  background-color: #ffffff; /* ✅ Blanc pur */
+  background-color: ##F5F5F5; /* ✅ Blanc pur */
   color: var(--font-color);
   line-height: 1.6;
 }
