@@ -16,7 +16,7 @@ continueButton.addEventListener("click", () => {
   }
 
   const selectedCalcIDs = Array.from(selectedCards).map(card => card.dataset.calcid);
-  const targetUrl = `spots?filter=${encodeURIComponent(selectedCalcIDs.join(","))}`;
+  const targetUrl = `pages/spots.html?filter=${encodeURIComponent(selectedCalcIDs.join(","))}`;
   window.location.href = targetUrl;
 });
 

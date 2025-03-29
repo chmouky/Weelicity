@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose your spots</title>
+  <link rel="stylesheet" href="../assets/css/spots.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap">
+</head>
+<body>
+  <div id="search-container">
+    <span id="search-icon">🔍</span>
+    <input type="text" id="search-bar" placeholder="Search..." />
+  </div>
+
+  <button id="back-button">←</button>
+  <h1 class="shrikhand-text">Choose your spots</h1>
+  <div id="map"></div>
+  <div id="carousel-container"></div>
+
+  <!-- Flèches du carrousel -->
+  <div id="carousel-left-arrow" class="carousel-arrow">
+    <img src=".../arrow-left.png" alt="Gauche">
+  </div>
+  <div id="carousel-right-arrow" class="carousel-arrow">
+    <img src=".../arrow-right.png" alt="Droite">
+  </div>
+
+  <button id="go-button">Go!</button>
+
+  <!-- Popups et overlay -->
+  <div id="popup"></div>
+  <div id="popup-itinerary"></div>
+  <div id="overlay"></div>
+
+  <script src="../assets/js/spots.js"></script>
+</body>
+</html>

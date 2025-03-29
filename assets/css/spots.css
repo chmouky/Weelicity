@@ -1,0 +1,455 @@
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+        overflow-x: hidden; /* Empêche tout débordement horizontal */
+}
+.shrikhand-text {
+width: 100vw;               /* Utilise la largeur de la fenêtre */
+box-sizing: border-box;     /* Pour inclure le padding dans la largeur */
+margin: 0;                  /* Supprime les marges par défaut */
+font-family: 'Shrikhand', cursive;
+font-size: 2.3em;
+color: black;
+position: fixed;
+top: 0;
+left: 0;
+z-index: 1000;              /* Au-dessus de la carte */
+text-align: center;
+padding: 20px;
+background: rgba(255, 255, 255, 0.5);
+backdrop-filter: blur(5px);
+-webkit-backdrop-filter: blur(5px);
+}
+
+/* Désactiver le comportement de sélection */
+body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#map {
+position: fixed !important; /* Fixe la carte pour qu’elle prenne toute la fenêtre */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+        margin: 0 !important;
+padding: 0 !important;
+}
+
+/* Styles pour le carousel et le popup */
+#carousel-container {
+    position: fixed;
+    bottom: 70px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    overflow-x: auto; /* Permet uniquement le défilement horizontal */
+    overflow-y: hidden; /* Empêche le défilement vertical */
+    scroll-snap-type: x mandatory;
+    gap: 10px;
+    z-index: 1;
+    padding: 10px 0;
+}
+
+.carousel-item {
+    flex: 0 0 80%;
+    height: 240px;
+    background-color: white;
+    color: #333;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    scroll-snap-align: center;
+    padding: 10px;
+}
+
+.carousel-item h3 {
+    margin: 0 0 5px 0;
+    font-size: 1em;
+    color: var(--theme-color);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.carousel-item img {
+      width: 100%;       /* Occupe toute la largeur du conteneur */
+height: 140px;     /* Hauteur fixe pour uniformiser l'affichage */
+object-fit: cover; /* Recadre l'image pour remplir le conteneur sans déformation */
+border-radius: 10px;
+}
+
+.carousel-item .toggle-btn {
+    margin-top: 10px;
+    width: 50px;
+    height: 25px;
+    background-color: red;
+    border-radius: 25px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.carousel-item .toggle-btn::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 21px;
+    height: 21px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.carousel-item .toggle-btn.active {
+    background-color: green;
+}
+
+.carousel-item .toggle-btn.active::before {
+    transform: translateX(25px);
+}
+
+#popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 400px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    text-align: center;
+z-index: 2000 !important; /* Toujours au-dessus du popup itinéraire */
+}
+
+#popup h3 {
+    margin-top: 0;
+    color: var(--theme-color);
+}
+
+#popup p {
+    margin: 10px 0;
+    font-size: 0.9em;
+    color: #555;
+    text-align: left; /* Aligner le texte à gauche */
+}
+
+#popup-close {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#popup-close:hover {
+    background-color: #0056b3;
+}
+#popup-link {
+    margin: 10px 0;
+    font-size: 0.9em;
+    text-align: center;
+        text-decoration: underline;
+}
+
+#carousel-container::-webkit-scrollbar {
+    display: none;
+}
+
+#carousel-container {
+    scrollbar-width: none;
+    bottom: 100px !important; /* Ajuste cette valeur selon l'effet désiré */
+}
+
+@keyframes pulse {
+0% { transform: scale(1); }
+50% { transform: scale(1.10); }
+100% { transform: scale(1); }
+}
+
+#go-button {
+position: fixed;
+top: 440px;
+left: 8px;
+width: 90px;
+height: 70px;
+background-color: var(--theme-color);
+color: white;
+font-size: 16px;
+font-weight: bold;
+border-radius: 50%;
+cursor: pointer;
+z-index: 1000;
+animation: pulse 1.5s infinite ease-in-out;
+display: none; /* Caché par défaut */
+}
+
+
+
+/* Effet d'
+.classname-ou-id {
+     display: none;
+}
+#popup-itinerary {
+display: none;
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 80%;
+max-width: 400px;
+background-color: white;
+border-radius: 10px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+padding: 20px;
+z-index: 1000;
+text-align: center;
+}
+
+#popup-itinerary-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+position: relative; /* Nécessaire pour positionner la croix */
+margin-bottom: 10px;
+}
+
+#popup-itinerary-title {
+margin: 0;
+font-size: 1.5em;
+color: black;
+text-align: center;
+width: 100%;
+}
+
+#popup-itinerary ul {
+text-align: left; /* Alignement du texte à gauche */
+padding-left: 20px; /* Ajoute une marge intérieure pour un meilleur rendu */
+list-style-position: inside; /* Positionne les puces à l'intérieur */
+}
+
+#popup-itinerary-close {
+font-size: 2.0em;
+font-weight: bold;
+color: black;
+cursor: pointer;
+position: absolute;
+right: 10px;
+top: 0;
+}
+
+#popup-itinerary-close:hover {
+color: #555;
+}
+#popup-itinerary ul li a {
+text-decoration: underline !important;
+color: black !important;
+font-weight: bold;
+cursor: pointer;
+}
+/* Style de la croix de fermeture */
+.popup-close {
+position: absolute;
+top: 10px;
+right: 15px;
+font-size: 2.0em;
+font-weight: bold;
+color: black;
+cursor: pointer;
+}
+
+.popup-close:hover {
+color: #555;
+transition: color 0.2s ease;
+}
+#google-maps-button {
+display: block; /* Permet d'utiliser margin auto */
+margin: 15px auto; /* Centre horizontalement */
+margin-top: 15px;
+padding: 10px 20px;
+background-color: var(--theme-color);
+color: white;
+border: none;
+border-radius: 5px;
+font-size: 1em;
+font-weight: bold;
+cursor: pointer;
+text-align: center;
+text-decoration: none;
+transition: background-color 0.3s ease;
+align-items: center;
+
+}
+
+#google-maps-button:hover {
+background-color: #0056b3;
+}
+#overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+z-index: 999; /* Derrière le popup mais devant la carte */
+display: none; /* Caché par défaut */
+}
+#popup, #popup-lieu-details, #popup-itinerary {
+display: none;
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 80%;
+max-width: 400px;
+background-color: white;
+border: 1px solid rgba(0, 0, 0, 0.15); /* Bordure fine et semi-transparente */
+border-radius: 10px;
+/* Ombre ajustée pour renforcer l'effet de relief */
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+padding: 20px;
+text-align: left;
+z-index: 2000;
+}
+#search-container {
+position: fixed;
+top: 90px;
+right: 15px;
+display: flex;
+align-items: center;
+background: white;
+border-radius: 20px;
+padding: 5px 10px;
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+transition: width 0.3s ease-in-out;
+width: 40px; /* Taille initiale */
+overflow: hidden;
+cursor: pointer;
+z-index: 2000; /* Augmente pour passer devant la carte */
+}
+
+#search-icon {
+font-size: 20px;
+cursor: pointer;
+color: black;
+}
+
+#search-bar {
+border: none;
+outline: none;
+font-size: 14px;
+padding: 5px;
+width: 0;
+transition: width 0.3s ease-in-out, opacity 0.3s ease-in-out;
+opacity: 0;
+}
+
+/* Lorsqu'on active la recherche */
+#search-container.active {
+width: 220px;
+}
+
+#search-container.active #search-bar {
+width: 170px;
+opacity: 1;
+}
+
+#back-button {
+position: fixed;
+top: 90px; /* Aligné avec le sélecteur */
+left: 15px; /* Toujours en haut à gauche */
+background-color: var(--theme-color);
+color: white;
+border: none;
+border-radius: 50%; /* Bouton rond */
+width: 40px; /* Taille ajustée */
+height: 40px;
+font-size: 18px;
+cursor: pointer;
+z-index: 1002;
+display: flex;
+align-items: center;
+justify-content: center;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Ombre pour effet de relief */
+transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Effet de survol : légère élévation */
+#back-button:hover {
+background-color: #0056b3;
+box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4); /* Ombre plus marquée */
+}
+
+/* Effet de clic : bouton enfoncé */
+#back-button:active {
+transform: scale(0.9);
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.bubble {
+position: absolute;
+background: #f1f1f1;
+color: #333;
+padding: 8px 12px;
+border-radius: 10px;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+font-family: 'Shrikhand', cursive;
+font-size: 14px;
+z-index: 3000;
+white-space: nowrap;
+pointer-events: none;
+}
+
+
+.carousel-arrow {
+position: fixed;
+width: 50px;
+height: 50px;
+z-index: 3000;
+background: transparent; /* ⛔️ Enlève le fond */
+box-shadow: none;        /* ⛔️ Supprime l’ombre */
+border-radius: 0;        /* ⛔️ En option si tu veux éviter les coins arrondis */
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: bottom 0.3s ease;
+}
+
+.carousel-arrow img {
+height: 90px; /* ou une autre valeur plus grande */
+width: 60px;  /* garde les proportions */
+object-fit: fill !important;  /* étire l’image pour remplir l’espace */
+}
+
+.carousel-info {
+position: absolute;
+bottom: 10px;
+right: 10px;
+background: rgba(255, 255, 255, 0.8); /* Fond léger */
+padding: 5px 8px;
+border-radius: 8px;
+font-size: 0.8em;
+color: #333;
+text-align: right;
+line-height: 1.2em;
+max-width: 100px;
+}
+
