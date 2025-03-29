@@ -49,19 +49,23 @@
         </div>
       </section>
     </main>
+
+    <!-- ✅ Footer chargé dynamiquement à l'intérieur du siteWrapper -->
+    <div id="footer-placeholder"></div>
   </div>
 
-  <!-- Placeholder pour le footer dynamique -->
-  <div id="footer-placeholder"></div>
-
-  <!-- Scripts -->
-  <script src="assets/js/index.js" defer></script>
+  <!-- Chargement du footer -->
   <script>
     fetch("/assets/components/footer.html")
       .then(response => response.text())
       .then(data => {
-        document.getElementById("footer-placeholder").innerHTML = data;
+        const footer = document.getElementById("footer-placeholder");
+        footer.innerHTML = data;
+        footer.classList.add("loaded");
       });
   </script>
+
+  <!-- JS principal -->
+  <script src="assets/js/index.js" defer></script>
 </body>
 </html>
