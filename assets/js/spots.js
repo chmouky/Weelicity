@@ -459,6 +459,7 @@ function addSelectedMarker(record) {
     markers.push(marker);
   }
   
+  
 
 /********************************************************
  * Supprimer un marqueur de la carte (pour un lieu donné)
