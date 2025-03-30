@@ -51,14 +51,14 @@ footer {
   }
   
   .custom-nav-button img {
-    width: 28px;
-    height: 28px;
+    width: 38px;
+    height: 38px;
     object-fit: contain;
   }
   
   /* Label sous l’icône */
   .nav-label {
-    font-size: 12px;
+    font-size: 14px;
     color: #444;
     margin: 0;
   }
