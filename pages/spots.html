@@ -30,9 +30,20 @@
   <button id="go-button">Go!</button>
 
   <!-- Popups et overlay -->
-  <div id="popup"></div>
+<div id="popup" class="popup">
+    <div class="popup-content">
+      <span class="popup-close">×</span>
+      <h2 id="popup-title"></h2>
+      <p id="popup-descriptionC"></p>
+      <img id="popup-image" src="" alt="Image du lieu" style="max-width: 100%; height: auto;" />
+      <p id="popup-description"></p>
+      <div id="popup-link"></div>
+    </div>
+  </div>
+  
   <div id="popup-itinerary"></div>
-  <div id="overlay"></div>
+  <div id="overlay" class="overlay"></div>
+  
 
   <!-- Pied de page dynamique -->
   <div id="footer-placeholder"></div>
