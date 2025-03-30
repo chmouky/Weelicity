@@ -499,11 +499,8 @@ function showPopup(record) {
   titleElement.textContent = record.name || "Nom inconnu";
   descriptionCElement.textContent = record.descriptionC || "Description courte indisponible";
   descriptionElement.textContent = longDescription;
-  const rawName = record.fields.URLPhoto2 || "default.jpg";
-    const encodedName = encodeURIComponent(rawName.trim());
-    const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
+  popupImageElement.src = record.image;
 
-    popupImageElement.src = imageUrl;
     popupImageElement.onerror = function () {
     this.src = "https://via.placeholder.com/300x150?text=Aucune+Image";
     };
