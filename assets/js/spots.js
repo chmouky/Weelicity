@@ -441,23 +441,24 @@ function addMarker(record) {
  * Ajouter un marqueur de lieu sélectionné (en bleu)
  ********************************************************/
 function addSelectedMarker(record) {
-const marker = new google.maps.Marker({
-  position: { lat: record.lat, lng: record.lng },
-  map: map,
-  title: record.name,
-  icon: {
-    url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-    scaledSize: new google.maps.Size(40, 40)
+    const marker = new google.maps.Marker({
+      position: { lat: record.lat, lng: record.lng },
+      map: map,
+      title: record.name,
+      icon: {
+        url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+        scaledSize: new google.maps.Size(40, 40)
+      }
+    });
+  
+    marker.fullRecord = record; // 🔥 Ajoute les données complètes
+    marker.addListener("click", () => {
+      showPopup(record);
+    });
+  
+    markers.push(marker);
   }
-});
-
-// Ajout de l'événement click pour afficher le popup
-marker.addListener("click", () => {
-  showPopup(record);
-});
-
-markers.push(marker);
-}
+  
 
 /********************************************************
  * Supprimer un marqueur de la carte (pour un lieu donné)
@@ -568,11 +569,8 @@ document.getElementById("go-button").addEventListener("click", async () => {
       const userPosition = await getCurrentPosition();
 
       // Étape 2 : Récupérer les lieux sélectionnés
-      const selectedPlaces = markers.map(marker => ({
-          name: marker.title,
-          lat: marker.getPosition().lat(),
-          lng: marker.getPosition().lng(),
-      }));
+      const selectedPlaces = markers.map(marker => marker.fullRecord);
+
 
       if (selectedPlaces.length < 1) {
           alert("Select at least one spot");
@@ -618,13 +616,9 @@ document.getElementById("go-button").addEventListener("click", async () => {
   link.addEventListener("click", (event) => {
       event.preventDefault();
       const index = parseInt(event.target.getAttribute("data-index"));
-      // ordered[index + 1] contient l'objet réduit (nom, lat, lng)
-      const selectedPlace = ordered[index + 1];
-      // Recherche dans window.carouselRecords l'objet complet correspondant
-      const fullRecord = window.carouselRecords.find(record => record.name === selectedPlace.name);
-      // Ouvre le popup avec les infos complètes
-      showPopup(fullRecord);
-  });
+      const fullRecord = ordered[index + 1];
+        showPopup(fullRecord);
+    });
 });
 
 
