@@ -185,21 +185,26 @@ z-index: 2000 !important; /* Toujours au-dessus du popup itinéraire */
 }
 
 #go-button {
-position: fixed;
-top: 440px;
-left: 8px;
-width: 90px;
-height: 70px;
-background-color: var(--theme-color);
-color: white;
-font-size: 16px;
-font-weight: bold;
-border-radius: 50%;
-cursor: pointer;
-z-index: 1000;
-animation: pulse 1.5s infinite ease-in-out;
-display: none; /* Caché par défaut */
-}
+    background-color: #7BBFC2;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 18px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+  }
+  
+  #go-button:hover {
+    transform: scale(1.05);
+  }
+  
 
 
 
@@ -280,27 +285,22 @@ color: #555;
 transition: color 0.2s ease;
 }
 #google-maps-button {
-display: block; /* Permet d'utiliser margin auto */
-margin: 15px auto; /* Centre horizontalement */
-margin-top: 15px;
-padding: 10px 20px;
-background-color: var(--theme-color);
-color: white;
-border: none;
-border-radius: 5px;
-font-size: 1em;
-font-weight: bold;
-cursor: pointer;
-text-align: center;
-text-decoration: none;
-transition: background-color 0.3s ease;
-align-items: center;
-
-}
-
-#google-maps-button:hover {
-background-color: #0056b3;
-}
+    margin-top: 20px;
+    padding: 10px 16px;
+    background-color: #7BBFC2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.3s ease;
+  }
+  
+  #google-maps-button:hover {
+    background-color: #65aeb0;
+  }
 #overlay {
 position: fixed;
 top: 0;
