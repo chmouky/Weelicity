@@ -1,8 +1,8 @@
 document.getElementById('tags-btn').addEventListener('click', () => {
-    window.location.href = 'pages/tags.html';
+    window.location.href = 'tags.html';
   });
   
   document.getElementById('theme-btn').addEventListener('click', () => {
-    window.location.href = 'pages/visit.html';
+    window.location.href = '../pages/tags.html';
   });
   
