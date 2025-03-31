@@ -340,7 +340,6 @@ item.appendChild(infoDiv);
   handleCarouselScroll();
 
 setTimeout(updateCarouselArrows, 100); // Laisse le DOM se stabiliser
-updateGoButtonVisibility(); // ✅ Affiche le bouton si au moins un toggle est actif
 
 }
 
