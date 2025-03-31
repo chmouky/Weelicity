@@ -13,6 +13,16 @@
   <button id="tags-btn">Aller à Tags</button>
   <button id="theme-btn">Aller à Thème</button>
 
-  <script src="../assets/js/visit.js"></script> <!-- ✅ Chemin correct -->
+  <div id="footer-placeholder"></div>
+
+  <script src="../assets/js/visit.js"></script>
+  <script>
+    fetch("../assets/components/footer.html")
+      .then(response => response.text())
+      .then(data => {
+        const footer = document.getElementById("footer-placeholder");
+        footer.innerHTML = data;
+      });
+  </script>
 </body>
 </html>

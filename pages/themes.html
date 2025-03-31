@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Choisir un thème</title>
+  <link rel="stylesheet" href="../assets/css/footer.css">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../assets/css/themes.css">
+</head>
+<body>
+  <div id="app">
+    <header></header>
+
+    <div class="tag-grid" id="tag-grid"></div>
+
+    <!-- Bouton Retour -->
+    <button id="back-button">←</button>
+
+    <!-- Overlay & Popup -->
+    <div id="overlay"></div>
+    <div id="popup">
+      <span class="close-btn">&times;</span>
+      <div id="popup-body">
+        <h3 id="popup-title"></h3>
+        <p id="popup-content"></p>
+      </div>
+      <div id="popup-footer">
+        <button id="continue-popup-btn">Go to your tour</button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+  </div>
+
+  <script src="../assets/js/themes.js"></script>
+  <script>
+    fetch("../assets/components/footer.html")
+      .then(res => res.text())
+      .then(data => document.getElementById("footer-placeholder").innerHTML = data);
+  </script>
+</body>
+</html>
