@@ -1,37 +1,36 @@
-// =====================================================
-// Fichier : index.js (page d’accueil uniquement)
-// Objectif : gérer la carte principale et charger les données depuis Airtable
-// =====================================================
-
 document.addEventListener("DOMContentLoaded", () => {
-  // Démarre en récupérant la géolocalisation de l'utilisateur
+  // Récupérer la position de l'utilisateur
   if (typeof getUserLocation === "function") {
     getUserLocation();
   }
 
-  // Charger les données depuis le worker Airtable
+  // Charger toutes les données depuis le worker
   fetch("https://airtable-all-table2.samueltoledano94.workers.dev")
     .then(res => res.json())
     .then(data => {
       console.log("📦 Données Airtable chargées :", data);
 
-      // Stocker dans sessionStorage
+      // Stockage dans sessionStorage
       sessionStorage.setItem('tags', JSON.stringify(data.Tag));
       sessionStorage.setItem('places', JSON.stringify(data.Lieu));
       sessionStorage.setItem('tour', JSON.stringify(data.Tour));
+      sessionStorage.setItem('themetour', JSON.stringify(data.ThemeTour)); // ✅ Ajout essentiel
+      sessionStorage.setItem('quartiers', JSON.stringify(data.Quartier));
+      sessionStorage.setItem('gastro', JSON.stringify(data.Gastro));
+      sessionStorage.setItem('brands', JSON.stringify(data.Brands));
+      sessionStorage.setItem('around', JSON.stringify(data.Around));
+      sessionStorage.setItem('street', JSON.stringify(data.Street));
+      sessionStorage.setItem('parametre', JSON.stringify(data.Parametre));
 
-      // Supprimer l’overlay de chargement
+      // Supprimer l'overlay de chargement s'il existe
       document.getElementById("loadingOverlay")?.remove();
       document.body.style.pointerEvents = "auto";
-
-      // Initialiser la carte ici si tu veux déjà afficher quelque chose
-      // map = initMap("map", 48.8566, 2.3522, 12); // ← exemple
     })
     .catch(err => {
       console.error("❌ Erreur de chargement :", err);
     });
 
-  // Activer la détection de la page active pour la nav
+  // Gestion de la navigation active
   const currentPath = window.location.pathname.split("/")[1] || "home";
   const buttons = document.querySelectorAll(".custom-nav-button");
 
@@ -45,12 +44,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
-// ✅ Enregistrement du Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('✅ Service Worker enregistré :', reg.scope))
-      .catch(err => console.error('❌ Erreur Service Worker :', err));
-  });
-}
