@@ -185,7 +185,6 @@ z-index: 2000 !important; /* Toujours au-dessus du popup itinéraire */
 }
 
 #go-button {
-background-color: #7BBFC2;
 position: fixed;
 top: 440px;
 left: 8px;
