@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function closePopup() {
       popup.style.display = "none";
       overlay.style.display = "none";
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "auto"; 
     }
   
     continuePopupBtn.addEventListener("click", () => {
