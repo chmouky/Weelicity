@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your tour</title>
+  
+  <!-- CSS séparés -->
+  <link rel="stylesheet" href="../assets/css/footer.css">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../assets/css/tours.css">
+
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap">
+</head>
+<body>
+  <div id="overlay"></div>
+
+  <h1 class="shrikhand-text">Your tour</h1>
+  <div id="map"></div>
+
+  <!-- Carrousel des tours -->
+  <div id="carousel-container">
+    <div class="spacer"></div>
+    <img class="info-icon" src="../assets/img/pages/info.png" alt="Info">
+</div>
+
+  <!-- Bouton Go -->
+  <button id="go-button">Go!</button>
+
+  <!-- Popups -->
+  <div id="popup">
+    <div id="popup-header">
+      <h3 id="popup-title">Nom du lieu</h3>
+      <span class="popup-close">&times;</span>
+    </div>
+    <p id="popup-description">Description complète ici</p>
+    <ul id="popup-lieux-list"></ul>
+    <div id="popup-link"></div>
+  </div>
+
+  <div id="popup-itinerary">
+    <div id="popup-itinerary-header">
+      <h3 id="popup-itinerary-title">Optimal itinerary</h3>
+      <span class="popup-close">&times;</span>
+    </div>
+    <p id="popup-itinerary-description"></p>
+    <div id="popup-itinerary-link"></div>
+  </div>
+
+  <div id="popup-lieu-details">
+    <div id="popup-lieu-header">
+      <h3 id="popup-lieu-title">Nom du lieu</h3>
+      <span class="popup-close">&times;</span>
+    </div>
+    <img id="popup-lieu-image" src="" alt="Image du lieu">
+    <p id="popup-lieu-description">Description du lieu</p>
+    <div id="popup-lieu-toggle-btn" class="toggle-btn"></div>
+    <div id="popup-lieu-link"></div>
+  </div>
+
+  <!-- Bouton Retour -->
+  <button id="back-button">←</button>
+
+  <!-- Sélecteur de durée -->
+  <select id="my-selector">
+    <option value="" selected disabled>Select a duration</option>
+    <option value="1">1 day</option>
+    <option value="2">2 days</option>
+    <option value="3">3 days</option>
+  </select>
+
+  <!-- Message d'aide -->
+  <p id="duration-message">First, select a duration.</p>
+
+  <!-- Footer dynamique -->
+  <div id="footer-placeholder"></div>
+  <script>
+    fetch("../assets/components/footer.html")
+      .then(res => res.text())
+      .then(data => document.getElementById("footer-placeholder").innerHTML = data);
+  </script>
+
+  <!-- JavaScript séparé -->
+  <script src="../assets/js/utils.js"></script>
+  <script src="../assets/js/tours.js"></script>
+
+  <!-- Google Maps chargé dynamiquement -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      loadGoogleMaps("https://google-map-back.samueltoledano94.workers.dev/load-google-maps", "onGoogleMapsLoaded");
+    });
+  </script>
+</body>
+</html>

@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const selected = document.querySelector(".tag-card.selected");
       if (!selected) return alert("❌ Aucun thème sélectionné !");
       const calcId = selected.dataset.calcid;
-      window.location.href = `tags1?themeID=${encodeURIComponent(calcId)}`;
+      window.location.href = `tours?themeID=${encodeURIComponent(calcId)}`;
     });
   
     const stored = sessionStorage.getItem("themetour");
