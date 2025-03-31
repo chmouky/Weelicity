@@ -15,14 +15,15 @@
 
   <div id="footer-placeholder"></div>
 
-  <script src="../assets/js/visit.js"></script>
   <script>
-    fetch("../assets/components/footer.html")
+    fetch("/assets/components/footer.html")
       .then(response => response.text())
       .then(data => {
         const footer = document.getElementById("footer-placeholder");
         footer.innerHTML = data;
+        footer.classList.add("loaded");
       });
   </script>
+    <script src="../assets/js/visit.js"></script>
 </body>
 </html>
