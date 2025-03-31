@@ -6,7 +6,7 @@
   <title>Choisir un thème</title>
   <link rel="stylesheet" href="../assets/css/footer.css">
   <link rel="stylesheet" href="../assets/css/styles.css">
-  <link rel="stylesheet" href="../assets/css/themes.css">
+  <link rel="stylesheet" href="/assets/css/themes.css">
 </head>
 <body>
   <div id="app">
@@ -36,9 +36,13 @@
 
   <script src="../assets/js/themes.js"></script>
   <script>
-    fetch("../assets/components/footer.html")
-      .then(res => res.text())
-      .then(data => document.getElementById("footer-placeholder").innerHTML = data);
+    fetch("/assets/components/footer.html")
+      .then(response => response.text())
+      .then(data => {
+        const footer = document.getElementById("footer-placeholder");
+        footer.innerHTML = data;
+        footer.classList.add("loaded"); // 👈 ajoute la classe après le chargement
+      });
   </script>
 
 </body>
