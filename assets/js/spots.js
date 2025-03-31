@@ -441,24 +441,24 @@ function addMarker(record) {
  * Ajouter un marqueur de lieu sélectionné (en bleu)
  ********************************************************/
 function addSelectedMarker(record) {
-    const marker = new google.maps.Marker({
-      position: { lat: record.lat, lng: record.lng },
-      map: map,
-      title: record.name,
-      icon: {
-        url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-        scaledSize: new google.maps.Size(40, 40)
-      }
-    });
-  
-    marker.fullRecord = record; // 🔥 Ajoute les données complètes
-    marker.addListener("click", () => {
-      showPopup(record);
-    });
-  
-    markers.push(marker);
-  }
-  
+  const marker = new google.maps.Marker({
+    position: { lat: record.lat, lng: record.lng },
+    map: map,
+    title: record.name,
+    icon: {
+      url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+      scaledSize: new google.maps.Size(40, 40)
+    }
+  });
+
+  marker.fullRecord = record; // 🔥 Ajoute les données complètes
+  marker.addListener("click", () => {
+    showPopup(record);
+  });
+
+  markers.push(marker);
+}
+
   
 
 /********************************************************
