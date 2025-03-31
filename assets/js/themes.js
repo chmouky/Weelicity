@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = `tags1?themeID=${encodeURIComponent(calcId)}`;
     });
   
-    const stored = sessionStorage.getItem("themetour");
+    const stored = sessionStorage.getItem("tour");
     if (stored) {
       displayThemes(JSON.parse(stored));
     } else {
