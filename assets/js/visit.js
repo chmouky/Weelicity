@@ -3,6 +3,6 @@ document.getElementById('tags-btn').addEventListener('click', () => {
   });
   
   document.getElementById('theme-btn').addEventListener('click', () => {
-    window.location.href = 'pages/visit.html'; // Si "theme" correspond à "visit"
+    window.location.href = 'pages/visit.html';
   });
   
