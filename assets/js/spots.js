@@ -1,4 +1,6 @@
 let map;
+let userMarker = null;
+
 const markers = [];
 let filteredPlacesWithCoords = []; // Stockage global des lieux filtrés
 // Variable globale pour stocker le marqueur de prévisualisation
@@ -121,104 +123,115 @@ function loadGoogleMaps(url, callbackName) {
  * Fonction exécutée après le chargement de Google Maps
  ********************************************************/
 function onGoogleMapsLoaded() {
-  try {
-      const containerId = "map"; 
+    try {
+      const containerId = "map";
       const lat = 48.8200;
       const lng = 2.3222;
       const zoom = 11.5;
-
+  
       // Initialisation de la carte centrée sur Paris
       map = initMap(containerId, lat, lng, zoom);
-
+  
+      // 📍 Ajout du marqueur de position de l'utilisateur
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const userPosition = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+  
+            userMarker = new google.maps.Marker({
+              position: userPosition,
+              map: map,
+              title: "Your position",
+              icon: {
+                url: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
+                scaledSize: new google.maps.Size(40, 40)
+              }
+            });
+          },
+          (error) => {
+            console.error("Erreur de géolocalisation :", error);
+          }
+        );
+      }
+  
       // Récupération des données des lieux depuis sessionStorage
       const placesJSON = sessionStorage.getItem("places");
       if (!placesJSON) {
-          alert("Erreur : Aucune donnée 'places' trouvée dans sessionStorage.");
-          return;
+        alert("Erreur : Aucune donnée 'places' trouvée dans sessionStorage.");
+        return;
       }
-
+  
       let places;
       try {
-          places = JSON.parse(placesJSON);
-          if (!Array.isArray(places)) {
-              alert("Erreur : Les données 'places' ne sont pas un tableau.");
-              return;
-          }
- //         alert(`📍 Nombre de lieux dans le stockage : ${places.length}`); // ✅ Ajout de l'alerte
-      } catch (parseError) {
-          alert("Erreur lors du parsing des données 'places'.");
+        places = JSON.parse(placesJSON);
+        if (!Array.isArray(places)) {
+          alert("Erreur : Les données 'places' ne sont pas un tableau.");
           return;
+        }
+      } catch (parseError) {
+        alert("Erreur lors du parsing des données 'places'.");
+        return;
       }
-
+  
       // Récupération des tags sélectionnés depuis l'URL
       const selectedTags = new URLSearchParams(window.location.search).get("filter");
       const selectedTagIDs = selectedTags ? selectedTags.split(",").map(tag => tag.trim()) : [];
-//alert("🔍 Tags récupérés dans l'URL : " + selectedTagIDs.join(", "));
-
-  //    alert("🔍 Tags sélectionnés dans l'URL : " + selectedTagIDs.join(", "));
-
+  
       if (selectedTagIDs.length === 0) {
-          alert("⚠️ Erreur : Aucun tag sélectionné dans l'URL.");
-          return;
+        alert("⚠️ Erreur : Aucun tag sélectionné dans l'URL.");
+        return;
       }
-
-      // 🔍 Vérification des lieux avant filtrage
- //     alert("📌 Lieux chargés avant filtrage : \n" + places.map(p => `${p.fields.Nom}: ${p.fields.CalcTags}`).join("\n"));
-
-      // 🔍 Filtrage des lieux qui ont au moins un tag correspondant
+  
+      // Filtrage des lieux qui ont au moins un tag correspondant
       const filteredPlaces = places.filter(place => {
-          if (!place.fields || !place.fields.CalcTags) return false;
-
-          // ✅ Convertir CalcTags en un tableau de tags
-          const placeTags = place.fields.CalcTags
-              .split(",") // Séparer les tags par ","
-              .map(tag => tag.trim()) // Supprimer les espaces
-              .filter(tag => tag !== ""); // Supprimer les valeurs vides
-
-          // 🔎 Comparaison entre les tags sélectionnés et les tags du lieu
-          return selectedTagIDs.some(tag => placeTags.includes(tag));
+        if (!place.fields || !place.fields.CalcTags) return false;
+  
+        const placeTags = place.fields.CalcTags
+          .split(",")
+          .map(tag => tag.trim())
+          .filter(tag => tag !== "");
+  
+        return selectedTagIDs.some(tag => placeTags.includes(tag));
       });
-
-      // Vérifier qu'il y a bien des lieux valides avec des coordonnées GPS
+  
       const filteredPlacesWithCoords = filteredPlaces.filter(place => {
-          const lat = parseFloat(place.fields.Latitude);
-          const lng = parseFloat(place.fields.Longitude);
-          return !isNaN(lat) && !isNaN(lng);
+        const lat = parseFloat(place.fields.Latitude);
+        const lng = parseFloat(place.fields.Longitude);
+        return !isNaN(lat) && !isNaN(lng);
       });
-
-  //    alert(`✅ Lieux retenus après filtrage : ${filteredPlacesWithCoords.length}`);
-
-      // 🏷 Affichage des lieux dans le carrousel
+  
+      // Affichage des lieux dans le carrousel
       if (filteredPlacesWithCoords.length > 0) {
         const carouselData = filteredPlacesWithCoords.map(place => {
-            const rawName = place.fields.URLPhoto2 || "default.jpg";
-            const encodedName = encodeURIComponent(rawName.trim());
-            const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
-        
-            return {
-                name: place.fields.Nom || "Nom inconnu",
-                descriptionC: place.fields.DescriptionC || "Description courte indisponible",
-                description: place.fields.Description || "Description indisponible",
-                image: imageUrl,
-                lat: parseFloat(place.fields.Latitude),
-                lng: parseFloat(place.fields.Longitude),
-                inout: Array.isArray(place.fields.Inout) ? place.fields.Inout : [],
-                ticket: Array.isArray(place.fields.Ticket) ? place.fields.Ticket : []
-            };
+          const rawName = place.fields.URLPhoto2 || "default.jpg";
+          const encodedName = encodeURIComponent(rawName.trim());
+          const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
+  
+          return {
+            name: place.fields.Nom || "Nom inconnu",
+            descriptionC: place.fields.DescriptionC || "Description courte indisponible",
+            description: place.fields.Description || "Description indisponible",
+            image: imageUrl,
+            lat: parseFloat(place.fields.Latitude),
+            lng: parseFloat(place.fields.Longitude),
+            inout: Array.isArray(place.fields.Inout) ? place.fields.Inout : [],
+            ticket: Array.isArray(place.fields.Ticket) ? place.fields.Ticket : []
+          };
         });
-        
-
-
-  //        alert("📌 Lieux affichés dans le carrousel : \n" + carouselData.map(p => p.name).join("\n"));
-
-          displayCarousel(carouselData);
+  
+        displayCarousel(carouselData);
       } else {
-          alert("❌ Aucun lieu ne correspond aux tags sélectionnés.");
+        alert("❌ Aucun lieu ne correspond aux tags sélectionnés.");
       }
-  } catch (error) {
+  
+    } catch (error) {
       alert("❌ Erreur lors de l'initialisation de Google Maps : " + error);
+    }
   }
-}
+  
 
 
 /********************************************************
