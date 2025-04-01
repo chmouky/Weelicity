@@ -146,22 +146,7 @@ function onGoogleMapsLoaded() {
 
       // Initialisation de la carte centrée sur Paris
       map = initMap(containerId, lat, lng, zoom);
-       // ➕ Tentative de recentrage sur la position utilisateur
-    getCurrentPosition().then(pos => {
-        userPosition = pos;
-        map.setCenter(userPosition);
-        window.userMarker = new google.maps.Marker({
-          position: userPosition,
-          map: map,
-          title: "Ma Position",
-          icon: {
-            url: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
-            scaledSize: new google.maps.Size(40, 40)
-          }
-        });
-      }).catch(err => {
-        console.warn("⚠️ Position utilisateur non disponible :", err);
-      });
+      
       // Récupération des données des lieux depuis sessionStorage
       const placesJSON = sessionStorage.getItem("places");
       if (!placesJSON) {
