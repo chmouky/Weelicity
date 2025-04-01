@@ -47,5 +47,14 @@
   <!-- JavaScript séparé -->
    <script src="../assets/js/utils.js"></script>
    <script src="../assets/js/around.js"></script>
+   <script>
+    fetch("/assets/components/footer.html")
+      .then(response => response.text())
+      .then(data => {
+        const footer = document.getElementById("footer-placeholder");
+        footer.innerHTML = data;
+        footer.classList.add("loaded"); // 👈 ajoute la classe après le chargement
+      });
+  </script>
 </body>
 </html>
