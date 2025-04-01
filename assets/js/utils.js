@@ -1,8 +1,4 @@
-// =====================================================
-// Fichier : index.js
-// Objectif : Regrouper l'ensemble du JavaScript présent
-// dans la version originale de ton index.html.
-// =====================================================
+=
 
 // ---------------------------
 // IIFE pour la géolocalisation, Google Maps, et résolution du TSP
@@ -50,7 +46,6 @@
     );
   }
 
-  
   /********************************************************
    * Fonction pour initialiser la carte Google Maps
    ********************************************************/
@@ -59,7 +54,7 @@
     try {
       const mapElement = document.getElementById(containerId);
       if (!mapElement) {
-        console.error(Element avec l'ID '${containerId}' introuvable.);
+        console.error(`Element avec l'ID '${containerId}' introuvable.`);
         return;
       }
 
@@ -88,7 +83,7 @@
    ********************************************************/
   function loadGoogleMaps(apiUrl, callbackName = "onGoogleMapsLoaded") {
     const script = document.createElement("script");
-    script.src = ${apiUrl}?callback=${callbackName};
+    script.src = `${apiUrl}?callback=${callbackName}`;
     script.async = true;
     script.defer = true;
 
@@ -143,18 +138,18 @@
       return "#";
     }
 
-    const origin = ${orderedLocations[0].lat},${orderedLocations[0].lng};
-    const destination = ${orderedLocations[orderedLocations.length - 1].lat},${orderedLocations[orderedLocations.length - 1].lng};
+    const origin = `${orderedLocations[0].lat},${orderedLocations[0].lng}`;
+    const destination = `${orderedLocations[orderedLocations.length - 1].lat},${orderedLocations[orderedLocations.length - 1].lng}`;
     const waypoints = orderedLocations.slice(1, -1)
-      .map(loc => ${loc.lat},${loc.lng})
+      .map(loc => `${loc.lat},${loc.lng}`)
       .join("|");
 
-    let url = https://www.google.com/maps/dir/?api=1;
-    url += &origin=${encodeURIComponent(origin)};
-    url += &destination=${encodeURIComponent(destination)};
-    url += &travelmode=walking;
+    let url = `https://www.google.com/maps/dir/?api=1`;
+    url += `&origin=${encodeURIComponent(origin)}`;
+    url += `&destination=${encodeURIComponent(destination)}`;
+    url += `&travelmode=walking`;
     if (waypoints) {
-      url += &waypoints=${encodeURIComponent(waypoints)};
+      url += `&waypoints=${encodeURIComponent(waypoints)}`;
     }
 
     return url;
@@ -176,11 +171,11 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
   const R = 6371000; // Rayon de la Terre en mètres
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
-  
+
   const a = Math.sin(dLat / 2) ** 2 +
             Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
             Math.sin(dLon / 2) ** 2;
-  
+
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return Math.round(R * c); // Distance en mètres
 }
@@ -193,8 +188,8 @@ function getDistanceMatrix(locations) {
 
   const numPoints = locations.length;
   const matrix = {
-    destination_addresses: locations.map(loc => (${loc.lat}, ${loc.lng})),
-    origin_addresses: locations.map(loc => (${loc.lat}, ${loc.lng})),
+    destination_addresses: locations.map(loc => `${loc.lat},${loc.lng}`),
+    origin_addresses: locations.map(loc => `${loc.lat},${loc.lng}`),
     rows: []
   };
 
@@ -209,7 +204,7 @@ function getDistanceMatrix(locations) {
           locations[j].lat, locations[j].lng
         );
 
-        elements.push({ distance: { text: ${distanceMeters} m, value: distanceMeters } });
+        elements.push({ distance: { text: `${distanceMeters} m`, value: distanceMeters } });
       }
     }
     matrix.rows.push({ elements });
@@ -218,6 +213,7 @@ function getDistanceMatrix(locations) {
   return matrix;
 }
 
+// Fonction pour obtenir la position actuelle de l'utilisateur sous forme de promesse
 function getCurrentPosition() {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
