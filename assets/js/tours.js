@@ -140,44 +140,22 @@ function showPopup(data) {
   const popup = document.getElementById("popup");
   document.getElementById("popup-title").textContent = data.name;
   document.getElementById("popup-description").textContent = data.description;
+  document.getElementById("popup-lieux-list").innerHTML = "";
 
   const lieuxAssocies = getRelatedPlaces(data.calcID);
-  const lieuxList = document.getElementById("popup-lieux-list");
-  lieuxList.innerHTML = "";
 
-  if (lieuxAssocies.length > 0) {
-    lieuxAssocies.forEach((lieu) => {
-      const listItem = document.createElement("li");
-
-      const link = document.createElement("a");
-      link.href = "#";
-      link.textContent = lieu.name;
-      link.addEventListener("click", (event) => {
-        event.preventDefault();
-        showLieuDetails(lieu);
-      });
-
-      const toggleBtn = document.createElement("div");
-      toggleBtn.classList.add("toggle-btn");
-      toggleBtn.dataset.lieuName = lieu.name;
-
-      if (markerStates[lieu.name]) {
-        toggleBtn.classList.add("inactive");
-      }
-
-      toggleBtn.addEventListener("click", function () {
-        this.classList.toggle("inactive");
-        const isRed = this.classList.contains("inactive");
-        updateMarkerColor(lieu.name, isRed);
-      });
-
-      listItem.appendChild(link);
-      listItem.appendChild(toggleBtn);
-      lieuxList.appendChild(listItem);
+  lieuxAssocies.forEach((lieu) => {
+    const listItem = document.createElement("li");
+    const link = document.createElement("a");
+    link.href = "#";
+    link.textContent = lieu.name;
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      showLieuDetails(lieu);
     });
-  } else {
-    lieuxList.innerHTML = "<li>Aucun lieu associé</li>";
-  }
+    listItem.appendChild(link);
+    document.getElementById("popup-lieux-list").appendChild(listItem);
+  });
 
   popup.style.display = "block";
   document.getElementById("overlay").style.display = "block";
@@ -192,23 +170,8 @@ function showLieuDetails(lieu) {
   document.getElementById("overlay").style.display = "block";
 }
 
-function updateMarkerColor(nomLieu, isRed) {
-  markerStates[nomLieu] = isRed;
-
-  markers.forEach(marker => {
-    if (marker.lieuName === nomLieu) {
-      marker.setIcon({
-        url: isRed
-          ? "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
-          : "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-        scaledSize: new google.maps.Size(40, 40)
-      });
-    }
-  });
-}
-
 function onGoogleMapsLoaded() {
-  map = initMap("map", 48.8200, 2.3222, 11.5);
+  map = window.initMap("map", 48.8200, 2.3222, 11.5);
   updateSelectorDays();
 }
 
@@ -248,4 +211,51 @@ document.querySelectorAll(".popup-close").forEach(btn => {
     document.querySelectorAll("#popup, #popup-lieu-details, #popup-itinerary").forEach(p => p.style.display = "none");
     document.getElementById("overlay").style.display = "none";
   });
+});
+
+document.getElementById("go-button").addEventListener("click", async () => {
+  try {
+    const userPos = await getCurrentPosition();
+    const greenPlaces = markers.filter(m => !markerStates[m.lieuName]).map(m => m.lieuData);
+    if (greenPlaces.length < 1) {
+      alert("❌ Aucun lieu sélectionné en vert !");
+      return;
+    }
+    greenPlaces.unshift({ name: "My location", lat: userPos.lat, lng: userPos.lng });
+    const distanceMatrix = getDistanceMatrix(greenPlaces);
+    const tspPath = solveTSPNearestNeighbor(distanceMatrix, greenPlaces);
+    const ordered = tspPath.map(i => greenPlaces[i]);
+    filteredPlacesWithCoords = ordered;
+
+    let tspResult = "<ul>";
+    ordered.forEach((place, index) => {
+      tspResult += `<li><a href="#" class="popup-link" data-index="${index}">${index + 1}. ${place.name}</a></li>`;
+    });
+    tspResult += "</ul>";
+    document.getElementById("popup-itinerary-description").innerHTML = tspResult;
+
+    const popupLinkContainer = document.getElementById("popup-itinerary-link");
+    popupLinkContainer.innerHTML = "";
+    const googleBtn = document.createElement("button");
+    googleBtn.textContent = "Get the itinerary on Google Maps";
+    googleBtn.id = "google-maps-button";
+    googleBtn.onclick = () => {
+      const url = buildOptimizedGoogleMapsUrl(ordered);
+      window.open(url, "_blank");
+    };
+    popupLinkContainer.appendChild(googleBtn);
+
+    document.getElementById("popup-itinerary").style.display = "block";
+    document.getElementById("overlay").style.display = "block";
+  } catch (error) {
+    alert("Erreur : " + error);
+  }
+});
+
+document.getElementById("popup-itinerary-description").addEventListener("click", function (e) {
+  if (e.target.classList.contains("popup-link")) {
+    e.preventDefault();
+    const index = parseInt(e.target.dataset.index);
+    showLieuDetails(filteredPlacesWithCoords[index]);
+  }
 });
