@@ -203,7 +203,7 @@
       for (let j = 0; j < numPoints; j++) {
         if (i === j) {
           elements.push({ distance: { text: "0 m", value: 0 } });
-        } else {
+        } else {  
           const distanceMeters = haversineDistance(
             locations[i].lat, locations[i].lng,
             locations[j].lat, locations[j].lng

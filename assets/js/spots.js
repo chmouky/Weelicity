@@ -1,40 +1,57 @@
 let map;
 const markers = [];
-let filteredPlacesWithCoords = []; // Stockage global des lieux filtrés
-// Variable globale pour stocker le marqueur de prévisualisation
+let filteredPlacesWithCoords = [];
 let previewMarker = null;
-// Nous conservons également la liste des lieux affichés dans le carousel pour y accéder depuis l’observateur
 window.carouselRecords = [];
 
-  // Gestion du bouton "Retour"
-  document.getElementById("back-button").addEventListener("click", () => {
-      saveButtonState();  // Sauvegarde l'état des boutons activés
-      window.history.back();
-  });
+// Obtenir la position de l'utilisateur au chargement
+let userPosition = null;
+getCurrentPosition().then(pos => {
+  userPosition = pos;
+  if (map) {
+    map.setCenter(userPosition);
+    if (!window.userMarker) {
+      window.userMarker = new google.maps.Marker({
+        position: userPosition,
+        map,
+        title: "Ma Position",
+        icon: {
+          url: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
+          scaledSize: new google.maps.Size(40, 40)
+        }
+      });
+    }
+  }
+}).catch(console.error);
+
+// Gestion du bouton "Retour"
+document.getElementById("back-button").addEventListener("click", () => {
+  saveButtonState();
+  window.history.back();
+});
+
 document.getElementById("search-container").addEventListener("click", function () {
   this.classList.add("active");
   document.getElementById("search-bar").focus();
 });
 
-// Ferme la barre de recherche lorsque l'utilisateur appuie sur "Entrée"
 document.getElementById("search-bar").addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
-      document.getElementById("search-container").classList.remove("active");
-      this.blur(); // Perd le focus après validation
+    document.getElementById("search-container").classList.remove("active");
+    this.blur();
   }
 });
 
-// Ferme la barre si l'utilisateur clique ailleurs
 document.addEventListener("click", function (event) {
   let searchContainer = document.getElementById("search-container");
   if (!searchContainer.contains(event.target) && document.getElementById("search-bar").value === "") {
-      searchContainer.classList.remove("active");
+    searchContainer.classList.remove("active");
   }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  restoreButtonState(); // Restaure les boutons sélectionnés
-  updateGoButtonVisibility(); // Vérifie si le bouton "Go!" doit être affiché
+  restoreButtonState();
+  updateGoButtonVisibility();
 });
 
 
