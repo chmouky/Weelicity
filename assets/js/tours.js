@@ -181,42 +181,48 @@ function showPopup(data) {
 }
 
 function showLieuDetails(lieu) {
-  const popup = document.getElementById("popup-lieu-details");
-
-  document.getElementById("popup-lieu-title").textContent = lieu.name;
-  document.getElementById("popup-lieu-description").textContent = lieu.description;
-  document.getElementById("popup-lieu-image").src = lieu.image;
-
-  const toggleContainer = document.getElementById("popup-toggle-container");
-  toggleContainer.innerHTML = "";
-
-  const toggleBtn = document.createElement("div");
-  toggleBtn.className = "toggle-btn";
-  if (!markerStates[lieu.name]) {
-    toggleBtn.classList.add("active");
-  }
-
-  toggleBtn.addEventListener("click", () => {
-    markerStates[lieu.name] = !markerStates[lieu.name];
-    toggleBtn.classList.toggle("active");
-
-    const marker = markers.find(m => m.lieuName === lieu.name);
-    if (marker) {
-      marker.setIcon({
-        url: markerStates[lieu.name]
-          ? "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
-          : "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-        scaledSize: new google.maps.Size(40, 40)
-      });
+    if (!lieu) {
+      alert("Erreur : Lieu non trouvé !");
+      return;
     }
-  });
-
-  toggleContainer.appendChild(toggleBtn);
-
-  popup.style.display = "block";
-  document.getElementById("overlay").style.display = "block";
-}
-
+  
+    const popup = document.getElementById("popup-lieu-details");
+    if (!popup) return;
+  
+    document.getElementById("popup-lieu-title").textContent = lieu.name || "Nom inconnu";
+    document.getElementById("popup-lieu-description").textContent = lieu.description || "Description indisponible";
+    document.getElementById("popup-lieu-image").src = lieu.image || "https://via.placeholder.com/300x150?text=No+Image";
+  
+    const linkContainer = document.getElementById("popup-lieu-link");
+    linkContainer.innerHTML = "";
+    const googleLink = document.createElement("a");
+    googleLink.href = `https://www.google.com/search?q=Visit+${encodeURIComponent(lieu.name)}+Paris`;
+    googleLink.target = "_blank";
+    googleLink.textContent = `${lieu.name} on Google`;
+    googleLink.style.color = "var(--theme-color)";
+    googleLink.style.textDecoration = "underline";
+    linkContainer.appendChild(googleLink);
+  
+    // Gérer le bouton toggle
+    const toggleBtn = document.getElementById("popup-lieu-toggle-btn");
+    toggleBtn.dataset.lieuName = lieu.name;
+    if (markerStates[lieu.name]) {
+      toggleBtn.classList.add("inactive");
+    } else {
+      toggleBtn.classList.remove("inactive");
+    }
+  
+    toggleBtn.onclick = function () {
+      toggleBtn.classList.toggle("inactive");
+      const isRed = toggleBtn.classList.contains("inactive");
+      updateMarkerColor(lieu.name, isRed);
+    };
+  
+    document.getElementById("overlay").style.display = "block";
+    document.body.classList.add("no-scroll");
+    popup.style.display = "block";
+  }
+  
 function onGoogleMapsLoaded() {
   map = window.initMap("map", 48.8200, 2.3222, 11.5);
   updateSelectorDays();
@@ -306,3 +312,19 @@ document.getElementById("popup-itinerary-description").addEventListener("click",
     showLieuDetails(filteredPlacesWithCoords[index]);
   }
 });
+
+function updateMarkerColor(nomLieu, isRed) {
+    markerStates[nomLieu] = isRed;
+  
+    markers.forEach(marker => {
+      if (marker.lieuName === nomLieu) {
+        marker.setIcon({
+          url: isRed
+            ? "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+            : "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+          scaledSize: new google.maps.Size(40, 40)
+        });
+      }
+    });
+  }
+  
