@@ -1,0 +1,84 @@
+/* Fichier : Weelicity/assets/css/resume-historique.css */
+
+/* Styles globaux */
+html, body, .sqs-site-container {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100%;
+    background-color: rgba(39, 136, 145, 0.2);
+    font-family: Arial, sans-serif;
+}
+
+/* Titre principal */
+.shrikhand-text {
+    position: absolute;
+    top: 3%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Shrikhand', cursive;
+    font-size: 2.3em;
+    color: white;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+    text-align: center;
+    white-space: nowrap;
+    z-index: 1099;
+}
+
+/* Styles des boutons ronds */
+#openButtonsPopup, #moreButton {
+    position: fixed;
+    top: 330px;
+    width: 90px;
+    height: 90px;
+    z-index: 1100;
+    background-color: var(--theme-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    display: none;
+    text-align: center;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2), inset -2px -2px 5px rgba(255, 255, 255, 0.3);
+    transition: all 0.2s ease-in-out;
+    line-height: normal;
+    justify-content: center;
+    align-items: center;
+}
+
+#openButtonsPopup { left: 10px; }
+#moreButton { left: 340px; }
+#openButtonsPopup:hover, #moreButton:hover {
+    background-color: #1f6f74;
+    transform: scale(1.1);
+}
+#openButtonsPopup:active, #moreButton:active {
+    background-color: #15585c;
+    transform: scale(0.95);
+}
+
+/* Bouton IAWTF */
+#iawtf-button {
+    width: 600px;
+    max-width: 90%;
+    cursor: pointer;
+    display: block;
+    margin-top: 20px;
+    margin-left: 13px;
+}
+
+/* Animation de battement de coeur */
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+#iawtf-button, #StopButton img {
+    animation: heartbeat 2s infinite ease-in-out;
+}
+
+/* Autres styles à intégrer : boutons, popups, POI, etc. */
+/* ... (comme présent dans le code d'origine) ... */

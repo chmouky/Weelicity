@@ -17,14 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupPopupCloseEvents(); // ✅ Ajoute cet appel ici pour attacher les événements !
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-    const recenterBtn = document.getElementById("recenter-btn");
 
-    if (!recenterBtn) {
-        console.error("❌ Bouton 'Recentrer' introuvable !");
-        return;
-    }
-});
 
 /********************************************************
  * 📌 Fonction pour attacher les événements de fermeture aux popups

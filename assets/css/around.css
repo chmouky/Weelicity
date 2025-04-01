@@ -240,26 +240,6 @@ html, body {
     margin-top: -7px; /* Ajustez cette valeur selon vos besoins */
   }
   
-  #recenter-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: red; /* 🔴 TEMPORAIRE : Vérifie qu'on le voit bien */
-    color: white;
-    border: none;
-    padding: 15px 20px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 1.2em;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-    z-index: 9999;  /* 🔥 Met un z-index TRÈS ÉLEVÉ */
-    display: block;  /* 🔥 S'assurer qu'il est bien affiché */
-    font-weight: bold;
-  }
-  
-  #recenter-btn:hover {
-    background: #1c6b72;
-  }
   
   #overlay {
     position: fixed;

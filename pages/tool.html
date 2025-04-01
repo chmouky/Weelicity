@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résumé Historique</title>
+    <link rel="stylesheet" href="../assets/css/footer.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header></header>
+  <div id="newPopupOverlay"></div>
+  <div class="shrikhand-text">Touch to spot</div>
+  <div id="mainContent">
+    <button id="openPopupButton"></button>
+    <button id="openButtonsPopup">Suggested questions</button>
+    <button id="moreButton">More details</button>
+
+    <div id="overlay"></div>
+
+    <div id="popup">
+      <span id="closeSelectorPopupBtn" class="closeSelectorPopup">&times;</span>
+      <label for="languageSelect" id="languageLabel">Choose your language:</label>
+      <select id="languageSelect">
+        <option value="en-US" selected>English</option>
+        <option value="fr-FR">Français</option>
+        <option value="es-ES">Español</option>
+        <option value="de-DE">Deutsch</option>
+        <option value="zh-CN">中文</option>
+      </select>
+      <label for="responseTimeSelect" id="responseTimeLabel">Response time:</label>
+      <select id="responseTimeSelect">
+        <option value="15">15 seconds</option>
+        <option value="30">30 seconds</option>
+        <option value="no-limit">No limit</option>
+      </select>
+    </div>
+
+    <div id="buttonsPopup">
+      <div id="buttonsPopupHeader">
+        <h2 id="popupTitle">More Questions</h2>
+        <span class="closeButtonsPopup">&times;</span>
+      </div>
+      <div class="rows-container">
+        <!-- Rangées injectées ici -->
+      </div>
+    </div>
+
+    <div id="iawtf-container">
+      <img id="iawtf-button" src="https://images.squarespace-cdn.com/content/67532c2bdde707065c5de483/53d59f6d-cac5-4cb8-b288-617ee7a7cfb4/Bouton-IA-removebg-preview.png?content-type=image%2Fpng" alt="IAWTF Button">
+    </div>
+
+    <div id="loadingGif">
+      <img src="https://images.squarespace-cdn.com/content/67532c2bdde707065c5de483/12a012ac-dba8-44c2-9144-b8ef9115346c/artificial-intelligence-175564-unscreen.gif?content-type=image%2Fgif" alt="Chargement...">
+    </div>
+
+    <div id="poisContainer" style="display:none;"></div>
+
+    <div id="stopButtonContainer">
+      <button id="StopButton">
+        <img src="https://images.squarespace-cdn.com/content/67532c2bdde707065c5de483/a4eaa71b-7126-47f0-a3e9-fe49e972ed7d/stop_7826834.png?content-type=image%2Fpng" alt="Stop narration" id="stopButtonImage">
+      </button>
+    </div>
+
+    <div id="responseContainer">
+      <div id="response"></div>
+    </div>
+  </div>
+  <script src="around.js"></script>
+</body>
+</html>
