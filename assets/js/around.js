@@ -9,7 +9,6 @@ let streetLabels = [];
 let simulatePosition = false; // Variable globale
 
 document.addEventListener("DOMContentLoaded", async () => {
-    await preloadData();
 
     waitForStorageReady(["around", "places", "gastro", "quartiers", "street", "parametre"], () => {  
         loadGoogleMaps("https://google-map-back.samueltoledano94.workers.dev/load-google-maps", "onGoogleMapsLoaded");
