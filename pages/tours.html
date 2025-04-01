@@ -76,9 +76,13 @@
   <!-- Footer dynamique -->
   <div id="footer-placeholder"></div>
   <script>
-    fetch("../assets/components/footer.html")
-      .then(res => res.text())
-      .then(data => document.getElementById("footer-placeholder").innerHTML = data);
+    fetch("/assets/components/footer.html")
+      .then(response => response.text())
+      .then(data => {
+        const footer = document.getElementById("footer-placeholder");
+        footer.innerHTML = data;
+        footer.classList.add("loaded"); // ← ajoute l'opacité / transition
+      });
   </script>
 
   <!-- JavaScript séparé -->
