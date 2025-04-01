@@ -230,5 +230,5 @@
     });
   }
   
-  window.getCurrentPosition = getCurrentPosition;
+  window.getCurrentPosition = getCurrentPosition; 
   
