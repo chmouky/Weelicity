@@ -140,7 +140,45 @@ function showPopup(data) {
   const popup = document.getElementById("popup");
   document.getElementById("popup-title").textContent = data.name;
   document.getElementById("popup-description").textContent = data.description;
-  document.getElementById("popup-lieux-list").innerHTML = "";
+
+  const lieuxAssocies = getRelatedPlaces(data.calcID);
+  const lieuxList = document.getElementById("popup-lieux-list");
+  lieuxList.innerHTML = "";
+
+  if (lieuxAssocies.length > 0) {
+    lieuxAssocies.forEach((lieu) => {
+      const listItem = document.createElement("li");
+
+      const link = document.createElement("a");
+      link.href = "#";
+      link.textContent = lieu.name;
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        showLieuDetails(lieu);
+      });
+
+      const toggleBtn = document.createElement("div");
+      toggleBtn.classList.add("toggle-btn");
+      toggleBtn.dataset.lieuName = lieu.name;
+
+      if (markerStates[lieu.name]) {
+        toggleBtn.classList.add("inactive");
+      }
+
+      toggleBtn.addEventListener("click", function () {
+        this.classList.toggle("inactive");
+        const isRed = this.classList.contains("inactive");
+        updateMarkerColor(lieu.name, isRed);
+      });
+
+      listItem.appendChild(link);
+      listItem.appendChild(toggleBtn);
+      lieuxList.appendChild(listItem);
+    });
+  } else {
+    lieuxList.innerHTML = "<li>Aucun lieu associé</li>";
+  }
+
   popup.style.display = "block";
   document.getElementById("overlay").style.display = "block";
 }
@@ -152,6 +190,21 @@ function showLieuDetails(lieu) {
   document.getElementById("popup-lieu-image").src = lieu.image;
   document.getElementById("popup-lieu-details").style.display = "block";
   document.getElementById("overlay").style.display = "block";
+}
+
+function updateMarkerColor(nomLieu, isRed) {
+  markerStates[nomLieu] = isRed;
+
+  markers.forEach(marker => {
+    if (marker.lieuName === nomLieu) {
+      marker.setIcon({
+        url: isRed
+          ? "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+          : "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+        scaledSize: new google.maps.Size(40, 40)
+      });
+    }
+  });
 }
 
 function onGoogleMapsLoaded() {
