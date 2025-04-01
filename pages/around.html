@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carte Google avec Worker</title>
+  <link rel="stylesheet" href="around.css">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Votre App">
+</head>
+<body>
+  <!-- Titre principal en haut de la page -->
+  <h1 class="shrikhand-text">Look around you</h1>
+
+  <div id="map"></div>
+  <div id="overlay"></div>
+  <button id="recenter-btn">📍 Recentrer</button>
+  <div id="carousel-container">
+    <div class="spacer"></div>
+  </div>
+  <!-- Popup principal -->
+  <div id="popup">
+    <div id="popup-header">
+      <h3 id="popup-title">Nom du lieu</h3>
+      <span class="popup-close">&times;</span>
+    </div>
+    <p id="popup-description">Description complète ici</p>
+    <ul id="popup-lieux-list"></ul>
+    <div id="popup-link"></div>
+  </div>
+  <!-- Popup pour les détails du lieu sélectionné -->
+  <div id="popup-lieu-details">
+    <div id="popup-lieu-header">
+      <h3 id="popup-lieu-title">Nom du lieu</h3>
+      <span class="popup-close">&times;</span>
+    </div>
+    <img id="popup-lieu-image" src="" alt="Image du lieu">
+    <p id="popup-lieu-description">Description du lieu</p>
+    <div id="popup-lieu-link"></div>
+    <div id="popup-lieu-links"></div>
+  </div>
+
+  <!-- Inclusion des scripts -->
+  <!-- Placez ici vos fonctions communes dans utils.js -->
+  <script src="utils.js"></script>
+  <script src="around.js"></script>
+</body>
+</html>
