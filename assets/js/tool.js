@@ -1,4 +1,3 @@
-// Fichier : Weelicity/assets/js/resume-historique.js
 
 document.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById("overlay");
