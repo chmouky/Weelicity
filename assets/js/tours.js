@@ -99,7 +99,14 @@ function setupCarouselObserver() {
 
 function getRelatedPlaces(calcID) {
   const places = JSON.parse(sessionStorage.getItem("places")) || [];
-  return places.filter(p => p.fields.CalcTours?.split(",").includes(calcID)).map(p => ({
+
+  return places.filter(p => {
+    if (!p.fields.CalcTours) return false;
+    const calcToursArray = p.fields.CalcTours
+      .split(',')
+      .map(val => val.trim());
+    return calcToursArray.includes(calcID.toString());
+  }).map(p => ({
     name: p.fields.Nom,
     description: p.fields.Description,
     image: p.fields.URLPhoto,
@@ -155,7 +162,7 @@ function onGoogleMapsLoaded() {
 function updateSelectorDays() {
   const tours = JSON.parse(sessionStorage.getItem("tour")) || [];
   const themeID = getThemeIDFromURL();
-  const days = [...new Set(tours.filter(t => t.fields.CalcTheme === themeID).map(t => Number(t.fields.Day)))];
+  const days = [...new Set(tours.filter(t => t.fields.CalcTheme?.toString() === themeID).map(t => Number(t.fields.Day)))];
   const selector = document.getElementById("my-selector");
   selector.innerHTML = '<option value="" selected disabled>Select a duration</option>';
   days.sort((a, b) => a - b).forEach(day => {
