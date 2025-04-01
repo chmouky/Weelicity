@@ -218,3 +218,23 @@
     return matrix;
   }
   
+  function getCurrentPosition() {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject("La géolocalisation n'est pas prise en charge par ce navigateur.");
+      } else {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            resolve({ lat: latitude, lng: longitude });
+          },
+          (error) => {
+            reject("Erreur lors de la récupération de la position.");
+          }
+        );
+      }
+    });
+  }
+  
+  window.getCurrentPosition = getCurrentPosition;
+  
