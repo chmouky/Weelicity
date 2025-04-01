@@ -1,84 +1,631 @@
-/* Fichier : Weelicity/assets/css/resume-historique.css */
-
-/* Styles globaux */
+  /* ========================================================
+     Styles globaux et réinitialisation
+  ======================================================== */
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Assure que toute la page est couverte */
+    width: 100%;
+    background-color: rgba(39, 136, 145, 0.2); /* Fond atténué */
+}
 html, body, .sqs-site-container {
     margin: 0;
     padding: 0;
-    height: 100vh;
+    height: 100vh !important;
     width: 100%;
-    background-color: rgba(39, 136, 145, 0.2);
-    font-family: Arial, sans-serif;
+    background-color: rgba(39, 136, 145, 0.2) !important;
 }
 
-/* Titre principal */
+
+body {
+      font-family: Arial, sans-serif;
+          background-color: rgba(39, 136, 145, 0.2); /* Couleur atténuée */
+    }
+  /* ========================================================
+     Titres et typographies
+  ======================================================== */
+  /* Titre principal (police Shrikhand) */
+
+/* Titre superposé */
 .shrikhand-text {
     position: absolute;
-    top: 3%;
+    top: 3%; /* Ajuste la hauteur */
     left: 50%;
     transform: translate(-50%, -50%);
     font-family: 'Shrikhand', cursive;
-    font-size: 2.3em;
-    color: white;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+    font-size: 2.3em; /* Ajuste la taille */
+    color: white; /* Ajuste la couleur si nécessaire */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6); /* Ajoute un effet de lisibilité */
     text-align: center;
-    white-space: nowrap;
+    white-space: nowrap; /* Évite le retour à la ligne */
     z-index: 1099;
 }
+ 
 
-/* Styles des boutons ronds */
-#openButtonsPopup, #moreButton {
-    position: fixed;
-    top: 330px;
-    width: 90px;
-    height: 90px;
-    z-index: 1100;
-    background-color: var(--theme-color);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: bold;
+  /* Overlay associé (non bloquant) */
+#overlay {
     display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.3);
+    z-index: 1090;
+    pointer-events: auto; /* Rend l'overlay cliquable */
+}
+
+  /* Pop-up contenant les boutons "More Questions" */
+ #buttonsPopup {
+  /* Par exemple */
+  position: fixed;
+  display: none;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 85%;
+  max-width: 550px;
+  height: 400; /* ajuster selon besoin */
+  background-color: white;
+  z-index: 1100;
+  border-radius: 8px;
+  /* On retire ou on surchargera le text-align:center si besoin */
+         max-height: 50vh; /* Empêche le popup d’être trop grand */
+    overflow-y: auto; /* Permet le défilement si le contenu dépasse */
+}
+
+/* Applique la couleur de fond et de texte aux boutons du popup "More" */
+#buttonsPopup .button-container button {
+    background-color: var(--theme-color); !important; /* Force la couleur de fond */
+    color: white !important; /* Texte en blanc */
+    border: 2px solid #1f6f74; /* Ajoute une bordure légèrement plus foncée */
+}
+
+/* Effet au survol pour un meilleur visuel */
+#buttonsPopup .button-container button:hover {
+    background-color: #1f6f74 !important; /* Assombrit un peu au survol */
+    transform: scale(1.05); /* Légèrement plus grand */
+}
+
+/* Effet de pression lors du clic */
+#buttonsPopup .button-container button:active {
+    background-color: #15585c !important; /* Encore plus sombre lorsqu'on clique */
+    transform: scale(0.95); /* Rétrécit légèrement */
+}
+
+
+  /* Entête du popup (titre + bouton de fermeture) */
+ /* Header du popup */
+#buttonsPopupHeader {
+    position: relative; /* Permet à la croix d’être positionnée par rapport à ce conteneur */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.closeButtonsPopup {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 2em;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+}
+
+  /* Titre de l'entête du popup */
+#buttonsPopupHeader h2 {
+  flex-grow: 1; /* Permet au titre de prendre toute la place disponible */
+  text-align: left; /* Garde le titre aligné à gauche */
+}
+
+
+
+  /* Bouton de fermeture du popup (croix en haut à droite) */
+#closeButtonsPopup {
+  background: none;
+  border: none;
+  font-size: 2em;
+  font-weight: bold;
+  color: black;
+  cursor: pointer;
+}
+
+
+  /* Titre à l'intérieur du popup (redondant avec le header) */
+  #buttonsPopup h2 {
+    margin: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 1.5em;
+    color: #333;
     text-align: center;
-    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2), inset -2px -2px 5px rgba(255, 255, 255, 0.3);
+  }
+
+  /* ========================================================
+     Contenu principal et entête fixe
+  ======================================================== */
+  /* Conteneur des rangées d'éléments */
+  .rows-container {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  /* Style pour chaque rangée */
+  .row {
+    margin-bottom: 20px;
+  }
+
+  /* Titre de chaque rangée */
+  .row-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: left;
+  }
+
+  /* Conteneur pour les boutons dans chaque rangée */
+  .button-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 10px;      /* Espacement entre les boutons */
+    padding: 5px 0;
+  }
+
+ /* Boutons dans le popup "More Questions" avec transparence et effet relief */
+.button-container button {
+    flex: 0 0 auto;
+    height: 100px;
+    width: 150px;
+    background-color: rgba(39, 136, 145, 0.3); /* #278891 avec 30% d'opacité */
+    color: white;
+    font-size: 14px;
+    border: 2px solid rgba(39, 136, 145, 0.5); /* Bordure semi-transparente */
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    
+    /* Effet relief */
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2), 
+                inset -2px -2px 5px rgba(255, 255, 255, 0.3);
+    
     transition: all 0.2s ease-in-out;
-    line-height: normal;
+}
+
+/* Effet d'ombre portée et de relief au survol */
+.button-container button:hover {
+    background-color: rgba(39, 136, 145, 0.5); /* Augmente l'opacité au survol */
+    box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3), 
+                inset -3px -3px 6px rgba(255, 255, 255, 0.5);
+    transform: scale(1.05); /* Agrandit légèrement */
+}
+
+/* Effet de pression lors du clic */
+.button-container button:active {
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 
+                inset 3px 3px 6px rgba(0, 0, 0, 0.4);
+    transform: scale(0.95);
+}
+
+  /* Personnalisation du défilement horizontal pour les boutons */
+  .button-container::-webkit-scrollbar {
+    height: 8px;
+  }
+  .button-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+  }
+  .button-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  /* Contenu principal sous l'entête fixe */
+  #mainContent {
+    width: 100%;
+    padding-top: 10px; /* Espace pour compenser la hauteur de l'entête */
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-}
+  }
 
-#openButtonsPopup { left: 10px; }
-#moreButton { left: 340px; }
-#openButtonsPopup:hover, #moreButton:hover {
-    background-color: #1f6f74;
-    transform: scale(1.1);
-}
-#openButtonsPopup:active, #moreButton:active {
-    background-color: #15585c;
-    transform: scale(0.95);
+  /* ========================================================
+     Bouton d'ouverture du pop-up (icône image) et pop-up associé
+  ======================================================== */
+  /* Bouton en forme d'image, positionné en haut à droite */
+  #openPopupButton {
+    background: url('https://images.squarespace-cdn.com/content/67532c2bdde707065c5de483/bdf49529-8eea-4c75-ac50-6fe54b518f66/control_18476384.png?content-type=image%2Fpng') no-repeat center center;
+    background-size: contain;
+    border: none;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    position: fixed;
+    top: 10px;
+    right: 1px;
+    z-index: 1000;
+  }
+
+  /* Pop-up modal */
+  #popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 550px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    z-index: 1100;
+    padding: 20px;
+        max-height: 60vh; /* Empêche le popup d’être trop grand */
+    overflow-y: auto; /* Permet le défilement si le contenu dépasse */
+
+  }
+
+  /* Bouton de fermeture du pop-up */
+  #closePopupButton {
+    background-color: none;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    float: right;
+  }
+
+  /* ========================================================
+     Sélecteurs et conteneurs spécifiques
+  ======================================================== */
+  label, select {
+    display: block;
+    margin: 15px 0;
+  }
+
+  /* Styles généraux pour les boutons (s'appliquent si non redéfinis ailleurs) */
+  button {
+    width: 100%;
+    max-height: 10cm; /* Limite la hauteur du bouton */
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+  }
+
+  /* Conteneur pour le bouton rouge */
+  #redButtonContainer {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  /* Conteneur pour les boutons de chat (défilement horizontal) */
+  #chatButtonContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Boutons de chat dans le conteneur */
+  #chatButtonContainer button {
+    flex: 0 0 auto;
+    height: 120px;
+    min-width: 150px;
+    max-width: 150px;
+    background-color: #5897DD;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    text-align: center;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+
+  /* Styles spécifiques pour divers boutons de chat */
+  #chatButton,
+  #chatButtonnearby,
+  #chatButtonAnecdote,
+  #chatButtonShopping,
+  #chatButtonPopularQuestion,
+  #chatButtonPopularQuestion2,
+  #chatButtonPopularQuestion3,
+  #chatButtonSmartQuestion,
+  #chatButtonEvent,
+  #chatButtonFamousPeople,
+  #chatButtonArtAndArchitecture,
+  #chatButtonLegendsAndMyths,
+  #chatButtonMustSee,
+  #chatButtonBestPhotos,
+  #chatButtonHistoricalPerspective,
+  #chatButtonLocalPerspective,
+  #chatButtonPopCulture {
+    background-color: #5897DD;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    height: 80px;
+  }
+
+  /* Conteneur des sélecteurs */
+  #selectorsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  #selector1, #selector2 {
+    margin-bottom: 10px;
+  }
+
+  /* Barre noire décorative */
+  #blackBar {
+    width: 100%;
+    height: 4px;
+    background-color: #333;
+    margin-top: 5px;
+  }
+
+  /* ========================================================
+     Encadré de réponse toujours visible
+  ======================================================== */
+  #responseContainer {
+    position: fixed;
+    bottom: 11vh;
+    left: 5%;
+    background-color: #f9f9f9;
+    border: 2px solid #000;
+    padding: 15px;
+    box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+    width: 80vw;
+    height: 15vh;
+    overflow-y: auto;
+    border-radius: 8px;
+    z-index: 1200;
+    align-items: center;
+    margin-left: 7px; /* Augmente cette valeur pour pousser plus à droite */
+  }
+  #response {
+    white-space: pre-line;
+  }
+  /* Bouton marqué comme déjà répondu */
+  .answered {
+    text-decoration: line-through;
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+
+/* Conteneur du bouton et du titre */
+.iawtf-container {
+    position: relative; /* Permet de positionner le texte par rapport à ce conteneur */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 500px; /* Ajuste selon le bouton */
+    margin: 10px auto 0 auto; /* ⬇ Augmente la marge supérieure */
 }
 
 /* Bouton IAWTF */
 #iawtf-button {
-    width: 600px;
+    width: 600px; /* Ajuste selon ton image */
     max-width: 90%;
     cursor: pointer;
     display: block;
-    margin-top: 20px;
-    margin-left: 13px;
+    margin-top: 20px; /* ⬇ Augmente cette valeur pour descendre le bouton */
+    margin-left: 13px; /* ⬅️ Augmente cette valeur pour déplacer le bouton vers la droite */
+}
+@keyframes buttonClick {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.85); } /* Réduction temporaire */
+    100% { transform: scale(1); } /* Retour à la taille normale */
 }
 
-/* Animation de battement de coeur */
+/* Appliquer l'animation lorsqu'on clique */
+.animated-click {
+    animation: buttonClick 0.2s ease-in-out;
+}
+.closeSelectorPopup {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 2em;
+  font-weight: bold;
+  color: black;
+  cursor: pointer;
+}
+/* Le bouton Stop est masqué par défaut */
+    #stopButtonContainer {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+#StopButton {
+  background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed; /* Fixe le bouton à une position spécifique */
+    bottom: 62vh; /* Remonte le bouton à 50% de la hauteur de l'écran */
+    left: 50%; /* Centre horizontalement */
+    transform: translateX(-50%); /* Centre exactement */
+
+}
+
+#stopButtonImage {
+  width: 200px; /* Réduit encore un peu la taille */
+    height: auto;
+    transition: transform 0.2s ease-in-out;
+}
+
+#popup, #buttonsPopup {
+    border: 3px solid rgba(0, 0, 0, 0.5); /* Bordure noire semi-transparente */
+    border-radius: 12px; /* Coins arrondis */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* Ombre douce */
+        pointer-events: auto; /* Garde le popup actif */
+}
+body.no-scroll {
+    overflow: hidden; /* Empêche le scroll */
+}
+/* Le GIF de chargement est masqué par défaut */
+    #loadingGif {
+        display: none; /* Masqué par défaut */
+  position: absolute;
+  top:  130px;        /* Distance du haut de la fenêtre */
+  left: 50%;        /* Centré horizontalement */
+  transform: translateX(-50%);
+    }
+    #loadingGif img {
+      width: 350px;
+      max-width: 90%;
+    }
+
+#poisContainer {
+    width: 80vw;
+    max-width: 90%;
+    padding: 10px;
+    overflow-y: auto;
+    display: block;
+    position: fixed !important;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    top: 87h; /* 🔽 Descend les POI */
+    left: 50%;
+        padding-top: 80px !important; /* 🔽 Ajoute de l'espace au-dessus */
+//    margin-top: 200px !important; /* 🔽 Déplace vers le bas */
+    transform: translateX(70px); /* ✅ Déplace les POI vers la droite */
+
+}
+
+
+
+/* ✅ Assure que chaque POI s'affiche bien */
+.poi {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 85%; /* ✅ Prend toute la largeur disponible */
+    max-width: 100%; /* ✅ Évite toute limitation de largeur */
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box; /* ✅ Inclut le padding dans la largeur */
+    margin-bottom: 5px; /* ✅ Ajoute un espace sous chaque POI */
+    margin-left: 30px;
+}
+
+
+.poi img {
+    flex-shrink: 0;
+    width: 80px; /* ✅ Réduit la taille pour laisser plus d'espace au texte */
+    height: 80px;
+    border-radius: 10px;
+    margin-right: 15px;
+}
+
+.poi p {
+    flex-grow: 1; /* ✅ Permet au texte de s'étendre */
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+    white-space: normal; /* ✅ Permet au texte de s'étendre */
+}
+
+/* Met en valeur le POI sélectionné */
+.poi.selected p {
+    color: var(--theme-color);
+    font-weight: bold;
+}
+
+
+
+/* Animation battement de cœur */
 @keyframes heartbeat {
     0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+    50% { transform: scale(1.1); } /* 🔼 Grossit légèrement */
     100% { transform: scale(1); }
 }
 
-#iawtf-button, #StopButton img {
-    animation: heartbeat 2s infinite ease-in-out;
+/* Appliquer l'animation aux boutons */
+#iawtf-button,
+#StopButton img {
+    animation: heartbeat 2s infinite ease-in-out; /* 🔄 Effet infini avec un rythme lent */
+}
+/* Styles des boutons ronds */
+#openButtonsPopup,
+#moreButton {
+    position: fixed;
+    top: 150px;
+    width: 90px; /* Taille du bouton */
+    height: 90px; /* Taille du bouton */
+    z-index: 1100;
+    background-color: var(--theme-color);
+    color: white;
+    border: none;
+    border-radius: 50%; /* Rend le bouton complètement rond */
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    display: none; /* Caché par défaut */
+    text-align: center;
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2), 
+                inset -2px -2px 5px rgba(255, 255, 255, 0.3);
+    transition: all 0.2s ease-in-out;
+        top: 330px;
+        line-height: normal; /* Réduit l'espacement entre les lignes */
+        padding: 5px 0; /* Ajuste l'espace interne */
+         display: none; /* Caché par défaut */
+         justify-content: center; /* Centre verticalement */
+    align-items: center; /* Centre horizontalement */
 }
 
-/* Autres styles à intégrer : boutons, popups, POI, etc. */
-/* ... (comme présent dans le code d'origine) ... */
+/* Position du bouton "Suggested Questions" */
+#openButtonsPopup {
+
+    left: 10px; /* Ajuste la position */
+}
+
+/* Position du bouton "More" */
+#moreButton {
+    left: 340px; /* Juste à côté du bouton "Suggested Questions" */
+}
+
+/* Effet au survol */
+#openButtonsPopup:hover,
+#moreButton:hover {
+    background-color: #1f6f74;
+    transform: scale(1.1);
+}
+
+/* Effet de pression */
+#openButtonsPopup:active,
+#moreButton:active {
+    background-color: #15585c;
+    transform: scale(0.95);
+}
