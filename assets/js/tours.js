@@ -223,10 +223,38 @@ function showLieuDetails(lieu) {
     popup.style.display = "block";
   }
   
-function onGoogleMapsLoaded() {
-  map = window.initMap("map", 48.8200, 2.3222, 11.5);
-  updateSelectorDays();
-}
+  function onGoogleMapsLoaded() {
+    map = window.initMap("map", 48.8200, 2.3222, 11.5);
+    updateSelectorDays();
+  
+    // 📍 Affiche la position de l'utilisateur avec un marqueur jaune
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userPos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+  
+          userMarker = new google.maps.Marker({
+            position: userPos,
+            map: map,
+            title: "Your location",
+            icon: {
+              url: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
+              scaledSize: new google.maps.Size(40, 40)
+            }
+          });
+        },
+        (error) => {
+          console.warn("Erreur lors de la géolocalisation :", error);
+        }
+      );
+    } else {
+      console.warn("La géolocalisation n'est pas supportée par ce navigateur.");
+    }
+  }
+  
 
 function updateSelectorDays() {
   const tours = JSON.parse(sessionStorage.getItem("tour")) || [];
