@@ -1,57 +1,40 @@
 let map;
 const markers = [];
-let filteredPlacesWithCoords = [];
+let filteredPlacesWithCoords = []; // Stockage global des lieux filtrés
+// Variable globale pour stocker le marqueur de prévisualisation
 let previewMarker = null;
+// Nous conservons également la liste des lieux affichés dans le carousel pour y accéder depuis l’observateur
 window.carouselRecords = [];
 
-// Obtenir la position de l'utilisateur au chargement
-let userPosition = null;
-getCurrentPosition().then(pos => {
-  userPosition = pos;
-  if (map) {
-    map.setCenter(userPosition);
-    if (!window.userMarker) {
-      window.userMarker = new google.maps.Marker({
-        position: userPosition,
-        map,
-        title: "Ma Position",
-        icon: {
-          url: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
-          scaledSize: new google.maps.Size(40, 40)
-        }
-      });
-    }
-  }
-}).catch(console.error);
-
-// Gestion du bouton "Retour"
-document.getElementById("back-button").addEventListener("click", () => {
-  saveButtonState();
-  window.history.back();
-});
-
+  // Gestion du bouton "Retour"
+  document.getElementById("back-button").addEventListener("click", () => {
+      saveButtonState();  // Sauvegarde l'état des boutons activés
+      window.history.back();
+  });
 document.getElementById("search-container").addEventListener("click", function () {
   this.classList.add("active");
   document.getElementById("search-bar").focus();
 });
 
+// Ferme la barre de recherche lorsque l'utilisateur appuie sur "Entrée"
 document.getElementById("search-bar").addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
-    document.getElementById("search-container").classList.remove("active");
-    this.blur();
+      document.getElementById("search-container").classList.remove("active");
+      this.blur(); // Perd le focus après validation
   }
 });
 
+// Ferme la barre si l'utilisateur clique ailleurs
 document.addEventListener("click", function (event) {
   let searchContainer = document.getElementById("search-container");
   if (!searchContainer.contains(event.target) && document.getElementById("search-bar").value === "") {
-    searchContainer.classList.remove("active");
+      searchContainer.classList.remove("active");
   }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  restoreButtonState();
-  updateGoButtonVisibility();
+  restoreButtonState(); // Restaure les boutons sélectionnés
+  updateGoButtonVisibility(); // Vérifie si le bouton "Go!" doit être affiché
 });
 
 
@@ -125,7 +108,7 @@ function loadGoogleMaps(url, callbackName) {
     if (typeof window[callbackName] === "function") {
       window[callbackName]();
     } else {
-      console.error(`Erreur : La fonction de rappel "${callbackName}" n'existe pas.`);
+      console.error(Erreur : La fonction de rappel "${callbackName}" n'existe pas.);
     }
   };
   script.onerror = () => {
@@ -146,7 +129,7 @@ function onGoogleMapsLoaded() {
 
       // Initialisation de la carte centrée sur Paris
       map = initMap(containerId, lat, lng, zoom);
-      
+
       // Récupération des données des lieux depuis sessionStorage
       const placesJSON = sessionStorage.getItem("places");
       if (!placesJSON) {
@@ -161,7 +144,7 @@ function onGoogleMapsLoaded() {
               alert("Erreur : Les données 'places' ne sont pas un tableau.");
               return;
           }
- //         alert(`📍 Nombre de lieux dans le stockage : ${places.length}`); // ✅ Ajout de l'alerte
+ //         alert(📍 Nombre de lieux dans le stockage : ${places.length}); // ✅ Ajout de l'alerte
       } catch (parseError) {
           alert("Erreur lors du parsing des données 'places'.");
           return;
@@ -180,7 +163,7 @@ function onGoogleMapsLoaded() {
       }
 
       // 🔍 Vérification des lieux avant filtrage
- //     alert("📌 Lieux chargés avant filtrage : \n" + places.map(p => `${p.fields.Nom}: ${p.fields.CalcTags}`).join("\n"));
+ //     alert("📌 Lieux chargés avant filtrage : \n" + places.map(p => ${p.fields.Nom}: ${p.fields.CalcTags}).join("\n"));
 
       // 🔍 Filtrage des lieux qui ont au moins un tag correspondant
       const filteredPlaces = places.filter(place => {
@@ -203,14 +186,14 @@ function onGoogleMapsLoaded() {
           return !isNaN(lat) && !isNaN(lng);
       });
 
-  //    alert(`✅ Lieux retenus après filtrage : ${filteredPlacesWithCoords.length}`);
+  //    alert(✅ Lieux retenus après filtrage : ${filteredPlacesWithCoords.length});
 
       // 🏷 Affichage des lieux dans le carrousel
       if (filteredPlacesWithCoords.length > 0) {
         const carouselData = filteredPlacesWithCoords.map(place => {
             const rawName = place.fields.URLPhoto2 || "default.jpg";
             const encodedName = encodeURIComponent(rawName.trim());
-            const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
+            const imageUrl = /assets/img/photos/Lieux/${encodedName};
         
             return {
                 name: place.fields.Nom || "Nom inconnu",
@@ -341,7 +324,7 @@ const ticketText = (Array.isArray(record.ticket) &&
                   ? "Need Ticket"
                   : "";
 
-infoDiv.innerHTML = `${inoutText}${(inoutText && ticketText) ? "<br>" : ""}${ticketText}`;
+infoDiv.innerHTML = ${inoutText}${(inoutText && ticketText) ? "<br>" : ""}${ticketText};
 item.appendChild(infoDiv);
 
 
@@ -528,9 +511,9 @@ function showPopup(record) {
   popupLinkContainer.innerHTML = "";
 
   const googleLink = document.createElement("a");
-  googleLink.href = `https://www.google.com/search?q=Visit+${encodeURIComponent(record.name)}+Paris`;
+  googleLink.href = https://www.google.com/search?q=Visit+${encodeURIComponent(record.name)}+Paris;
   googleLink.target = "_blank";
-  googleLink.textContent = ` ${record.name} on Google`;
+  googleLink.textContent =  ${record.name} on Google;
   googleLink.style.color = "#007bff";
   googleLink.style.textDecoration = "underline";
   googleLink.style.display = "block";
@@ -615,15 +598,15 @@ document.getElementById("go-button").addEventListener("click", async () => {
       const googleMapsUrl = buildOptimizedGoogleMapsUrl(ordered);
 
       // Étape 7 : Mettre à jour le popup ITINÉRAIRE
-      let tspResult = `<ul>`;
+      let tspResult = <ul>;
       ordered.forEach((point, index) => {
           if (index === 0) {
-              tspResult += `<li><strong>${index + 1}. ${point.name}</strong></li>`;
+              tspResult += <li><strong>${index + 1}. ${point.name}</strong></li>;
           } else {
-              tspResult += `<li><a href="#" class="popup-link" data-index="${index - 1}">${index + 1}. ${point.name}</a></li>`;
+              tspResult += <li><a href="#" class="popup-link" data-index="${index - 1}">${index + 1}. ${point.name}</a></li>;
           }
       });
-      tspResult += `</ul>`;
+      tspResult += </ul>;
 
       const popupItinerary = document.getElementById("popup-itinerary");
       popupItinerary.querySelector("#popup-itinerary-title").textContent = "Optimal itinerary";
