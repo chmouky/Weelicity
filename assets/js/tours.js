@@ -140,12 +140,14 @@ function showPopup(data) {
   const popup = document.getElementById("popup");
   document.getElementById("popup-title").textContent = data.name;
   document.getElementById("popup-description").textContent = data.description;
-  document.getElementById("popup-lieux-list").innerHTML = "";
+  const lieuxList = document.getElementById("popup-lieux-list");
+  lieuxList.innerHTML = "";
 
   const lieuxAssocies = getRelatedPlaces(data.calcID);
 
   lieuxAssocies.forEach((lieu) => {
     const listItem = document.createElement("li");
+
     const link = document.createElement("a");
     link.href = "#";
     link.textContent = lieu.name;
@@ -153,8 +155,25 @@ function showPopup(data) {
       e.preventDefault();
       showLieuDetails(lieu);
     });
+
+    const toggleBtn = document.createElement("div");
+    toggleBtn.classList.add("toggle-btn");
+    toggleBtn.dataset.lieuName = lieu.name;
+
+    if (markerStates[lieu.name]) {
+      toggleBtn.classList.add("inactive");
+    }
+
+    toggleBtn.addEventListener("click", function () {
+      this.classList.toggle("inactive");
+      const isRed = this.classList.contains("inactive");
+      markerStates[lieu.name] = isRed;
+      updateMapMarkers(getRelatedPlaces(data.calcID));
+    });
+
     listItem.appendChild(link);
-    document.getElementById("popup-lieux-list").appendChild(listItem);
+    listItem.appendChild(toggleBtn);
+    lieuxList.appendChild(listItem);
   });
 
   popup.style.display = "block";
@@ -162,46 +181,41 @@ function showPopup(data) {
 }
 
 function showLieuDetails(lieu) {
-    const popup = document.getElementById("popup-lieu-details");
-  
-    document.getElementById("popup-lieu-title").textContent = lieu.name;
-    document.getElementById("popup-lieu-description").textContent = lieu.description;
-    document.getElementById("popup-lieu-image").src = lieu.image;
-  
-    // ✅ Ajout du bouton toggle
-    const toggleContainer = document.getElementById("popup-toggle-container");
-    toggleContainer.innerHTML = ""; // Nettoyer avant d'ajouter
-  
-    const toggleBtn = document.createElement("div");
-    toggleBtn.className = "toggle-btn";
-  
-    // Appliquer l'état actuel du lieu
-    if (!markerStates[lieu.name]) {
-      toggleBtn.classList.add("active");
-    }
-  
-    toggleBtn.addEventListener("click", () => {
-      markerStates[lieu.name] = !markerStates[lieu.name];
-      toggleBtn.classList.toggle("active");
-  
-      // Met à jour l'icône du marqueur
-      const marker = markers.find(m => m.lieuName === lieu.name);
-      if (marker) {
-        marker.setIcon({
-          url: markerStates[lieu.name]
-            ? "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
-            : "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-          scaledSize: new google.maps.Size(40, 40)
-        });
-      }
-    });
-  
-    toggleContainer.appendChild(toggleBtn);
-  
-    popup.style.display = "block";
-    document.getElementById("overlay").style.display = "block";
+  const popup = document.getElementById("popup-lieu-details");
+
+  document.getElementById("popup-lieu-title").textContent = lieu.name;
+  document.getElementById("popup-lieu-description").textContent = lieu.description;
+  document.getElementById("popup-lieu-image").src = lieu.image;
+
+  const toggleContainer = document.getElementById("popup-toggle-container");
+  toggleContainer.innerHTML = "";
+
+  const toggleBtn = document.createElement("div");
+  toggleBtn.className = "toggle-btn";
+  if (!markerStates[lieu.name]) {
+    toggleBtn.classList.add("active");
   }
-  
+
+  toggleBtn.addEventListener("click", () => {
+    markerStates[lieu.name] = !markerStates[lieu.name];
+    toggleBtn.classList.toggle("active");
+
+    const marker = markers.find(m => m.lieuName === lieu.name);
+    if (marker) {
+      marker.setIcon({
+        url: markerStates[lieu.name]
+          ? "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+          : "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+        scaledSize: new google.maps.Size(40, 40)
+      });
+    }
+  });
+
+  toggleContainer.appendChild(toggleBtn);
+
+  popup.style.display = "block";
+  document.getElementById("overlay").style.display = "block";
+}
 
 function onGoogleMapsLoaded() {
   map = window.initMap("map", 48.8200, 2.3222, 11.5);
