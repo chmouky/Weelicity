@@ -364,6 +364,7 @@ setTimeout(updateCarouselArrows, 100); // Laisse le DOM se stabiliser
 function handleCarouselScroll() {
   const carouselContainer = document.getElementById("carousel-container");
   if (!carouselContainer) return;
+
   const containerRect = carouselContainer.getBoundingClientRect();
   const containerCenter = containerRect.left + containerRect.width / 2;
   let closestItem = null;
@@ -383,22 +384,25 @@ function handleCarouselScroll() {
   if (closestItem) {
     const index = closestItem.getAttribute("data-index");
     const record = window.carouselRecords[index];
+
     if (record) {
-      // Toujours afficher un marqueur de prévisualisation rouge pour l'élément centré,
-      // même si le lieu a déjà été sélectionné.
       if (!previewMarker || previewMarker.title !== record.name) {
         if (previewMarker) {
           previewMarker.setMap(null);
           previewMarker = null;
         }
-        previewMarker = new google.maps.Marker({
-          position: { lat: record.lat, lng: record.lng },
-          map: map,
-          title: record.name,
-          icon: {
-            url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-            scaledSize: new google.maps.Size(40, 40)
-          }
+
+        // Utilisation de l’image personnalisée
+        createCircularImageMarker(record.image, (dataUrl) => {
+          previewMarker = new google.maps.Marker({
+            position: { lat: record.lat, lng: record.lng },
+            map: map,
+            title: record.name,
+            icon: {
+              url: dataUrl,
+              scaledSize: new google.maps.Size(50, 50)
+            }
+          });
         });
       }
     }
@@ -454,15 +458,22 @@ function addMarker(record) {
  * Ajouter un marqueur de lieu sélectionné (en bleu)
  ********************************************************/
 function addSelectedMarker(record) {
+  createCircularImageMarker(record.image, (dataUrl) => {
     const marker = new google.maps.Marker({
       position: { lat: record.lat, lng: record.lng },
       map: map,
       title: record.name,
       icon: {
-        url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-        scaledSize: new google.maps.Size(40, 40)
+        url: dataUrl,
+        scaledSize: new google.maps.Size(50, 50)
       }
     });
+  
+    marker.fullRecord = record;
+    marker.addListener("click", () => showPopup(record));
+    markers.push(marker);
+  });
+  
   
     marker.fullRecord = record; // 🔥 Ajoute les données complètes
     marker.addListener("click", () => {
@@ -789,6 +800,35 @@ if (activeIndex >= items.length - 1) {
 } else {
   rightArrow.style.display = "flex";
 }
+}
+
+function createCircularImageMarker(imageUrl, callback) {
+  const size = 80;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+
+  const img = new Image();
+  img.crossOrigin = "anonymous"; // Pour éviter les problèmes CORS
+  img.src = imageUrl;
+
+  img.onload = () => {
+    ctx.beginPath();
+    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
+
+    ctx.drawImage(img, 0, 0, size, size);
+
+    // Appelle le callback avec le data URL
+    callback(canvas.toDataURL("image/png"));
+  };
+
+  img.onerror = () => {
+    console.warn("Erreur lors du chargement de l’image :", imageUrl);
+    callback("https://via.placeholder.com/80");
+  };
 }
 
 
