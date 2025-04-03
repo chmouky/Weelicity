@@ -352,7 +352,7 @@ function stopCurrentNarration() {
     currentAudio.pause();
     currentAudio.removeAttribute('src'); // ← ⚠️ optionnel mais propre
     currentAudio.load();                 // ← réinitialise
-    currentAudio = null;
+    currentAudio = null; 
   }
 }
 
