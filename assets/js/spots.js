@@ -381,7 +381,7 @@ function handleCarouselScroll() {
     }
   });
 
-  // 🔸 Supprime le marqueur précédent s’il existe
+  // 🔸 Toujours retirer le marqueur de preview précédent
   if (previewMarker) {
     previewMarker.setMap(null);
     previewMarker = null;
@@ -392,12 +392,12 @@ function handleCarouselScroll() {
     const record = window.carouselRecords[index];
     if (!record) return;
 
-    // 🔸 Ne pas ajouter de preview si le lieu est déjà sélectionné (bouton vert actif)
+    // Si ce lieu est déjà sélectionné (toggle bouton vert), on n’affiche pas de preview
     const toggleButton = closestItem.querySelector(".toggle-btn");
     const isActive = toggleButton && toggleButton.classList.contains("active");
 
     if (!isActive) {
-      // Crée un marqueur circulaire temporaire pour prévisualisation
+      // Crée et affiche un marqueur rond temporaire
       createCircularImageMarker(record.image, (dataUrl) => {
         previewMarker = new google.maps.Marker({
           position: { lat: record.lat, lng: record.lng },
@@ -428,16 +428,16 @@ function toggleButton(button, record) {
   button.classList.toggle("active");
 
   if (button.classList.contains("active")) {
-      if (previewMarker && previewMarker.title === record.name) {
-          previewMarker.setMap(null);
-          previewMarker = null;
-      }
-      addSelectedMarker(record);
+    if (previewMarker && previewMarker.title === record.name) {
+      previewMarker.setMap(null);
+      previewMarker = null;
+    }
+    addSelectedMarker(record);
   } else {
-      removeMarker(record);
-      handleCarouselScroll();
+    removeMarker(record);
+    handleCarouselScroll(); // <== remet à jour après suppression
   }
-
+  
   // ✅ Met à jour la visibilité du bouton Go
   updateGoButtonVisibility();
 }
