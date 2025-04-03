@@ -392,12 +392,11 @@ function handleCarouselScroll() {
     const record = window.carouselRecords[index];
     if (!record) return;
 
-    // Si ce lieu est déjà sélectionné (toggle bouton vert), on n’affiche pas de preview
     const toggleButton = closestItem.querySelector(".toggle-btn");
     const isActive = toggleButton && toggleButton.classList.contains("active");
 
     if (!isActive) {
-      // Crée et affiche un marqueur rond temporaire
+      // ⚠️ Le lieu n’est pas sélectionné → on affiche un marqueur de prévisualisation
       createCircularImageMarker(record.image, (dataUrl) => {
         previewMarker = new google.maps.Marker({
           position: { lat: record.lat, lng: record.lng },
@@ -410,8 +409,10 @@ function handleCarouselScroll() {
         });
       });
     }
+    // ⚠️ Sinon on ne fait rien → pas de marqueur
   }
 }
+
 
 
 /********************************************************
