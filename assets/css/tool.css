@@ -56,23 +56,22 @@ body {
 }
 
   /* Pop-up contenant les boutons "More Questions" */
- #buttonsPopup {
-  /* Par exemple */
-  position: fixed;
-  display: none;
-  top: 35%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 85%;
-  max-width: 550px;
-  height: 400; /* ajuster selon besoin */
-  background-color: white;
-  z-index: 1100;
-  border-radius: 8px;
-  /* On retire ou on surchargera le text-align:center si besoin */
-         max-height: 50vh; /* Empêche le popup d’être trop grand */
-    overflow-y: auto; /* Permet le défilement si le contenu dépasse */
-}
+  #buttonsPopup {
+    position: fixed;
+    display: none;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    max-width: 550px;
+    max-height: 80vh; /* ⬆️ plus permissif */
+    background-color: white;
+    z-index: 1100;
+    border-radius: 8px;
+    overflow-y: auto; /* ✅ permet le scroll */
+    padding: 10px;
+    box-sizing: border-box;
+  }
 
 /* Applique la couleur de fond et de texte aux boutons du popup "More" */
 #buttonsPopup .button-container button {
