@@ -381,38 +381,38 @@ function handleCarouselScroll() {
     }
   });
 
+  // 🔸 Supprime le marqueur précédent s’il existe
+  if (previewMarker) {
+    previewMarker.setMap(null);
+    previewMarker = null;
+  }
+
   if (closestItem) {
     const index = closestItem.getAttribute("data-index");
     const record = window.carouselRecords[index];
+    if (!record) return;
 
-    if (record) {
-      if (!previewMarker || previewMarker.title !== record.name) {
-        if (previewMarker) {
-          previewMarker.setMap(null);
-          previewMarker = null;
-        }
+    // 🔸 Ne pas ajouter de preview si le lieu est déjà sélectionné (bouton vert actif)
+    const toggleButton = closestItem.querySelector(".toggle-btn");
+    const isActive = toggleButton && toggleButton.classList.contains("active");
 
-        // Utilisation de l’image personnalisée
-        createCircularImageMarker(record.image, (dataUrl) => {
-          previewMarker = new google.maps.Marker({
-            position: { lat: record.lat, lng: record.lng },
-            map: map,
-            title: record.name,
-            icon: {
-              url: dataUrl,
-              scaledSize: new google.maps.Size(50, 50)
-            }
-          });
+    if (!isActive) {
+      // Crée un marqueur circulaire temporaire pour prévisualisation
+      createCircularImageMarker(record.image, (dataUrl) => {
+        previewMarker = new google.maps.Marker({
+          position: { lat: record.lat, lng: record.lng },
+          map: map,
+          title: record.name,
+          icon: {
+            url: dataUrl,
+            scaledSize: new google.maps.Size(50, 50)
+          }
         });
-      }
-    }
-  } else {
-    if (previewMarker) {
-      previewMarker.setMap(null);
-      previewMarker = null;
+      });
     }
   }
 }
+
 
 /********************************************************
  * Gestion du bouton bascule pour activer/désactiver un lieu
@@ -810,7 +810,7 @@ function createCircularImageMarker(imageUrl, callback) {
   const ctx = canvas.getContext("2d");
 
   const img = new Image();
-  img.crossOrigin = "anonymous"; // Pour éviter les problèmes CORS
+  img.crossOrigin = "anonymous";
   img.src = imageUrl;
 
   img.onload = () => {
@@ -818,15 +818,12 @@ function createCircularImageMarker(imageUrl, callback) {
     ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
     ctx.closePath();
     ctx.clip();
-
     ctx.drawImage(img, 0, 0, size, size);
 
-    // Appelle le callback avec le data URL
     callback(canvas.toDataURL("image/png"));
   };
 
   img.onerror = () => {
-    console.warn("Erreur lors du chargement de l’image :", imageUrl);
     callback("https://via.placeholder.com/80");
   };
 }
