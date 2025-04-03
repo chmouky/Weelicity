@@ -354,7 +354,7 @@ function stopCurrentNarration() {
     currentAudio.load();                 // ← réinitialise
     currentAudio = null;  
   }
-}
+} 
 
 
 // Fonction pour arrêter la narration et réafficher le bouton IAWTF
