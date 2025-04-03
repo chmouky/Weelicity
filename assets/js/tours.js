@@ -115,19 +115,19 @@ function getRelatedPlaces(calcID) {
   }));
 }
 
-function updateMapMarkers(places) {
+async function updateMapMarkers(places) {
   markers.forEach(m => m.setMap(null));
   markers.length = 0;
 
-  places.forEach(place => {
-    const imageUrl = place.image || "https://via.placeholder.com/80";
+  for (const place of places) {
+    const iconUrl = await createCircularImage(place.image || "https://via.placeholder.com/80");
 
     const marker = new google.maps.Marker({
       position: { lat: place.lat, lng: place.lng },
       map,
       title: place.name,
       icon: {
-        url: createCircularImage(imageUrl),
+        url: iconUrl,
         scaledSize: new google.maps.Size(50, 50)
       }
     });
@@ -136,8 +136,9 @@ function updateMapMarkers(places) {
     marker.lieuData = place;
     marker.addListener("click", () => showLieuDetails(place));
     markers.push(marker);
-  });
+  }
 }
+
 
 
 function showPopup(data) {
@@ -361,32 +362,36 @@ function updateMarkerColor(nomLieu, isRed) {
   }
   
   function createCircularImage(imageUrl) {
-    const canvas = document.createElement("canvas");
-    const size = 100;
-    canvas.width = size;
-    canvas.height = size;
+    return new Promise((resolve) => {
+      const canvas = document.createElement("canvas");
+      const size = 100;
+      canvas.width = size;
+      canvas.height = size;
   
-    const ctx = canvas.getContext("2d");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.src = imageUrl;
   
-    const img = new Image();
-    img.crossOrigin = "Anonymous"; // pour éviter les soucis CORS
-    img.src = imageUrl;
+      img.onload = () => {
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.clip();
   
-    // Return a placeholder image for now (sera mis à jour async)
-    const placeholder = "https://via.placeholder.com/100/cccccc/ffffff?text=.";
+        ctx.drawImage(img, 0, 0, size, size);
   
-    img.onload = () => {
-      ctx.beginPath();
-      ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, true);
-      ctx.closePath();
-      ctx.clip();
-      ctx.strokeStyle = "#fff";
-      ctx.lineWidth = 4;
-      ctx.stroke();
-      
-      ctx.drawImage(img, 0, 0, size, size);
-    };
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 4;
+        ctx.stroke();
   
-    return canvas.toDataURL("image/png") || placeholder;
+        resolve(canvas.toDataURL("image/png"));
+      };
+  
+      img.onerror = () => {
+        resolve("https://via.placeholder.com/100/cccccc/ffffff?text=⚠");
+      };
+    });
   }
+  
   
