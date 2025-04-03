@@ -173,10 +173,16 @@ setTimeout(() => {
 });
 
 function openPopup(popupId) {
-document.getElementById(popupId).style.display = "block";
-document.getElementById("overlay").style.display = "block";
-document.body.classList.add("no-scroll"); // Désactive l'interaction arrière-plan
+  const popup = document.getElementById(popupId);
+  if (!popup) return;
+
+  // Affiche en "flex" pour #buttonsPopup, sinon en "block"
+  popup.style.display = (popupId === "buttonsPopup") ? "flex" : "block";
+
+  document.getElementById("overlay").style.display = "block";
+  document.body.classList.add("no-scroll");
 }
+
 
 function closePopup() {
 document.getElementById("popup").style.display = "none";
