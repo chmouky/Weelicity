@@ -458,20 +458,13 @@ function addSelectedMarker(record) {
         scaledSize: new google.maps.Size(50, 50)
       }
     });
-  
+
     marker.fullRecord = record;
     marker.addListener("click", () => showPopup(record));
     markers.push(marker);
   });
-  
-  
-    marker.fullRecord = record; // 🔥 Ajoute les données complètes
-    marker.addListener("click", () => {
-      showPopup(record);
-    });
-  
-    markers.push(marker);
-  }
+}
+
   
   
 
