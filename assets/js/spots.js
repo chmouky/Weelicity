@@ -381,12 +381,13 @@ function handleCarouselScroll() {
     }
   });
 
-  // 🔸 Toujours retirer le marqueur de preview précédent
+  // Toujours retirer le marqueur de preview précédent
   if (previewMarker) {
     previewMarker.setMap(null);
     previewMarker = null;
   }
 
+  // Si le lieu centré n'est pas sélectionné, on ne crée PAS de marqueur de prévisualisation
   if (closestItem) {
     const index = closestItem.getAttribute("data-index");
     const record = window.carouselRecords[index];
@@ -395,23 +396,11 @@ function handleCarouselScroll() {
     const toggleButton = closestItem.querySelector(".toggle-btn");
     const isActive = toggleButton && toggleButton.classList.contains("active");
 
-    if (!isActive) {
-      // ⚠️ Le lieu n’est pas sélectionné → on affiche un marqueur de prévisualisation
-      createCircularImageMarker(record.image, (dataUrl) => {
-        previewMarker = new google.maps.Marker({
-          position: { lat: record.lat, lng: record.lng },
-          map: map,
-          title: record.name,
-          icon: {
-            url: dataUrl,
-            scaledSize: new google.maps.Size(50, 50)
-          }
-        });
-      });
-    }
-    // ⚠️ Sinon on ne fait rien → pas de marqueur
+    // Si le lieu est sélectionné, le marqueur a déjà été ajouté via toggleButton / addSelectedMarker.
+    // Sinon, ne rien faire (le marqueur de preview a été supprimé au début).
   }
 }
+
 
 
 
