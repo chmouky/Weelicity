@@ -118,18 +118,6 @@ stopButton.addEventListener("click", showButtons);
 // Cacher les boutons quand on clique sur "iawtf"
 iawtfButton.addEventListener("click", hideButtons);
 
-// Détecter la fin du vocal et afficher les boutons
-if (currentAudio) {
-currentAudio.addEventListener('ended', () => {
-    console.log("Audio terminé");
-    setTimeout(() => {
-        document.getElementById("stopButtonContainer").style.display = "none"; 
-        document.getElementById("poisContainer").style.display = "block"; 
-        showIAWTFButton(); // ✅ Réaffiche le bouton IA
-        showButtonsAfterNarration(); // ✅ Réaffiche les boutons "More"
-    }, 500);
-});
-}
 
 
 // Quand on clique sur le bouton IA, on cache les boutons
@@ -362,9 +350,12 @@ function stopCurrentNarration() {
   window.speechSynthesis.cancel();
   if (currentAudio) {
     currentAudio.pause();
+    currentAudio.removeAttribute('src'); // ← ⚠️ optionnel mais propre
+    currentAudio.load();                 // ← réinitialise
     currentAudio = null;
   }
 }
+
 
 // Fonction pour arrêter la narration et réafficher le bouton IAWTF
 // Utilisée lorsque l'utilisateur clique sur le bouton Stop
@@ -832,6 +823,18 @@ try {
     const audioBlob = await response.blob();
     const audioUrl = URL.createObjectURL(audioBlob);
     audio.src = audioUrl;
+    // ⚠️ Important : ajouter l'écouteur ici pour que ça marche à chaque audio
+    audio.addEventListener('ended', () => {
+      console.log("Audio terminé");
+      setTimeout(() => {
+        document.getElementById("stopButtonContainer").style.display = "none"; 
+        document.getElementById("poisContainer").style.display = "block"; 
+        showIAWTFButton();
+        showButtonsAfterNarration();
+        resetPOIs();
+      }, 500);
+    });
+
     toggleMoreButtons(false); // Cache les boutons dès que la lecture démarre
 
     // À la lecture, masquer le GIF et afficher le bouton Stop
