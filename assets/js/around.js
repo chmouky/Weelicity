@@ -144,11 +144,7 @@ function onGoogleMapsLoaded() {
         const defaultLat = 48.8990;
         const defaultLng = 2.3222;
         const zoom = 15;
-        carouselData.forEach(place => {
-            createCircularMarkerIcon(place.image, 50, "#FF0000").then(iconUrl => {
-              window.cachedSpotIcons[place.name] = iconUrl;
-            });
-          });
+        
           
         map = initMap("map", defaultLat, defaultLng, zoom);
 
@@ -218,7 +214,12 @@ function onGoogleMapsLoaded() {
             lng: record.fields.Longitude ? parseFloat(record.fields.Longitude) : null,
             calcID: record.fields.CalcID || record.id
         }));
-
+        carouselData.forEach(place => {
+            createCircularMarkerIcon(place.image, 50, "#FF0000").then(iconUrl => {
+              window.cachedSpotIcons[place.name] = iconUrl;
+            });
+          });
+          
         displayCarousel(carouselData, gastroData);
         setupCarouselObserver(gastroData, placesData);
 
