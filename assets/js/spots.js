@@ -438,25 +438,42 @@ function handleCarouselScroll() {
 function toggleButton(button, record) {
   let selectedMarkersCount = markers.length;
   if (!button.classList.contains("active") && selectedMarkersCount >= 8) {
-      alert("Maximum number of visitation points reached for an itinerary. Deselect other points or create a new itinerary.");
-      return;
+    alert("Maximum number of visitation points reached for an itinerary. Deselect other points or create a new itinerary.");
+    return;
   }
 
-  // Bascule l'état actif du bouton
   button.classList.toggle("active");
 
   if (button.classList.contains("active")) {
-      if (previewMarker && previewMarker.title === record.name) {
-          previewMarker.setMap(null);
-          previewMarker = null;
+    // ❌ Ne supprime le preview que si le lieu n'est pas au centre
+    const carouselContainer = document.getElementById("carousel-container");
+    const containerRect = carouselContainer.getBoundingClientRect();
+    const containerCenter = containerRect.left + containerRect.width / 2;
+
+    let shouldClearPreview = true;
+    const items = carouselContainer.querySelectorAll('.carousel-item');
+    items.forEach(item => {
+      const itemRect = item.getBoundingClientRect();
+      const itemCenter = itemRect.left + itemRect.width / 2;
+      if (Math.abs(itemCenter - containerCenter) < 5) {
+        const index = item.getAttribute("data-index");
+        if (window.carouselRecords[index].name === record.name) {
+          shouldClearPreview = false;
+        }
       }
-      addSelectedMarker(record);
+    });
+
+    if (shouldClearPreview && previewMarker && previewMarker.title === record.name) {
+      previewMarker.setMap(null);
+      previewMarker = null;
+    }
+
+    addSelectedMarker(record);
   } else {
-      removeMarker(record);
-      handleCarouselScroll();
+    removeMarker(record);
+    handleCarouselScroll();
   }
 
-  // ✅ Met à jour la visibilité du bouton Go
   updateGoButtonVisibility();
 }
 
