@@ -380,33 +380,34 @@ function handleCarouselScroll() {
     }
   });
 
-  // Supprimer le marqueur précédent
-  if (previewMarker) {
-    previewMarker.setMap(null);
-    previewMarker = null;
-  }
-
   if (closestItem) {
     const index = closestItem.getAttribute("data-index");
     const record = window.carouselRecords[index];
-    if (!record) return;
-
-    const toggleButton = closestItem.querySelector(".toggle-btn");
-    const isActive = toggleButton && toggleButton.classList.contains("active");
-
-    if (!isActive) {
-      // Affiche l'image en marqueur uniquement si le lieu n’est pas sélectionné
-      createCircularImageMarker(record.image, (dataUrl) => {
+    if (record) {
+      // Toujours afficher un marqueur de prévisualisation rouge pour l'élément centré,
+      // même si le lieu a déjà été sélectionné.
+      if (!previewMarker || previewMarker.title !== record.name) {
+        if (previewMarker) {
+          previewMarker.setMap(null);
+          previewMarker = null;
+        }
         previewMarker = new google.maps.Marker({
           position: { lat: record.lat, lng: record.lng },
           map: map,
           title: record.name,
           icon: {
-            url: dataUrl,
-            scaledSize: new google.maps.Size(50, 50)
+            url: record.image,
+            scaledSize: new google.maps.Size(45, 45),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(22, 22), // Centrage de l’image
           }
-        });
-      });
+        });        
+      }
+    }
+  } else {
+    if (previewMarker) {
+      previewMarker.setMap(null);
+      previewMarker = null;
     }
   }
 }
@@ -790,31 +791,6 @@ if (activeIndex >= items.length - 1) {
 } else {
   rightArrow.style.display = "flex";
 }
-}
-
-function createCircularImageMarker(imageUrl, callback) {
-  const size = 80;
-  const canvas = document.createElement("canvas");
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext("2d");
-
-  const img = new Image();
-  img.crossOrigin = "anonymous";
-  img.src = imageUrl;
-
-  img.onload = () => {
-    ctx.beginPath();
-    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-    ctx.closePath();
-    ctx.clip();
-    ctx.drawImage(img, 0, 0, size, size);
-    callback(canvas.toDataURL("image/png"));
-  };
-
-  img.onerror = () => {
-    callback("https://via.placeholder.com/80?text=⚠️");
-  };
 }
 
 
