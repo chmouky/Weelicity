@@ -626,6 +626,7 @@ function updateMapMarkers(places) {
       });
     }
   }
+ 
   
 
 
