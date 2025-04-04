@@ -202,6 +202,19 @@ function onGoogleMapsLoaded() {
         let gastroData = JSON.parse(gastroJSON);
         let placesData = JSON.parse(placesJSON);
 
+
+        // Génération des icônes pour tous les lieux dans 'placesData'
+        placesData.forEach(place => {
+            const name = place.fields.Nom;
+            const image = place.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image";
+            if (name && !window.cachedSpotIcons[name]) {
+            console.log("🌀 Génération icône pour lieu :", name);
+            createCircularMarkerIcon(image, 50, "#FF0000").then(iconUrl => {
+                window.cachedSpotIcons[name] = iconUrl;
+            });
+            }
+        });
+  
         // Construire et afficher le carrousel
         const carouselData = aroundData.map(record => ({
             name: record.fields.Nom || "Nom inconnu",
@@ -546,7 +559,7 @@ function updateMapMarkers(places) {
     const place = places[0];
   
     // Vérifie si l’icône existe
-    const iconUrl = window.cachedSpotIcons[place.name];
+    const iconUrl = window.cachedSpotIcons[place.name] || "https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg";
     if (!iconUrl) {
       console.warn(`⚠️ Aucune icône trouvée pour : ${place.name}`);
     }
