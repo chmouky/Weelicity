@@ -384,24 +384,25 @@ function handleCarouselScroll() {
     const index = closestItem.getAttribute("data-index");
     const record = window.carouselRecords[index];
     if (record) {
-      // Toujours afficher un marqueur de prévisualisation rouge pour l'élément centré,
-      // même si le lieu a déjà été sélectionné.
       if (!previewMarker || previewMarker.title !== record.name) {
         if (previewMarker) {
           previewMarker.setMap(null);
           previewMarker = null;
         }
-        previewMarker = new google.maps.Marker({
-          position: { lat: record.lat, lng: record.lng },
-          map: map,
-          title: record.name,
-          icon: {
-            url: record.image,
-            scaledSize: new google.maps.Size(45, 45),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(22, 22), // Centrage de l’image
-          }
-        });        
+
+        // ➕ On crée l'image circulaire
+        createCircularMarkerIcon(record.image, 50).then((iconUrl) => {
+          previewMarker = new google.maps.Marker({
+            position: { lat: record.lat, lng: record.lng },
+            map: map,
+            title: record.name,
+            icon: {
+              url: iconUrl,
+              scaledSize: new google.maps.Size(50, 50),
+              anchor: new google.maps.Point(25, 25)
+            }
+          });
+        });
       }
     }
   } else {
@@ -411,6 +412,7 @@ function handleCarouselScroll() {
     }
   }
 }
+
 
 /********************************************************
  * Gestion du bouton bascule pour activer/désactiver un lieu
@@ -456,23 +458,27 @@ function addMarker(record) {
  * Ajouter un marqueur de lieu sélectionné (en bleu)
  ********************************************************/
 function addSelectedMarker(record) {
+  createCircularMarkerIcon(record.image, 50).then((iconUrl) => {
     const marker = new google.maps.Marker({
       position: { lat: record.lat, lng: record.lng },
       map: map,
       title: record.name,
       icon: {
-        url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-        scaledSize: new google.maps.Size(40, 40)
+        url: iconUrl,
+        scaledSize: new google.maps.Size(50, 50),
+        anchor: new google.maps.Point(25, 25)
       }
     });
-  
-    marker.fullRecord = record; // 🔥 Ajoute les données complètes
+
+    marker.fullRecord = record;
     marker.addListener("click", () => {
       showPopup(record);
     });
-  
+
     markers.push(marker);
-  }
+  });
+}
+
   
   
 
@@ -791,6 +797,42 @@ if (activeIndex >= items.length - 1) {
 } else {
   rightArrow.style.display = "flex";
 }
+}
+
+
+function createCircularMarkerIcon(imageUrl, size = 50) {
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.src = imageUrl;
+
+  return new Promise((resolve) => {
+    img.onload = () => {
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2, true);
+      ctx.closePath();
+      ctx.clip();
+
+      ctx.drawImage(img, 0, 0, size, size);
+
+      // Optionnel : contour blanc
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2, true);
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = "#fff";
+      ctx.stroke();
+
+      resolve(canvas.toDataURL());
+    };
+
+    img.onerror = () => {
+      resolve("https://via.placeholder.com/50"); // Fallback
+    };
+  });
 }
 
 
