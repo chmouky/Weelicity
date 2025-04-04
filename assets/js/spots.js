@@ -347,14 +347,17 @@ function displayCarousel(data) {
     carouselContainer.appendChild(item);
   });
 
-  // Espace final
-  const endSpacer = document.createElement("div");
-  endSpacer.style.flex = "0 0 50px";
-  // ⚠️ Attendre un petit délai pour s'assurer que les images sont chargées
+// Espace final
+const endSpacer = document.createElement("div");
+endSpacer.style.flex = "0 0 50px";
+carouselContainer.appendChild(endSpacer); // ✅ CORRIGÉ ICI
+
+// ⚠️ Attendre un petit délai pour s'assurer que les images sont chargées
 setTimeout(() => {
   handleCarouselScroll();  // 🔁 Appel manuel pour forcer l'affichage du premier preview
   updateCarouselArrows();
 }, 150);
+
 }
 
 
