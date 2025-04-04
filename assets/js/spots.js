@@ -110,7 +110,7 @@ function loadGoogleMaps(url, callbackName) {
     if (typeof window[callbackName] === "function") {
       window[callbackName]();
     } else {
-      console.error(`Erreur : La fonction de rappel "${callbackName}" n'existe pas.`);
+      console.error(Erreur : La fonction de rappel "${callbackName}" n'existe pas.);
     }
   };
   script.onerror = () => {
@@ -208,7 +208,7 @@ function onGoogleMapsLoaded() {
         const carouselData = filteredPlacesWithCoords.map(place => {
           const rawName = place.fields.URLPhoto2 || "default.jpg";
           const encodedName = encodeURIComponent(rawName.trim());
-          const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
+          const imageUrl = /assets/img/photos/Lieux/${encodedName};
   
           return {
             name: place.fields.Nom || "Nom inconnu",
@@ -337,7 +337,7 @@ const ticketText = (Array.isArray(record.ticket) &&
                   ? "Need Ticket"
                   : "";
 
-infoDiv.innerHTML = `${inoutText}${(inoutText && ticketText) ? "<br>" : ""}${ticketText}`;
+infoDiv.innerHTML = ${inoutText}${(inoutText && ticketText) ? "<br>" : ""}${ticketText};
 item.appendChild(infoDiv);
 
 
@@ -364,6 +364,7 @@ setTimeout(updateCarouselArrows, 100); // Laisse le DOM se stabiliser
 function handleCarouselScroll() {
   const carouselContainer = document.getElementById("carousel-container");
   if (!carouselContainer) return;
+
   const containerRect = carouselContainer.getBoundingClientRect();
   const containerCenter = containerRect.left + containerRect.width / 2;
   let closestItem = null;
@@ -380,35 +381,28 @@ function handleCarouselScroll() {
     }
   });
 
+  // Toujours retirer le marqueur de preview précédent
+  if (previewMarker) {
+    previewMarker.setMap(null);
+    previewMarker = null;
+  }
+
+  // Si le lieu centré n'est pas sélectionné, on ne crée PAS de marqueur de prévisualisation
   if (closestItem) {
     const index = closestItem.getAttribute("data-index");
     const record = window.carouselRecords[index];
-    if (record) {
-      // Toujours afficher un marqueur de prévisualisation rouge pour l'élément centré,
-      // même si le lieu a déjà été sélectionné.
-      if (!previewMarker || previewMarker.title !== record.name) {
-        if (previewMarker) {
-          previewMarker.setMap(null);
-          previewMarker = null;
-        }
-        previewMarker = new google.maps.Marker({
-          position: { lat: record.lat, lng: record.lng },
-          map: map,
-          title: record.name,
-          icon: {
-            url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-            scaledSize: new google.maps.Size(40, 40)
-          }
-        });
-      }
-    }
-  } else {
-    if (previewMarker) {
-      previewMarker.setMap(null);
-      previewMarker = null;
-    }
+    if (!record) return;
+
+    const toggleButton = closestItem.querySelector(".toggle-btn");
+    const isActive = toggleButton && toggleButton.classList.contains("active");
+
+    // Si le lieu est sélectionné, le marqueur a déjà été ajouté via toggleButton / addSelectedMarker.
+    // Sinon, ne rien faire (le marqueur de preview a été supprimé au début).
   }
 }
+
+
+
 
 /********************************************************
  * Gestion du bouton bascule pour activer/désactiver un lieu
@@ -424,16 +418,16 @@ function toggleButton(button, record) {
   button.classList.toggle("active");
 
   if (button.classList.contains("active")) {
-      if (previewMarker && previewMarker.title === record.name) {
-          previewMarker.setMap(null);
-          previewMarker = null;
-      }
-      addSelectedMarker(record);
+    if (previewMarker && previewMarker.title === record.name) {
+      previewMarker.setMap(null);
+      previewMarker = null;
+    }
+    addSelectedMarker(record);
   } else {
-      removeMarker(record);
-      handleCarouselScroll();
+    removeMarker(record);
+    handleCarouselScroll(); // <== remet à jour après suppression
   }
-
+  
   // ✅ Met à jour la visibilité du bouton Go
   updateGoButtonVisibility();
 }
@@ -454,23 +448,23 @@ function addMarker(record) {
  * Ajouter un marqueur de lieu sélectionné (en bleu)
  ********************************************************/
 function addSelectedMarker(record) {
+  createCircularImageMarker(record.image, (dataUrl) => {
     const marker = new google.maps.Marker({
       position: { lat: record.lat, lng: record.lng },
       map: map,
       title: record.name,
       icon: {
-        url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-        scaledSize: new google.maps.Size(40, 40)
+        url: dataUrl,
+        scaledSize: new google.maps.Size(50, 50)
       }
     });
-  
-    marker.fullRecord = record; // 🔥 Ajoute les données complètes
-    marker.addListener("click", () => {
-      showPopup(record);
-    });
-  
+
+    marker.fullRecord = record;
+    marker.addListener("click", () => showPopup(record));
     markers.push(marker);
-  }
+  });
+}
+
   
   
 
@@ -524,9 +518,9 @@ function showPopup(record) {
   popupLinkContainer.innerHTML = "";
 
   const googleLink = document.createElement("a");
-  googleLink.href = `https://www.google.com/search?q=Visit+${encodeURIComponent(record.name)}+Paris`;
+  googleLink.href = https://www.google.com/search?q=Visit+${encodeURIComponent(record.name)}+Paris;
   googleLink.target = "_blank";
-  googleLink.textContent = ` ${record.name} on Google`;
+  googleLink.textContent =  ${record.name} on Google;
   googleLink.style.color = "#007bff";
   googleLink.style.textDecoration = "underline";
   googleLink.style.display = "block";
@@ -611,15 +605,15 @@ document.getElementById("go-button").addEventListener("click", async () => {
       const googleMapsUrl = buildOptimizedGoogleMapsUrl(ordered);
 
       // Étape 7 : Mettre à jour le popup ITINÉRAIRE
-      let tspResult = `<ul>`;
+      let tspResult = <ul>;
       ordered.forEach((point, index) => {
           if (index === 0) {
-              tspResult += `<li><strong>${index + 1}. ${point.name}</strong></li>`;
+              tspResult += <li><strong>${index + 1}. ${point.name}</strong></li>;
           } else {
-              tspResult += `<li><a href="#" class="popup-link" data-index="${index - 1}">${index + 1}. ${point.name}</a></li>`;
+              tspResult += <li><a href="#" class="popup-link" data-index="${index - 1}">${index + 1}. ${point.name}</a></li>;
           }
       });
-      tspResult += `</ul>`;
+      tspResult += </ul>;
 
       const popupItinerary = document.getElementById("popup-itinerary");
       popupItinerary.querySelector("#popup-itinerary-title").textContent = "Optimal itinerary";
@@ -789,6 +783,32 @@ if (activeIndex >= items.length - 1) {
 } else {
   rightArrow.style.display = "flex";
 }
+}
+
+function createCircularImageMarker(imageUrl, callback) {
+  const size = 80;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.src = imageUrl;
+
+  img.onload = () => {
+    ctx.beginPath();
+    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(img, 0, 0, size, size);
+
+    callback(canvas.toDataURL("image/png"));
+  };
+
+  img.onerror = () => {
+    callback("https://via.placeholder.com/80");
+  };
 }
 
 
