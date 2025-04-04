@@ -426,6 +426,8 @@ function handleCarouselScroll() {
 
 
 
+
+
 /********************************************************
  * Gestion du bouton bascule pour activer/désactiver un lieu
  ********************************************************/
