@@ -361,9 +361,12 @@ setTimeout(updateCarouselArrows, 100); // Laisse le DOM se stabiliser
  * Fonction pour gérer le scroll du carousel et afficher un marqueur de prévisualisation
  * Modification : le marqueur rouge est affiché même si le lieu est déjà sélectionné.
  ********************************************************/
+let previewMarkerRequestId = 0;
+
 function handleCarouselScroll() {
   const carouselContainer = document.getElementById("carousel-container");
   if (!carouselContainer) return;
+
   const containerRect = carouselContainer.getBoundingClientRect();
   const containerCenter = containerRect.left + containerRect.width / 2;
   let closestItem = null;
@@ -380,41 +383,45 @@ function handleCarouselScroll() {
     }
   });
 
-  if (closestItem) {
-    const index = closestItem.getAttribute("data-index");
-    const record = window.carouselRecords[index];
-    if (record) {
-      if (!previewMarker || previewMarker.title !== record.name) {
-        if (previewMarker) {
-          previewMarker.setMap(null);
-          previewMarker = null;
-        }
-
-        // ➕ On crée l'image circulaire
-        createCircularMarkerIcon(record.image, 50).then((iconUrl) => {
-          previewMarker = new google.maps.Marker({
-            position: { lat: record.lat, lng: record.lng },
-            map: map,
-            title: record.name,
-            icon: {
-              url: iconUrl,
-              scaledSize: new google.maps.Size(50, 50),
-              anchor: new google.maps.Point(25, 25)
-            }
-          });
-        });
-      }
-    }
-  } else {
+  if (!closestItem) {
     if (previewMarker) {
       previewMarker.setMap(null);
       previewMarker = null;
     }
+    return;
+  }
+
+  const index = closestItem.getAttribute("data-index");
+  const record = window.carouselRecords[index];
+
+  // Nouvelle requête : incrémente l'identifiant
+  const currentRequestId = ++previewMarkerRequestId;
+
+  if (previewMarker && previewMarker.title !== record.name) {
+    previewMarker.setMap(null);
+    previewMarker = null;
+  }
+
+  // Crée le preview si le lieu n'est pas sélectionné
+  const toggleBtn = closestItem.querySelector(".toggle-btn");
+  if (!toggleBtn || !toggleBtn.classList.contains("active")) {
+    createCircularMarkerIcon(record.image, 50).then((iconUrl) => {
+      // 🔒 Si entre-temps un autre scroll est passé, ignore celui-ci
+      if (currentRequestId !== previewMarkerRequestId) return;
+
+      previewMarker = new google.maps.Marker({
+        position: { lat: record.lat, lng: record.lng },
+        map: map,
+        title: record.name,
+        icon: {
+          url: iconUrl,
+          scaledSize: new google.maps.Size(50, 50),
+          anchor: new google.maps.Point(25, 25)
+        }
+      });
+    });
   }
 }
-
-
-
 
 
 
