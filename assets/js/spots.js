@@ -381,18 +381,16 @@ function handleCarouselScroll() {
   });
 
   if (closestItem) {
-    const toggleBtn = closestItem.querySelector(".toggle-btn");
     const index = closestItem.getAttribute("data-index");
     const record = window.carouselRecords[index];
-
-    // Si l'élément centré est sélectionné (toggle actif)
-    if (toggleBtn && toggleBtn.classList.contains("active")) {
-      // S'il n'existe pas déjà de preview pour ce lieu, on le crée
+    if (record) {
       if (!previewMarker || previewMarker.title !== record.name) {
         if (previewMarker) {
           previewMarker.setMap(null);
           previewMarker = null;
         }
+
+        // ➕ On crée l'image circulaire
         createCircularMarkerIcon(record.image, 50).then((iconUrl) => {
           previewMarker = new google.maps.Marker({
             position: { lat: record.lat, lng: record.lng },
@@ -405,12 +403,6 @@ function handleCarouselScroll() {
             }
           });
         });
-      }
-    } else {
-      // Si l'élément centré n'est pas sélectionné, on retire le preview marker s'il existe
-      if (previewMarker) {
-        previewMarker.setMap(null);
-        previewMarker = null;
       }
     }
   } else {
