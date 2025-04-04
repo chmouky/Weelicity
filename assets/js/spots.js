@@ -416,8 +416,7 @@ function handleCarouselScroll() {
 
   const requestId = ++previewMarkerRequestId;
 
-  createCircularMarkerIcon(record.image, 50).then((iconUrl) => {
-    if (requestId !== previewMarkerRequestId) return; // ignore si scroll depuis
+  createCircularMarkerIcon(record.image, 50, "#FF0000").then((iconUrl) => {
     previewMarker = new google.maps.Marker({
       position: { lat: record.lat, lng: record.lng },
       map: map,
@@ -429,6 +428,7 @@ function handleCarouselScroll() {
       }
     });
   });
+  
 }
 
 
@@ -835,7 +835,7 @@ if (activeIndex >= items.length - 1) {
 }
 
 
-function createCircularMarkerIcon(imageUrl, size = 50) {
+function createCircularMarkerIcon(imageUrl, size = 50, borderColor = "#fff") {
   const canvas = document.createElement("canvas");
   canvas.width = size;
   canvas.height = size;
@@ -854,21 +854,22 @@ function createCircularMarkerIcon(imageUrl, size = 50) {
 
       ctx.drawImage(img, 0, 0, size, size);
 
-      // Optionnel : contour blanc
+      // 🔴 Contour dynamique (par défaut blanc, rouge si précisé)
       ctx.beginPath();
       ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2, true);
       ctx.lineWidth = 4;
-      ctx.strokeStyle = "#fff";
+      ctx.strokeStyle = borderColor;
       ctx.stroke();
 
       resolve(canvas.toDataURL());
     };
 
     img.onerror = () => {
-      resolve("https://via.placeholder.com/50"); // Fallback
+      resolve("https://via.placeholder.com/50");
     };
   });
 }
+
 
 
 document.getElementById("carousel-container").addEventListener("scroll", updateCarouselArrows);
