@@ -110,7 +110,7 @@ function loadGoogleMaps(url, callbackName) {
     if (typeof window[callbackName] === "function") {
       window[callbackName]();
     } else {
-      console.error(Erreur : La fonction de rappel "${callbackName}" n'existe pas.);
+      console.error(`Erreur : La fonction de rappel "${callbackName}" n'existe pas.`);
     }
   };
   script.onerror = () => {
@@ -208,7 +208,7 @@ function onGoogleMapsLoaded() {
         const carouselData = filteredPlacesWithCoords.map(place => {
           const rawName = place.fields.URLPhoto2 || "default.jpg";
           const encodedName = encodeURIComponent(rawName.trim());
-          const imageUrl = /assets/img/photos/Lieux/${encodedName};
+          const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
   
           return {
             name: place.fields.Nom || "Nom inconnu",
@@ -337,7 +337,7 @@ const ticketText = (Array.isArray(record.ticket) &&
                   ? "Need Ticket"
                   : "";
 
-infoDiv.innerHTML = ${inoutText}${(inoutText && ticketText) ? "<br>" : ""}${ticketText};
+infoDiv.innerHTML = `${inoutText}${(inoutText && ticketText) ? "<br>" : ""}${ticketText}`;
 item.appendChild(infoDiv);
 
 
@@ -518,9 +518,9 @@ function showPopup(record) {
   popupLinkContainer.innerHTML = "";
 
   const googleLink = document.createElement("a");
-  googleLink.href = https://www.google.com/search?q=Visit+${encodeURIComponent(record.name)}+Paris;
+  googleLink.href = `https://www.google.com/search?q=Visit+${encodeURIComponent(record.name)}+Paris`;
   googleLink.target = "_blank";
-  googleLink.textContent =  ${record.name} on Google;
+  googleLink.textContent = ` ${record.name} on Google`;
   googleLink.style.color = "#007bff";
   googleLink.style.textDecoration = "underline";
   googleLink.style.display = "block";
@@ -605,15 +605,15 @@ document.getElementById("go-button").addEventListener("click", async () => {
       const googleMapsUrl = buildOptimizedGoogleMapsUrl(ordered);
 
       // Étape 7 : Mettre à jour le popup ITINÉRAIRE
-      let tspResult = <ul>;
+      let tspResult = `<ul>`;
       ordered.forEach((point, index) => {
           if (index === 0) {
-              tspResult += <li><strong>${index + 1}. ${point.name}</strong></li>;
+              tspResult += `<li><strong>${index + 1}. ${point.name}</strong></li>`;
           } else {
-              tspResult += <li><a href="#" class="popup-link" data-index="${index - 1}">${index + 1}. ${point.name}</a></li>;
+              tspResult += `<li><a href="#" class="popup-link" data-index="${index - 1}">${index + 1}. ${point.name}</a></li>`;
           }
       });
-      tspResult += </ul>;
+      tspResult += `</ul>`;
 
       const popupItinerary = document.getElementById("popup-itinerary");
       popupItinerary.querySelector("#popup-itinerary-title").textContent = "Optimal itinerary";
