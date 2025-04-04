@@ -866,3 +866,44 @@ function recenterMap() {
         map.panBy(0, 100);
     }
 }
+
+function createCircularMarkerIcon(imageUrl, size, borderColor = "#FF0000") {
+    return new Promise((resolve) => {
+      const canvas = document.createElement("canvas");
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext("2d");
+  
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.onload = function () {
+        // Dessine un cercle de fond (bordure)
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI);
+        ctx.fillStyle = borderColor;
+        ctx.fill();
+  
+        // Découpe circulaire
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, size / 2 - 3, 0, 2 * Math.PI);
+        ctx.clip();
+  
+        // Dessine l’image à l’intérieur du cercle
+        ctx.drawImage(img, 0, 0, size, size);
+  
+        ctx.restore();
+  
+        // Résout la promesse avec l’URL
+        resolve(canvas.toDataURL());
+      };
+  
+      img.onerror = function () {
+        console.warn("⚠️ Impossible de charger l’image : " + imageUrl);
+        resolve("https://via.placeholder.com/" + size); // Fallback
+      };
+  
+      img.src = imageUrl;
+    });
+  }
+  
