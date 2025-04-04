@@ -383,6 +383,7 @@ function handleCarouselScroll() {
     }
   });
 
+  // Si aucun élément centré → on retire le preview
   if (!closestItem) {
     if (previewMarker) {
       previewMarker.setMap(null);
@@ -393,38 +394,42 @@ function handleCarouselScroll() {
 
   const index = closestItem.getAttribute("data-index");
   const record = window.carouselRecords[index];
+  const toggleBtn = closestItem.querySelector(".toggle-btn");
 
-  // Nouvelle requête : incrémente l'identifiant
-  const currentRequestId = ++previewMarkerRequestId;
+  // Si le lieu est sélectionné (bouton vert), on ne touche pas au preview
+  if (toggleBtn && toggleBtn.classList.contains("active")) {
+    if (previewMarker && previewMarker.title !== record.name) {
+      previewMarker.setMap(null);
+      previewMarker = null;
+    }
+    return;
+  }
 
-  if (previewMarker && previewMarker.title !== record.name) {
+  // Si on affiche déjà le bon preview, ne rien faire
+  if (previewMarker && previewMarker.title === record.name) return;
+
+  // Sinon : créer un nouveau preview pour le lieu centré
+  if (previewMarker) {
     previewMarker.setMap(null);
     previewMarker = null;
   }
 
-  // Crée le preview si le lieu n'est pas sélectionné
-  const toggleBtn = closestItem.querySelector(".toggle-btn");
-  if (!toggleBtn || !toggleBtn.classList.contains("active")) {
-    createCircularMarkerIcon(record.image, 50).then((iconUrl) => {
-      // 🔒 Si entre-temps un autre scroll est passé, ignore celui-ci
-      if (currentRequestId !== previewMarkerRequestId) return;
+  const requestId = ++previewMarkerRequestId;
 
-      previewMarker = new google.maps.Marker({
-        position: { lat: record.lat, lng: record.lng },
-        map: map,
-        title: record.name,
-        icon: {
-          url: iconUrl,
-          scaledSize: new google.maps.Size(50, 50),
-          anchor: new google.maps.Point(25, 25)
-        }
-      });
+  createCircularMarkerIcon(record.image, 50).then((iconUrl) => {
+    if (requestId !== previewMarkerRequestId) return; // ignore si scroll depuis
+    previewMarker = new google.maps.Marker({
+      position: { lat: record.lat, lng: record.lng },
+      map: map,
+      title: record.name,
+      icon: {
+        url: iconUrl,
+        scaledSize: new google.maps.Size(50, 50),
+        anchor: new google.maps.Point(25, 25)
+      }
     });
-  }
+  });
 }
-
-
-
 
 
 /********************************************************
