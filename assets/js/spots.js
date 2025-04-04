@@ -259,7 +259,6 @@ function displayCarousel(data) {
 
   // Stocker les données globalement pour le scroll
   window.carouselRecords = data;
-  window.cachedIcons = {}; // Cache des icônes circulaires
 
   // Nettoyer le carrousel
   carouselContainer.innerHTML = "";
@@ -271,95 +270,93 @@ function displayCarousel(data) {
 
   // Ajout des lieux au carrousel
   data.forEach((record, index) => {
-    const item = document.createElement("div");
-    item.classList.add("carousel-item");
-    item.setAttribute("data-index", index);
-    item.style.position = "relative";
+      const item = document.createElement("div");
+      item.classList.add("carousel-item");
+      item.setAttribute("data-index", index);
+      item.style.position = "relative"; // Pour positionner correctement les infos
 
-    // Préchargement de l’icône circulaire
-    createCircularMarkerIcon(record.image, 50, "#FF0000").then((iconUrl) => {
-      window.cachedIcons[record.name] = iconUrl;
-    });
+      // 📌 Conteneur du titre et icône d'information
+      const titleContainer = document.createElement("div");
+      titleContainer.style.display = "flex";
+      titleContainer.style.alignItems = "center";
+      titleContainer.style.cursor = "pointer";
 
-    // Titre + icône info
-    const titleContainer = document.createElement("div");
-    titleContainer.style.display = "flex";
-    titleContainer.style.alignItems = "center";
-    titleContainer.style.cursor = "pointer";
+      // 📌 Nom du lieu (cliquable)
+      const title = document.createElement("h3");
+      title.textContent = record.name;
+      title.style.marginRight = "5px";
+      title.addEventListener("click", () => showPopup(record)); // ✅ Clic sur le nom ouvre le popup
 
-    const title = document.createElement("h3");
-    title.textContent = record.name;
-    title.style.marginRight = "5px";
-    title.addEventListener("click", () => showPopup(record));
+      // 📌 Icône d'information (cliquable)
+      const infoIcon = document.createElement("img");
+      infoIcon.src = "https://images.squarespace-cdn.com/content/67532c2bdde707065c5de483/da9bdef7-0912-4295-9536-d3667348059a/info.png?content-type=image%2Fpng";
+      infoIcon.alt = "Info";
+      infoIcon.style.width = "14px";
+      infoIcon.style.height = "14px";
+      infoIcon.style.cursor = "pointer";
+      infoIcon.style.opacity = "0.7";
+      infoIcon.title = "Click for more info";
+      infoIcon.style.position = "relative";
+      infoIcon.style.top = "-5px";
+      infoIcon.style.marginLeft = "2px";
+      infoIcon.addEventListener("click", (event) => {
+          event.stopPropagation();
+          showPopup(record);
+      });
 
-    const infoIcon = document.createElement("img");
-    infoIcon.src = "https://images.squarespace-cdn.com/content/67532c2bdde707065c5de483/da9bdef7-0912-4295-9536-d3667348059a/info.png?content-type=image%2Fpng";
-    infoIcon.alt = "Info";
-    infoIcon.style.width = "14px";
-    infoIcon.style.height = "14px";
-    infoIcon.style.cursor = "pointer";
-    infoIcon.style.opacity = "0.7";
-    infoIcon.title = "Click for more info";
-    infoIcon.style.position = "relative";
-    infoIcon.style.top = "-5px";
-    infoIcon.style.marginLeft = "2px";
-    infoIcon.addEventListener("click", (event) => {
-      event.stopPropagation();
-      showPopup(record);
-    });
+      titleContainer.appendChild(title);
+      titleContainer.appendChild(infoIcon);
+      item.appendChild(titleContainer);
 
-    titleContainer.appendChild(title);
-    titleContainer.appendChild(infoIcon);
-    item.appendChild(titleContainer);
+      // 📌 Image du lieu (cliquable)
+      const image = document.createElement("img");
+      image.src = record.image;
+      image.alt = record.name;
+      image.style.cursor = "pointer"; // ✅ Rend l'image cliquable
+      image.addEventListener("click", () => showPopup(record)); // ✅ Clic sur l'image ouvre le popup
 
-    // Image cliquable
-    const image = document.createElement("img");
-    image.src = record.image;
-    image.alt = record.name;
-    image.style.cursor = "pointer";
-    image.addEventListener("click", () => showPopup(record));
-    item.appendChild(image);
+      item.appendChild(image);
 
-    // Toggle button
-    const toggleBtn = document.createElement("div");
-    toggleBtn.classList.add("toggle-btn");
-    toggleBtn.addEventListener("click", () => toggleButton(toggleBtn, record));
-    item.appendChild(toggleBtn);
+      // 📌 Bouton toggle (ON/OFF)
+      const toggleBtn = document.createElement("div");
+      toggleBtn.classList.add("toggle-btn");
+      toggleBtn.addEventListener("click", () => toggleButton(toggleBtn, record));
+      item.appendChild(toggleBtn);
 
-    // Infos supplémentaires
-    const infoDiv = document.createElement("div");
-    infoDiv.classList.add("carousel-info");
+// 🔽 Ajout du bloc Inout / Ticket
+const infoDiv = document.createElement("div");
+infoDiv.classList.add("carousel-info");
 
-    let inoutText = "";
-    if (Array.isArray(record.inout) && record.inout.length > 0) {
-      inoutText = record.inout[0].toUpperCase();
-    }
-
-    const ticketText = (Array.isArray(record.ticket) &&
-      record.ticket.length > 0 &&
-      record.ticket[0].toUpperCase() === "OUI")
-      ? "Need Ticket"
-      : "";
-
-    infoDiv.innerHTML = `${inoutText}${(inoutText && ticketText) ? "<br>" : ""}${ticketText}`;
-    item.appendChild(infoDiv);
-
-    carouselContainer.appendChild(item);
-  });
-
-// Espace final
-const endSpacer = document.createElement("div");
-endSpacer.style.flex = "0 0 50px";
-carouselContainer.appendChild(endSpacer); // ✅ CORRIGÉ ICI
-
-// ⚠️ Attendre un petit délai pour s'assurer que les images sont chargées
-setTimeout(() => {
-  handleCarouselScroll();  // 🔁 Appel manuel pour forcer l'affichage du premier preview
-  updateCarouselArrows();
-}, 150);
-
+let inoutText = "";
+if (Array.isArray(record.inout) && record.inout.length > 0) {
+// Affiche directement IN ou OUT en majuscules
+inoutText = record.inout[0].toUpperCase();
 }
 
+const ticketText = (Array.isArray(record.ticket) &&
+                  record.ticket.length > 0 &&
+                  record.ticket[0].toUpperCase() === "OUI")
+                  ? "Need Ticket"
+                  : "";
+
+infoDiv.innerHTML = `${inoutText}${(inoutText && ticketText) ? "<br>" : ""}${ticketText}`;
+item.appendChild(infoDiv);
+
+
+      carouselContainer.appendChild(item);
+  });
+
+  // Ajouter un espace après le dernier élément pour le centrage
+  const endSpacer = document.createElement("div");
+  endSpacer.style.flex = "0 0 50px";
+  carouselContainer.appendChild(endSpacer);
+
+  carouselContainer.addEventListener("scroll", handleCarouselScroll);
+  handleCarouselScroll();
+
+setTimeout(updateCarouselArrows, 100); // Laisse le DOM se stabiliser
+
+}
 
 
 /********************************************************
