@@ -213,10 +213,12 @@ function onGoogleMapsLoaded() {
             calcID: record.fields.CalcID || record.id
         }));
         carouselData.forEach(place => {
+            console.log("🌀 Génération icône pour :", place.name); // Ajoute ce log
             createCircularMarkerIcon(place.image, 50, "#FF0000").then(iconUrl => {
               window.cachedSpotIcons[place.name] = iconUrl;
             });
           });
+          
 
           displayCarousel(carouselData, gastroData, placesData);
         setupCarouselObserver(gastroData, placesData);
@@ -531,11 +533,9 @@ let previewMarkerSpots = null; // Marqueur de preview spécifique aux spots
 window.cachedSpotIcons = {};   // Cache global pour les icônes images circulaires
 
 function updateMapMarkers(places) {
-    // 🔄 Supprimer les anciens marqueurs
     markers.forEach(marker => marker.setMap(null));
     markers.length = 0;
   
-    // 🔴 Supprimer l'ancien preview s'il existe
     if (previewMarkerSpots) {
       previewMarkerSpots.setMap(null);
       previewMarkerSpots = null;
@@ -543,16 +543,23 @@ function updateMapMarkers(places) {
   
     if (!places || places.length === 0) return;
   
-    // 👀 On ne garde qu’un seul marqueur de preview centré
     const place = places[0];
-    const iconUrl = window.cachedSpotIcons[place.name] || "https://via.placeholder.com/50";
+  
+    // Vérifie si l’icône existe
+    const iconUrl = window.cachedSpotIcons[place.name];
+    if (!iconUrl) {
+      console.warn(`⚠️ Aucune icône trouvée pour : ${place.name}`);
+    }
+  
+    // Utilise une alternative si pas d’icône
+    const markerIcon = iconUrl || "https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg";
   
     previewMarkerSpots = new google.maps.Marker({
       position: { lat: place.lat, lng: place.lng },
       map: map,
       title: place.name,
       icon: {
-        url: iconUrl,
+        url: markerIcon,
         scaledSize: new google.maps.Size(50, 50),
         anchor: new google.maps.Point(25, 25)
       }
@@ -864,42 +871,36 @@ function recenterMap() {
     }
 }
 
-function createCircularMarkerIcon(imageUrl, size, borderColor = "#FF0000") {
-    return new Promise((resolve) => {
+function createCircularMarkerIcon(imageUrl, size = 50, borderColor = "#FF0000") {
+    return new Promise(resolve => {
       const canvas = document.createElement("canvas");
-      canvas.width = size;
-      canvas.height = size;
+      canvas.width = canvas.height = size;
       const ctx = canvas.getContext("2d");
   
       const img = new Image();
       img.crossOrigin = "Anonymous";
-      img.onload = function () {
-        // Dessine un cercle de fond (bordure)
+      img.onload = () => {
+        // Cercle
         ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI);
-        ctx.fillStyle = borderColor;
-        ctx.fill();
-  
-        // Découpe circulaire
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2 - 3, 0, 2 * Math.PI);
+        ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
+        ctx.closePath();
         ctx.clip();
   
-        // Dessine l’image à l’intérieur du cercle
         ctx.drawImage(img, 0, 0, size, size);
   
-        ctx.restore();
+        // Bordure
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
+        ctx.strokeStyle = borderColor;
+        ctx.lineWidth = 3;
+        ctx.stroke();
   
-        // Résout la promesse avec l’URL
-        resolve(canvas.toDataURL());
+        resolve(canvas.toDataURL("image/png"));
       };
-  
-      img.onerror = function () {
-        console.warn("⚠️ Impossible de charger l’image : " + imageUrl);
-        resolve("https://via.placeholder.com/" + size); // Fallback
+      img.onerror = () => {
+        console.warn("❌ Image failed to load:", imageUrl);
+        resolve("https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg"); // fallback
       };
-  
       img.src = imageUrl;
     });
   }
