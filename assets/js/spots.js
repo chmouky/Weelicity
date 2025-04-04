@@ -350,12 +350,11 @@ function displayCarousel(data) {
   // Espace final
   const endSpacer = document.createElement("div");
   endSpacer.style.flex = "0 0 50px";
-  carouselContainer.appendChild(endSpacer);
-
-  carouselContainer.addEventListener("scroll", handleCarouselScroll);
-  handleCarouselScroll();
-
-  setTimeout(updateCarouselArrows, 100);
+  // ⚠️ Attendre un petit délai pour s'assurer que les images sont chargées
+setTimeout(() => {
+  handleCarouselScroll();  // 🔁 Appel manuel pour forcer l'affichage du premier preview
+  updateCarouselArrows();
+}, 150);
 }
 
 
