@@ -7,8 +7,6 @@ let quartierLabels = []; // Stocke les labels des quartiers pour pouvoir les sup
 let streetPolylines = [];
 let streetLabels = [];
 let simulatePosition = false; // Variable globale
-let previewMarkerSpots = null;
-window.cachedSpotIcons = {};
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -219,7 +217,7 @@ function onGoogleMapsLoaded() {
               window.cachedSpotIcons[place.name] = iconUrl;
             });
           });
-          
+
         displayCarousel(carouselData, gastroData);
         setupCarouselObserver(gastroData, placesData);
 
@@ -536,41 +534,38 @@ let previewMarkerSpots = null; // Marqueur de preview spécifique aux spots
 window.cachedSpotIcons = {};   // Cache global pour les icônes images circulaires
 
 function updateMapMarkers(places) {
-  // 🔄 Supprimer les anciens marqueurs (s'ils étaient multiples)
-  markers.forEach(marker => marker.setMap(null));
-  markers.length = 0;
-
-  // 🔴 Supprimer l'ancien preview s'il existe
-  if (previewMarkerSpots) {
-    previewMarkerSpots.setMap(null);
-    previewMarkerSpots = null;
-  }
-
-  if (!places || places.length === 0) return;
-
-  // 👀 On ne garde qu’un seul marqueur de preview centré
-  const place = places[0];
-
-  // Utilise l’icône déjà en cache, sinon fallback
-  const iconUrl = window.cachedSpotIcons[place.name] || "https://via.placeholder.com/50";
-
-  // 📍 Création du marqueur circulaire
-  previewMarkerSpots = new google.maps.Marker({
-    position: { lat: place.lat, lng: place.lng },
-    map: map,
-    title: place.name,
-    icon: {
-      url: iconUrl,
-      scaledSize: new google.maps.Size(50, 50),
-      anchor: new google.maps.Point(25, 25)
+    // 🔄 Supprimer les anciens marqueurs
+    markers.forEach(marker => marker.setMap(null));
+    markers.length = 0;
+  
+    // 🔴 Supprimer l'ancien preview s'il existe
+    if (previewMarkerSpots) {
+      previewMarkerSpots.setMap(null);
+      previewMarkerSpots = null;
     }
-  });
-
-  // 🔗 Clic sur le preview → affiche le popup
-  previewMarkerSpots.addListener("click", () => {
-    showLieuDetails(place);
-  });
-}
+  
+    if (!places || places.length === 0) return;
+  
+    // 👀 On ne garde qu’un seul marqueur de preview centré
+    const place = places[0];
+    const iconUrl = window.cachedSpotIcons[place.name] || "https://via.placeholder.com/50";
+  
+    previewMarkerSpots = new google.maps.Marker({
+      position: { lat: place.lat, lng: place.lng },
+      map: map,
+      title: place.name,
+      icon: {
+        url: iconUrl,
+        scaledSize: new google.maps.Size(50, 50),
+        anchor: new google.maps.Point(25, 25)
+      }
+    });
+  
+    previewMarkerSpots.addListener("click", () => {
+      showLieuDetails(place);
+    });
+  }
+  
 
 
 function showLieuDetails(lieu) {
