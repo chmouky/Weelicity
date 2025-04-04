@@ -381,45 +381,49 @@ function handleCarouselScroll() {
   });
 
   if (closestItem) {
-    const toggleBtn = closestItem.querySelector(".toggle-btn");
     const index = closestItem.getAttribute("data-index");
     const record = window.carouselRecords[index];
 
-    // Si l'élément centré est sélectionné (toggle actif)
-    if (toggleBtn && toggleBtn.classList.contains("active")) {
-      // S'il n'existe pas déjà de preview pour ce lieu, on le crée
-      if (!previewMarker || previewMarker.title !== record.name) {
-        if (previewMarker) {
-          previewMarker.setMap(null);
-          previewMarker = null;
-        }
-        createCircularMarkerIcon(record.image, 50).then((iconUrl) => {
-          previewMarker = new google.maps.Marker({
-            position: { lat: record.lat, lng: record.lng },
-            map: map,
-            title: record.name,
-            icon: {
-              url: iconUrl,
-              scaledSize: new google.maps.Size(50, 50),
-              anchor: new google.maps.Point(25, 25)
-            }
-          });
-        });
-      }
-    } else {
-      // Si l'élément centré n'est pas sélectionné, on retire le preview marker s'il existe
+    const toggleBtn = closestItem.querySelector(".toggle-btn");
+    const isSelected = toggleBtn && toggleBtn.classList.contains("active");
+
+    // Si le lieu est sélectionné (bouton vert), ne rien faire — il est déjà affiché
+    if (isSelected) {
       if (previewMarker) {
         previewMarker.setMap(null);
         previewMarker = null;
       }
+      return;
+    }
+
+    // Sinon, afficher l’aperçu (preview) de l’élément centré
+    if (!previewMarker || previewMarker.title !== record.name) {
+      if (previewMarker) {
+        previewMarker.setMap(null);
+        previewMarker = null;
+      }
+      createCircularMarkerIcon(record.image, 50).then((iconUrl) => {
+        previewMarker = new google.maps.Marker({
+          position: { lat: record.lat, lng: record.lng },
+          map: map,
+          title: record.name,
+          icon: {
+            url: iconUrl,
+            scaledSize: new google.maps.Size(50, 50),
+            anchor: new google.maps.Point(25, 25)
+          }
+        });
+      });
     }
   } else {
+    // Aucun élément centré, on retire le preview s'il existe
     if (previewMarker) {
       previewMarker.setMap(null);
       previewMarker = null;
     }
   }
 }
+
 
 
 
