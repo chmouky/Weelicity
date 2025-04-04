@@ -384,26 +384,29 @@ function handleCarouselScroll() {
     const index = closestItem.getAttribute("data-index");
     const record = window.carouselRecords[index];
     if (record) {
-      if (!previewMarker || previewMarker.title !== record.name) {
-        if (previewMarker) {
-          previewMarker.setMap(null);
-          previewMarker = null;
-        }
-
-        // ➕ On crée l'image circulaire
-        createCircularMarkerIcon(record.image, 50).then((iconUrl) => {
-          previewMarker = new google.maps.Marker({
-            position: { lat: record.lat, lng: record.lng },
-            map: map,
-            title: record.name,
-            icon: {
-              url: iconUrl,
-              scaledSize: new google.maps.Size(50, 50),
-              anchor: new google.maps.Point(25, 25)
-            }
-          });
-        });
+      // Toujours supprimer l'ancien previewMarker
+      if (previewMarker) {
+        previewMarker.setMap(null);
+        previewMarker = null;
       }
+
+      // Créer une icône circulaire, puis afficher le marqueur avec écouteur de clic
+      createCircularMarkerIcon(record.image, 50).then((iconUrl) => {
+        previewMarker = new google.maps.Marker({
+          position: { lat: record.lat, lng: record.lng },
+          map: map,
+          title: record.name,
+          icon: {
+            url: iconUrl,
+            scaledSize: new google.maps.Size(50, 50),
+            anchor: new google.maps.Point(25, 25)
+          }
+        });
+
+        previewMarker.addListener("click", () => {
+          showPopup(record);
+        });
+      });
     }
   } else {
     if (previewMarker) {
@@ -412,6 +415,8 @@ function handleCarouselScroll() {
     }
   }
 }
+
+
 
 
 /********************************************************
