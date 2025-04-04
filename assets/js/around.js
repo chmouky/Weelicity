@@ -581,41 +581,50 @@ let previewMarkerSpots = null; // Marqueur de preview spécifique aux spots
 window.cachedSpotIcons = {};   // Cache global pour les icônes images circulaires
 
 function updateMapMarkers(places) {
+    // Supprimer les anciens marqueurs
     markers.forEach(marker => marker.setMap(null));
     markers.length = 0;
-  
+    
+    // Supprimer l'ancien preview s'il existe
     if (previewMarkerSpots) {
       previewMarkerSpots.setMap(null);
       previewMarkerSpots = null;
     }
-  
+    
     if (!places || places.length === 0) return;
-  
+    
     const place = places[0];
-  
-    // Vérifie si l’icône existe
-    const iconUrl = window.cachedSpotIcons[place.name] || "https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg";
-    if (!iconUrl) {
-      console.warn(`⚠️ Aucune icône trouvée pour : ${place.name}`);
+    
+    // Fonction pour créer le marqueur
+    function createMarker(iconUrl) {
+      previewMarkerSpots = new google.maps.Marker({
+        position: { lat: place.lat, lng: place.lng },
+        map: map,
+        title: place.name,
+        icon: {
+          url: iconUrl,
+          scaledSize: new google.maps.Size(50, 50),
+          anchor: new google.maps.Point(25, 25)
+        }
+      });
+    
+      previewMarkerSpots.addListener("click", () => {
+        showLieuDetails(place);
+      });
     }
-  
-    // Utilise une alternative si pas d’icône
-    const markerIcon = iconUrl || "https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg";
-  
-    previewMarkerSpots = new google.maps.Marker({
-      position: { lat: place.lat, lng: place.lng },
-      map: map,
-      title: place.name,
-      icon: {
-        url: markerIcon,
-        scaledSize: new google.maps.Size(50, 50),
-        anchor: new google.maps.Point(25, 25)
-      }
-    });
-  
-    previewMarkerSpots.addListener("click", () => {
-      showLieuDetails(place);
-    });
+    
+    // Si l'icône est déjà en cache, on l'utilise directement
+    if (window.cachedSpotIcons[place.name]) {
+      console.log("Using cached icon for", place.name);
+      createMarker(window.cachedSpotIcons[place.name]);
+    } else {
+      console.warn(`No cached icon for ${place.name}, generating...`);
+      // Génère l'icône et mets-la en cache, puis crée le marqueur
+      createCircularMarkerIcon(place.image, 50, "#FF0000").then(iconUrl => {
+        window.cachedSpotIcons[place.name] = iconUrl;
+        createMarker(iconUrl);
+      });
+    }
   }
   
 
