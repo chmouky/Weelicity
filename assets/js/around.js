@@ -134,6 +134,41 @@ function trackUserLocation() {
     );
 }
 
+function createCircularMarkerIcon(imageUrl, size = 50, borderColor = "#FF0000") {
+    return new Promise(resolve => {
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = size;
+      const ctx = canvas.getContext("2d");
+  
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.onload = () => {
+        // Cercle
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
+  
+        ctx.drawImage(img, 0, 0, size, size);
+  
+        // Bordure
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
+        ctx.strokeStyle = borderColor;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+  
+        resolve(canvas.toDataURL("image/png"));
+      };
+      img.onerror = () => {
+        console.warn("❌ Image failed to load:", imageUrl);
+        resolve("https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg"); // fallback
+      };
+      img.src = imageUrl;
+    });
+  }
+
+
 /********************************************************
  * Fonction exécutée après le chargement de Google Maps
  ********************************************************/
@@ -884,37 +919,5 @@ function recenterMap() {
     }
 }
 
-function createCircularMarkerIcon(imageUrl, size = 50, borderColor = "#FF0000") {
-    return new Promise(resolve => {
-      const canvas = document.createElement("canvas");
-      canvas.width = canvas.height = size;
-      const ctx = canvas.getContext("2d");
-  
-      const img = new Image();
-      img.crossOrigin = "Anonymous";
-      img.onload = () => {
-        // Cercle
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.clip();
-  
-        ctx.drawImage(img, 0, 0, size, size);
-  
-        // Bordure
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
-        ctx.strokeStyle = borderColor;
-        ctx.lineWidth = 3;
-        ctx.stroke();
-  
-        resolve(canvas.toDataURL("image/png"));
-      };
-      img.onerror = () => {
-        console.warn("❌ Image failed to load:", imageUrl);
-        resolve("https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg"); // fallback
-      };
-      img.src = imageUrl;
-    });
-  }
+
   
