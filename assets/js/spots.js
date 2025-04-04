@@ -380,23 +380,38 @@ function handleCarouselScroll() {
     }
   });
 
-  // Si on a trouvé un élément central, on vérifie l'état du bouton toggle
   if (closestItem) {
     const toggleBtn = closestItem.querySelector(".toggle-btn");
-    // Si le lieu est sélectionné, on ne fait rien (le marqueur sélectionné est déjà affiché)
+    const index = closestItem.getAttribute("data-index");
+    const record = window.carouselRecords[index];
+
+    // Si l'élément centré est sélectionné (toggle actif)
     if (toggleBtn && toggleBtn.classList.contains("active")) {
-      if (previewMarker) {
-        previewMarker.setMap(null);
-        previewMarker = null;
+      // S'il n'existe pas déjà de preview pour ce lieu, on le crée
+      if (!previewMarker || previewMarker.title !== record.name) {
+        if (previewMarker) {
+          previewMarker.setMap(null);
+          previewMarker = null;
+        }
+        createCircularMarkerIcon(record.image, 50).then((iconUrl) => {
+          previewMarker = new google.maps.Marker({
+            position: { lat: record.lat, lng: record.lng },
+            map: map,
+            title: record.name,
+            icon: {
+              url: iconUrl,
+              scaledSize: new google.maps.Size(50, 50),
+              anchor: new google.maps.Point(25, 25)
+            }
+          });
+        });
       }
-      return;
     } else {
-      // Si le lieu n'est pas sélectionné, on retire le preview marker s'il existe
+      // Si l'élément centré n'est pas sélectionné, on retire le preview marker s'il existe
       if (previewMarker) {
         previewMarker.setMap(null);
         previewMarker = null;
       }
-      // Et on ne crée PAS de nouveau marqueur
     }
   } else {
     if (previewMarker) {
@@ -405,8 +420,6 @@ function handleCarouselScroll() {
     }
   }
 }
-
-
 
 
 
