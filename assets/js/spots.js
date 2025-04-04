@@ -385,17 +385,10 @@ function handleCarouselScroll() {
     const index = closestItem.getAttribute("data-index");
     const record = window.carouselRecords[index];
 
-    // Si l'élément centré est sélectionné, on ne crée PAS de preview marker
+    // Si l'élément centré est sélectionné (toggle actif)
     if (toggleBtn && toggleBtn.classList.contains("active")) {
-      if (previewMarker) {
-        previewMarker.setMap(null);
-        previewMarker = null;
-      }
-    } else {
-      // Si l'élément n'est pas sélectionné, on affiche le preview marker pour l'élément centré
-      if (previewMarker && previewMarker.title === record.name) {
-        // Le preview est déjà affiché pour cet élément, on ne fait rien
-      } else {
+      // S'il n'existe pas déjà de preview pour ce lieu, on le crée
+      if (!previewMarker || previewMarker.title !== record.name) {
         if (previewMarker) {
           previewMarker.setMap(null);
           previewMarker = null;
@@ -413,6 +406,12 @@ function handleCarouselScroll() {
           });
         });
       }
+    } else {
+      // Si l'élément centré n'est pas sélectionné, on retire le preview marker s'il existe
+      if (previewMarker) {
+        previewMarker.setMap(null);
+        previewMarker = null;
+      }
     }
   } else {
     if (previewMarker) {
@@ -421,6 +420,7 @@ function handleCarouselScroll() {
     }
   }
 }
+
 
 
 
