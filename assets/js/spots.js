@@ -416,7 +416,8 @@ function handleCarouselScroll() {
 
   const requestId = ++previewMarkerRequestId;
 
-  createCircularMarkerIcon(record.image, 50, "#FF0000").then((iconUrl) => {
+  createCircularMarkerIcon(record.image, 50).then((iconUrl) => {
+    if (requestId !== previewMarkerRequestId) return; // ignore si scroll depuis
     previewMarker = new google.maps.Marker({
       position: { lat: record.lat, lng: record.lng },
       map: map,
@@ -428,7 +429,6 @@ function handleCarouselScroll() {
       }
     });
   });
-  
 }
 
 
@@ -438,42 +438,25 @@ function handleCarouselScroll() {
 function toggleButton(button, record) {
   let selectedMarkersCount = markers.length;
   if (!button.classList.contains("active") && selectedMarkersCount >= 8) {
-    alert("Maximum number of visitation points reached for an itinerary. Deselect other points or create a new itinerary.");
-    return;
+      alert("Maximum number of visitation points reached for an itinerary. Deselect other points or create a new itinerary.");
+      return;
   }
 
+  // Bascule l'état actif du bouton
   button.classList.toggle("active");
 
   if (button.classList.contains("active")) {
-    // ❌ Ne supprime le preview que si le lieu n'est pas au centre
-    const carouselContainer = document.getElementById("carousel-container");
-    const containerRect = carouselContainer.getBoundingClientRect();
-    const containerCenter = containerRect.left + containerRect.width / 2;
-
-    let shouldClearPreview = true;
-    const items = carouselContainer.querySelectorAll('.carousel-item');
-    items.forEach(item => {
-      const itemRect = item.getBoundingClientRect();
-      const itemCenter = itemRect.left + itemRect.width / 2;
-      if (Math.abs(itemCenter - containerCenter) < 5) {
-        const index = item.getAttribute("data-index");
-        if (window.carouselRecords[index].name === record.name) {
-          shouldClearPreview = false;
-        }
+      if (previewMarker && previewMarker.title === record.name) {
+          previewMarker.setMap(null);
+          previewMarker = null;
       }
-    });
-
-    if (shouldClearPreview && previewMarker && previewMarker.title === record.name) {
-      previewMarker.setMap(null);
-      previewMarker = null;
-    }
-
-    addSelectedMarker(record);
+      addSelectedMarker(record);
   } else {
-    removeMarker(record);
-    handleCarouselScroll();
+      removeMarker(record);
+      handleCarouselScroll();
   }
 
+  // ✅ Met à jour la visibilité du bouton Go
   updateGoButtonVisibility();
 }
 
@@ -835,7 +818,7 @@ if (activeIndex >= items.length - 1) {
 }
 
 
-function createCircularMarkerIcon(imageUrl, size = 50, borderColor = "#fff") {
+function createCircularMarkerIcon(imageUrl, size = 50) {
   const canvas = document.createElement("canvas");
   canvas.width = size;
   canvas.height = size;
@@ -854,22 +837,21 @@ function createCircularMarkerIcon(imageUrl, size = 50, borderColor = "#fff") {
 
       ctx.drawImage(img, 0, 0, size, size);
 
-      // 🔴 Contour dynamique (par défaut blanc, rouge si précisé)
+      // Optionnel : contour blanc
       ctx.beginPath();
       ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2, true);
       ctx.lineWidth = 4;
-      ctx.strokeStyle = borderColor;
+      ctx.strokeStyle = "#fff";
       ctx.stroke();
 
       resolve(canvas.toDataURL());
     };
 
     img.onerror = () => {
-      resolve("https://via.placeholder.com/50");
+      resolve("https://via.placeholder.com/50"); // Fallback
     };
   });
 }
-
 
 
 document.getElementById("carousel-container").addEventListener("scroll", updateCarouselArrows);
