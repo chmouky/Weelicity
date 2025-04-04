@@ -1,7 +1,5 @@
 let map;
 let userMarker = null;
-window.cachedIcons = {}; // Clé = nom du lieu, valeur = DataURL de l'icône
-
 
 const markers = [];
 let filteredPlacesWithCoords = []; // Stockage global des lieux filtrés
@@ -418,20 +416,19 @@ function handleCarouselScroll() {
 
   const requestId = ++previewMarkerRequestId;
 
-  const iconUrl = window.cachedIcons[record.name];
-if (iconUrl) {
-  previewMarker = new google.maps.Marker({
-    position: { lat: record.lat, lng: record.lng },
-    map: map,
-    title: record.name,
-    icon: {
-      url: iconUrl,
-      scaledSize: new google.maps.Size(50, 50),
-      anchor: new google.maps.Point(25, 25)
-    }
+  createCircularMarkerIcon(record.image, 50).then((iconUrl) => {
+    if (requestId !== previewMarkerRequestId) return; // ignore si scroll depuis
+    previewMarker = new google.maps.Marker({
+      position: { lat: record.lat, lng: record.lng },
+      map: map,
+      title: record.name,
+      icon: {
+        url: iconUrl,
+        scaledSize: new google.maps.Size(50, 50),
+        anchor: new google.maps.Point(25, 25)
+      }
+    });
   });
-}
-
 }
 
 
