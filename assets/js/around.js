@@ -210,22 +210,16 @@ function onGoogleMapsLoaded() {
         map.addListener("zoom_changed", () => {
             const zoom = map.getZoom();
             console.log("🔍 Zoom changé :", zoom);
-
-            // Trouver le carrousel actif
-            const activeItem = document.querySelector(".carousel-item.is-visible"); // ou ta classe active
+        
+            const activeItem = document.querySelector(".carousel-item.is-visible");
             if (!activeItem) return;
-
+        
             const activeCalcID = activeItem.getAttribute("data-calcid");
-
-            let lieux = [];
-            if (activeCalcID === "1") {
-                lieux = getGastroPlaces(activeCalcID, gastroData);
-            } else if (activeCalcID === "2") {
-                lieux = getAllLieux(placesData);
-            }
-
-            updateMapMarkers(lieux); // 👉 Seuls les lieux avec zoomMin <= map.getZoom() seront affichés
+            const visibleLieux = getVisibleLieux(activeCalcID, gastroData, placesData, zoom);
+        
+            updateMapMarkers(visibleLieux);
         });
+        
 
     } catch (error) {
         alert("🚨 Une erreur est survenue !");
@@ -718,18 +712,19 @@ function showLieuDetails(lieu) {
  * Fonction pour récupérer les lieux associés dans Gastro
  ********************************************************/
 function getGastroPlaces(calcID, gastroData) {
-  return gastroData
-    .filter(gastro => gastro.fields.CalcTags && gastro.fields.CalcTags.includes(calcID))
-    .map(gastro => ({
-      name: gastro.fields.Nom || "Nom inconnu",
-      description: gastro.fields.Description || "Description indisponible",
-      image: gastro.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image",
-      lat: gastro.fields.Latitude ? parseFloat(gastro.fields.Latitude) : null,
-      lng: gastro.fields.Longitude ? parseFloat(gastro.fields.Longitude) : null,
-      brands: gastro.fields.Brands || null // Ajout du lien vers la table Brands
-      zoomMin: record.fields.ZoomMin || 10
-    }));
-}
+    return gastroData
+      .filter(gastro => gastro.fields.CalcTags && gastro.fields.CalcTags.includes(calcID))
+      .map(gastro => ({
+        name: gastro.fields.Nom || "Nom inconnu",
+        description: gastro.fields.Description || "Description indisponible",
+        image: gastro.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image",
+        lat: gastro.fields.Latitude ? parseFloat(gastro.fields.Latitude) : null,
+        lng: gastro.fields.Longitude ? parseFloat(gastro.fields.Longitude) : null,
+        brands: gastro.fields.Brands || null,
+        zoomMin: gastro.fields.ZoomMin || 10  // ✅ corrige ici
+      }));
+  }
+   
 
 function getAllLieux(lieuData) {
     return lieuData.map(lieu => ({
@@ -745,6 +740,19 @@ function getAllLieux(lieuData) {
     }));
   }
   
+  function getVisibleLieux(calcID, gastroData, placesData, currentZoom) {
+    let lieux = [];
+
+    if (calcID === "1") {
+        lieux = getGastroPlaces(calcID, gastroData);
+    } else if (calcID === "2") {
+        lieux = getAllLieux(placesData);
+    }
+
+    // ✅ On filtre ici selon le zoom
+    return lieux.filter(lieu => currentZoom >= (lieu.zoomMin || 10));
+}
+
 
 function clearQuartierPolygons() {
     quartierPolygons.forEach(polygon => polygon.setMap(null)); // 🔴 Supprime les polygones
