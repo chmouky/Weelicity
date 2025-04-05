@@ -685,6 +685,21 @@ function showQuartierPolygons() {
   });
 }
 
+function getAllLieux(lieuData) {
+    return lieuData.map(lieu => ({
+      name: lieu.fields.Nom || "Nom inconnu",
+      descriptionC: lieu.fields.DescriptionC || "Description courte indisponible",
+      description: lieu.fields.Description || "Description complète indisponible",
+      image: lieu.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image",
+      lat: lieu.fields.Latitude ? parseFloat(lieu.fields.Latitude) : null,
+      lng: lieu.fields.Longitude ? parseFloat(lieu.fields.Longitude) : null,
+      inout: lieu.fields.Inout || "",
+      ticket: lieu.fields.Ticket || "",
+      zoomMin: lieu.fields.ZoomMin || 10
+    }));
+  }
+  
+
 function getPolygonCenter(coords) {
   let latSum = 0, lngSum = 0;
   coords.forEach(coord => {
