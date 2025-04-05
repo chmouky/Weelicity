@@ -145,39 +145,49 @@ function onGoogleMapsLoaded() {
 
         map = initMap("map", defaultLat, defaultLng, zoom);
 
-        // Vérifier la position simulée
+        // Vérifier le paramètre dans sessionStorage et récupérer éventuellement les coordonnées simulées
         const parametreJSON = sessionStorage.getItem("parametre");
         let simulatedLat, simulatedLng;
         if (parametreJSON) {
             try {
                 const parametreData = JSON.parse(parametreJSON);
+                // Rechercher l'enregistrement dont le Nom est "Test"
                 const testParam = parametreData.find(record => record.fields.Nom === "Test");
                 if (testParam && testParam.fields.Valeur === "O") {
                     simulatePosition = true;
+                    // Récupérer les coordonnées simulées depuis les champs ValeurA et ValeurB
                     simulatedLat = parseFloat(testParam.fields.ValeurA);
                     simulatedLng = parseFloat(testParam.fields.ValeurB);
+                } else {
+                    simulatePosition = false;
                 }
             } catch (error) {
                 console.error("Erreur lors du parsing de 'parametre' :", error);
             }
         }
 
+        // Si la position est simulée, utiliser les coordonnées récupérées
         if (simulatePosition && !isNaN(simulatedLat) && !isNaN(simulatedLng)) {
             map.setCenter(new google.maps.LatLng(simulatedLat, simulatedLng));
-            userMarker = new google.maps.Marker({
-                position: { lat: simulatedLat, lng: simulatedLng },
-                map: map,
-                title: "Position simulée",
-                icon: {
-                    url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-                    scaledSize: new google.maps.Size(40, 40)
-                }
-            });
+            if (!userMarker) {
+                userMarker = new google.maps.Marker({
+                    position: { lat: simulatedLat, lng: simulatedLng },
+                    map: map,
+                    title: "Position simulée",
+                    icon: {
+                        url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                        scaledSize: new google.maps.Size(40, 40)
+                    }
+                });
+            } else {
+                userMarker.setPosition(new google.maps.LatLng(simulatedLat, simulatedLng));
+            }
         } else {
+            // Sinon, on active la géolocalisation réelle
             trackUserLocation();
         }
 
-        // Charger les données
+        // Charger les autres données des tables (around, gastro, places)
         const aroundJSON = sessionStorage.getItem("around");
         const gastroJSON = sessionStorage.getItem("gastro");
         const placesJSON = sessionStorage.getItem("places");
@@ -187,11 +197,11 @@ function onGoogleMapsLoaded() {
             return;
         }
 
-        const aroundData = JSON.parse(aroundJSON);
-        const gastroData = JSON.parse(gastroJSON);
-        const placesData = JSON.parse(placesJSON);
+        let aroundData = JSON.parse(aroundJSON);
+        let gastroData = JSON.parse(gastroJSON);
+        let placesData = JSON.parse(placesJSON);
 
-        // Construit le carrousel
+        // Construire et afficher le carrousel
         const carouselData = aroundData.map(record => ({
             name: record.fields.Nom || "Nom inconnu",
             descriptionC: record.fields.DescriptionC || "Description courte indisponible",
@@ -199,40 +209,17 @@ function onGoogleMapsLoaded() {
             image: record.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image",
             lat: record.fields.Latitude ? parseFloat(record.fields.Latitude) : null,
             lng: record.fields.Longitude ? parseFloat(record.fields.Longitude) : null,
-            calcID: record.fields.CalcID || record.id,
-            zoomMin: record.fields.ZoomMin || 10 // ✅ On ajoute ZoomMin ici
+            calcID: record.fields.CalcID || record.id
         }));
 
         displayCarousel(carouselData, gastroData);
         setupCarouselObserver(gastroData, placesData);
-
-        // ✅ Écoute du zoom et mise à jour des marqueurs en fonction du niveau de zoom
-        map.addListener("zoom_changed", () => {
-            const zoom = map.getZoom();
-            console.log("🔍 Zoom changé :", zoom);
-
-            // Trouver le carrousel actif
-            const activeItem = document.querySelector(".carousel-item.is-visible"); // ou ta classe active
-            if (!activeItem) return;
-
-            const activeCalcID = activeItem.getAttribute("data-calcid");
-
-            let lieux = [];
-            if (activeCalcID === "1") {
-                lieux = getGastroPlaces(activeCalcID, gastroData);
-            } else if (activeCalcID === "2") {
-                lieux = getAllLieux(placesData);
-            }
-
-            updateMapMarkers(lieux); // 👉 Seuls les lieux avec zoomMin <= map.getZoom() seront affichés
-        });
 
     } catch (error) {
         alert("🚨 Une erreur est survenue !");
         console.error("Erreur dans onGoogleMapsLoaded :", error);
     }
 }
-
 
 /********************************************************
  * 📌 Fonction : Attendre que les clés nécessaires soient dans sessionStorage
@@ -531,7 +518,6 @@ function getRelatedPlaces(calcID) {
             image: place.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image",
             lat: place.fields.Latitude ? parseFloat(place.fields.Latitude) : null,
             lng: place.fields.Longitude ? parseFloat(place.fields.Longitude) : null
-            zoomMin: record.fields.ZoomMin || 10
         }));
 }
 
@@ -555,58 +541,51 @@ function svgToDataURL(svg) {
  * Fonction pour mettre à jour les marqueurs Google Maps
  ********************************************************/
 function updateMapMarkers(places) {
-    // Supprimer les anciens marqueurs
+    // Supprimer tous les anciens marqueurs
     markers.forEach(marker => marker.setMap(null));
     markers.length = 0;
 
-    const currentZoom = map.getZoom(); // 🔍 Zoom actuel
-
     places.forEach(place => {
-        if (place.lat !== null && place.lng !== null) {
-            const zoomMin = place.zoomMin ?? 10; // valeur par défaut
-
-            // ❌ Ne pas afficher si zoom insuffisant
-            if (currentZoom < zoomMin) return;
-
-            // Charger l'image
+        if (place.lat !== null && place.lng !== null && place.image) {
             const image = new Image();
-            image.crossOrigin = "anonymous"; // Important si l’image vient d’un autre domaine
+            image.crossOrigin = "anonymous"; // CORS pour les images externes
             image.src = place.image;
 
             image.onload = () => {
-                const size = 80;
+                // Créer un canvas circulaire avec la photo dedans
                 const canvas = document.createElement("canvas");
+                const size = 80; // Taille de l'icône (pixels)
                 canvas.width = size;
                 canvas.height = size;
                 const ctx = canvas.getContext("2d");
 
-                // Cercle de découpe
+                // Dessiner cercle de découpe (clip)
                 ctx.beginPath();
-                ctx.arc(size / 2, size / 2, size / 2 - 4, 0, Math.PI * 2);
+                ctx.arc(size / 2, size / 2, size / 2 - 4, 0, Math.PI * 2, true);
                 ctx.closePath();
                 ctx.clip();
 
-                // Dessine la photo
+                // Dessiner l'image dans le cercle
                 ctx.drawImage(image, 0, 0, size, size);
 
-                // Bordure rouge
+                // Ajouter un contour rouge
                 ctx.beginPath();
-                ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
+                ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2, true);
                 ctx.closePath();
                 ctx.lineWidth = 4;
                 ctx.strokeStyle = "#FF0000";
                 ctx.stroke();
 
-                // Convertir en dataURL
-                const iconUrl = canvas.toDataURL();
+                // Convertir en image encodée
+                const finalIconUrl = canvas.toDataURL();
 
-                // Créer le marqueur
+                // Créer le marqueur avec l'icône finale
                 const marker = new google.maps.Marker({
                     position: { lat: place.lat, lng: place.lng },
                     map: map,
                     title: place.name,
                     icon: {
-                        url: iconUrl,
+                        url: finalIconUrl,
                         scaledSize: new google.maps.Size(40, 40)
                     }
                 });
@@ -619,11 +598,12 @@ function updateMapMarkers(places) {
             };
 
             image.onerror = () => {
-                console.warn("❌ Image non chargée :", place.image);
+                console.warn("❌ Impossible de charger l'image :", place.image);
             };
         }
     });
 }
+
 
 
 
@@ -727,24 +707,21 @@ function getGastroPlaces(calcID, gastroData) {
       lat: gastro.fields.Latitude ? parseFloat(gastro.fields.Latitude) : null,
       lng: gastro.fields.Longitude ? parseFloat(gastro.fields.Longitude) : null,
       brands: gastro.fields.Brands || null // Ajout du lien vers la table Brands
-      zoomMin: record.fields.ZoomMin || 10
     }));
 }
 
 function getAllLieux(lieuData) {
-    return lieuData.map(lieu => ({
-      name: lieu.fields.Nom || "Nom inconnu",
-      descriptionC: lieu.fields.DescriptionC || "Description courte indisponible",
-      description: lieu.fields.Description || "Description complète indisponible",
-      image: lieu.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image",
-      lat: lieu.fields.Latitude ? parseFloat(lieu.fields.Latitude) : null,
-      lng: lieu.fields.Longitude ? parseFloat(lieu.fields.Longitude) : null,
-      inout: lieu.fields.Inout || "",
-      ticket: lieu.fields.Ticket || "",
-      zoomMin: lieu.fields.ZoomMin || 10 // ⬅️ AJOUT ICI
-    }));
-  }
-  
+  return lieuData.map(lieu => ({
+    name: lieu.fields.Nom || "Nom inconnu",
+    descriptionC: lieu.fields.DescriptionC || "Description courte indisponible",
+    description: lieu.fields.Description || "Description complète indisponible",
+    image: lieu.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image",
+    lat: lieu.fields.Latitude ? parseFloat(lieu.fields.Latitude) : null,
+    lng: lieu.fields.Longitude ? parseFloat(lieu.fields.Longitude) : null,
+    inout: lieu.fields.Inout || "",
+    ticket: lieu.fields.Ticket || ""
+  }));
+}
 
 function clearQuartierPolygons() {
     quartierPolygons.forEach(polygon => polygon.setMap(null)); // 🔴 Supprime les polygones
