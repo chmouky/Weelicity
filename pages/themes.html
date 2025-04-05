@@ -34,13 +34,12 @@
         <button id="continue-popup-btn">Go to your tour</button>
       </div>
     </div>
-
-    <!-- Footer -->
-
   </div>
 
-  <script src="../assets/js/themes.js"></script>
+  <!-- Footer EN DEHORS de #app -->
   <div id="footer-placeholder"></div>
+
+  <script src="../assets/js/themes.js"></script>
   <script>
     fetch("/assets/components/footer.html")
       .then(res => res.text())
@@ -50,7 +49,5 @@
         footer.classList.add("loaded");
       });
   </script>
-
-
 </body>
 </html>
