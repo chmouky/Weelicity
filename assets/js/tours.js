@@ -51,9 +51,12 @@ function updateToursByDay() {
 function displayCarousel(data) {
   const container = document.getElementById("carousel-container");
   container.innerHTML = "";
+
+  // Ajoute un espace avant le premier carousel
   const startSpacer = document.createElement("div");
-  startSpacer.style.flex = "0 0 50px"; // ou "10%" si tu préfères responsive
+  startSpacer.style.flex = "0 0 10vw"; // espace à gauche
   container.appendChild(startSpacer);
+
   data.forEach(record => {
     const item = document.createElement("div");
     item.className = "carousel-item";
@@ -79,8 +82,14 @@ function displayCarousel(data) {
     container.append(item);
   });
 
+  // Ajoute un espace après le dernier carousel
+  const endSpacer = document.createElement("div");
+  endSpacer.style.flex = "0 0 10vw"; // espace à droite
+  container.appendChild(endSpacer);
+
   setupCarouselObserver();
 }
+
 
 function setupCarouselObserver() {
   const container = document.getElementById("carousel-container");
@@ -145,8 +154,17 @@ async function updateMapMarkers(places) {
 
 function showPopup(data) {
   const popup = document.getElementById("popup");
-  document.getElementById("popup-title").textContent = data.name;
-  document.getElementById("popup-description").textContent = data.description;
+
+  // Applique le style Shrikhand et centre le titre
+  const titleElement = document.getElementById("popup-title");
+  titleElement.textContent = data.name;
+  titleElement.style.fontFamily = "'Shrikhand', cursive";
+  titleElement.style.textAlign = "center";
+
+  const descElement = document.getElementById("popup-description");
+  descElement.textContent = data.description;
+  descElement.style.fontFamily = "'Shrikhand', cursive";
+
   const lieuxList = document.getElementById("popup-lieux-list");
   lieuxList.innerHTML = "";
 
@@ -154,10 +172,21 @@ function showPopup(data) {
 
   lieuxAssocies.forEach((lieu) => {
     const listItem = document.createElement("li");
+    listItem.style.display = "flex";
+    listItem.style.justifyContent = "space-between";
+    listItem.style.alignItems = "center";
+    listItem.style.marginBottom = "8px";
+    listItem.style.fontFamily = "'Shrikhand', cursive";
 
     const link = document.createElement("a");
     link.href = "#";
     link.textContent = lieu.name;
+    link.style.flex = "1";
+    link.style.textDecoration = "underline";
+    link.style.color = "var(--theme-color)";
+    link.style.fontFamily = "'Shrikhand', cursive";
+    link.style.cursor = "pointer";
+
     link.addEventListener("click", (e) => {
       e.preventDefault();
       showLieuDetails(lieu);
@@ -183,9 +212,13 @@ function showPopup(data) {
     lieuxList.appendChild(listItem);
   });
 
+  // Assure que le popup a bien la police aussi
+  popup.style.fontFamily = "'Shrikhand', cursive";
+
   popup.style.display = "block";
   document.getElementById("overlay").style.display = "block";
 }
+
 
 function showLieuDetails(lieu) {
     if (!lieu) {
