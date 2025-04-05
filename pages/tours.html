@@ -18,6 +18,7 @@
 
   <h1 class="shrikhand-text">Your tour</h1>
   <div id="map"></div>
+  <div id="map-overlay"></div>
 
   <!-- Carrousel des tours -->
   <div id="carousel-container">
@@ -92,6 +93,7 @@
   <!-- Google Maps chargé dynamiquement -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("map-overlay").style.display = "block";
       loadGoogleMaps("https://google-map-back.samueltoledano94.workers.dev/load-google-maps", "onGoogleMapsLoaded");
     });
   </script>
