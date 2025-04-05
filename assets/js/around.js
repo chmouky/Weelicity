@@ -99,14 +99,15 @@ function trackUserLocation() {
  * Fonction pour récupérer les lieux visibles en fonction du zoom
  ********************************************************/
 function getVisibleLieux(calcID, gastroData, placesData, currentZoom) {
-  let lieux = [];
-  if (calcID === "1") {
-    lieux = getGastroPlaces(calcID, gastroData);
-  } else if (calcID === "2") {
-    lieux = getAllLieux(placesData);
+    let lieux = [];
+    if (calcID === "1") {
+      lieux = getGastroPlaces(calcID, gastroData);
+    } else if (calcID === "2") {
+      lieux = getAllLieux(placesData);
+    }
+    return lieux.filter(lieu => currentZoom >= (lieu.zoomMin || 10));
   }
-  return lieux.filter(lieu => currentZoom >= (lieu.zoomMin || 10));
-}
+  
 
 /********************************************************
  * Fonction exécutée après le chargement de Google Maps
@@ -176,15 +177,20 @@ function onGoogleMapsLoaded() {
     setupCarouselObserver(gastroData, placesData);
 
     // Écoute du zoom et mise à jour des marqueurs en fonction du niveau de zoom
-    map.addListener("zoom_changed", () => {
-      const currentZoom = map.getZoom();
-      console.log("🔍 Zoom changé :", currentZoom);
-      const activeItem = document.querySelector(".carousel-item.is-visible");
-      if (!activeItem) return;
-      const activeCalcID = activeItem.getAttribute("data-calcid");
-      const visibleLieux = getVisibleLieux(activeCalcID, gastroData, placesData, currentZoom);
-      updateMapMarkers(visibleLieux);
-    });
+    // Écoute du zoom et mise à jour des marqueurs en fonction du niveau de zoom
+map.addListener("zoom_changed", () => {
+    const currentZoom = map.getZoom();
+    console.log("🔍 Zoom changé :", currentZoom);
+    
+    // Utiliser le premier carousel-item si aucun n'est marqué "is-visible"
+    const activeItem = document.querySelector(".carousel-item.is-visible") || document.querySelector(".carousel-item");
+    if (!activeItem) return;
+    
+    const activeCalcID = activeItem.getAttribute("data-calcid");
+    const visibleLieux = getVisibleLieux(activeCalcID, gastroData, placesData, currentZoom);
+    updateMapMarkers(visibleLieux);
+  });
+  
   } catch (error) {
     alert("🚨 Une erreur est survenue !");
     console.error("Erreur dans onGoogleMapsLoaded :", error);
@@ -444,54 +450,85 @@ function svgToDataURL(svg) {
  * Fonction pour mettre à jour les marqueurs Google Maps
  ********************************************************/
 function updateMapMarkers(places) {
-  markers.forEach(marker => marker.setMap(null));
-  markers.length = 0;
-  const currentZoom = map.getZoom();
-  places.forEach(place => {
-    if (place.lat !== null && place.lng !== null) {
-      const zoomMin = place.zoomMin ?? 10;
-      if (currentZoom < zoomMin) return;
-      const image = new Image();
-      image.crossOrigin = "anonymous";
-      image.src = place.image;
-      image.onload = () => {
-        const size = 80;
-        const canvas = document.createElement("canvas");
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext("2d");
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2 - 4, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.clip();
-        ctx.drawImage(image, 0, 0, size, size);
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = "#FF0000";
-        ctx.stroke();
-        const iconUrl = canvas.toDataURL();
-        const marker = new google.maps.Marker({
-          position: { lat: place.lat, lng: place.lng },
-          map: map,
-          title: place.name,
-          icon: {
-            url: iconUrl,
-            scaledSize: new google.maps.Size(40, 40)
-          }
-        });
-        marker.addListener("click", () => {
-          showLieuDetails(place);
-        });
-        markers.push(marker);
-      };
-      image.onerror = () => {
-        console.warn("❌ Image non chargée :", place.image);
-      };
-    }
-  });
-}
+    // Supprimer les anciens marqueurs
+    markers.forEach(marker => marker.setMap(null));
+    markers.length = 0;
+    
+    const currentZoom = map.getZoom();
+    
+    places.forEach(place => {
+      if (place.lat !== null && place.lng !== null) {
+        const zoomMin = place.zoomMin || 10;
+        if (currentZoom < zoomMin) return;  // Ne pas afficher si le zoom est insuffisant
+        
+        // Créer un objet Image avec gestion du CORS
+        const image = new Image();
+        image.crossOrigin = "anonymous";
+        image.src = place.image;
+        
+        image.onload = () => {
+          const size = 80; // Taille du canvas
+          const canvas = document.createElement("canvas");
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext("2d");
+          
+          // Dessiner un cercle pour clipper l'image
+          ctx.beginPath();
+          ctx.arc(size / 2, size / 2, size / 2 - 4, 0, Math.PI * 2);
+          ctx.closePath();
+          ctx.clip();
+          
+          // Dessiner l'image dans le canvas
+          ctx.drawImage(image, 0, 0, size, size);
+          
+          // Dessiner un contour rouge
+          ctx.beginPath();
+          ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
+          ctx.closePath();
+          ctx.lineWidth = 4;
+          ctx.strokeStyle = "#FF0000";
+          ctx.stroke();
+          
+          const iconUrl = canvas.toDataURL();
+          
+          const marker = new google.maps.Marker({
+            position: { lat: place.lat, lng: place.lng },
+            map: map,
+            title: place.name,
+            icon: {
+              url: iconUrl,
+              scaledSize: new google.maps.Size(40, 40)
+            }
+          });
+          
+          marker.addListener("click", () => {
+            showLieuDetails(place);
+          });
+          markers.push(marker);
+        };
+        
+        image.onerror = () => {
+          console.warn("❌ Image non chargée :", place.image);
+          // Création d'un marqueur avec une icône par défaut en cas d'erreur
+          const marker = new google.maps.Marker({
+            position: { lat: place.lat, lng: place.lng },
+            map: map,
+            title: place.name,
+            icon: {
+              url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+              scaledSize: new google.maps.Size(40, 40)
+            }
+          });
+          marker.addListener("click", () => {
+            showLieuDetails(place);
+          });
+          markers.push(marker);
+        };
+      }
+    });
+  }
+  
 
 function showLieuDetails(lieu) {
   if (!lieu) return;
