@@ -478,3 +478,30 @@ max-width: 100px;
     overflow-y: auto;
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
   }
+
+  #popup h2,
+#popup p,
+#popup a {
+  font-family: 'Shrikhand', cursive;
+}
+
+#popup h2 {
+    font-family: 'Shrikhand', cursive;
+    font-size: 1.3rem;
+    text-align: center; /* 👈 Centre le titre */
+    color: var(--theme-color);
+    margin-bottom: 10px;
+  }
+  
+
+#popup p {
+  font-size: 0.9rem;
+  color: #555;
+  text-align: center;
+}
+
+#popup a {
+  font-size: 0.85rem;
+  text-decoration: underline;
+  color: var(--theme-color);
+}

@@ -327,9 +327,16 @@ infoDiv.classList.add("carousel-info");
 
 let inoutText = "";
 if (Array.isArray(record.inout) && record.inout.length > 0) {
-// Affiche directement IN ou OUT en majuscules
-inoutText = record.inout[0].toUpperCase();
+  const values = record.inout.map(v => v.trim().toUpperCase());
+  if (values.includes("IN") && values.includes("OUT")) {
+    inoutText = "Visit IN or OUT";
+  } else if (values.includes("IN")) {
+    inoutText = "Visit Inside";
+  } else if (values.includes("OUT")) {
+    inoutText = "Visit Outside";
+  }
 }
+
 
 const ticketText = (Array.isArray(record.ticket) &&
                   record.ticket.length > 0 &&

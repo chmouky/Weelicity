@@ -25,7 +25,7 @@ footer {
     background-color: white;
     border-top: 1px solid #ccc;
     padding: 10px 0;
-    height: 55px; /* ← augmente ici la hauteur du footer */
+    height: 60px; /* ← augmente ici la hauteur du footer */
     position: fixed;
     bottom: 0;
     width: 100%;
