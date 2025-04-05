@@ -51,7 +51,9 @@ function updateToursByDay() {
 function displayCarousel(data) {
   const container = document.getElementById("carousel-container");
   container.innerHTML = "";
-
+  const startSpacer = document.createElement("div");
+  startSpacer.style.flex = "0 0 50px"; // ou "10%" si tu préfères responsive
+  container.appendChild(startSpacer);
   data.forEach(record => {
     const item = document.createElement("div");
     item.className = "carousel-item";
