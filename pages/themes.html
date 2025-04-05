@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap">
 </head>
 <body>
-  <div id="footer-placeholder"></div>
   <div id="app">
     <header>
       <h1 class="page-title">
@@ -41,15 +40,17 @@
   </div>
 
   <script src="../assets/js/themes.js"></script>
+  <div id="footer-placeholder"></div>
   <script>
     fetch("/assets/components/footer.html")
-      .then(response => response.text())
+      .then(res => res.text())
       .then(data => {
         const footer = document.getElementById("footer-placeholder");
         footer.innerHTML = data;
-        footer.classList.add("loaded"); // 👈 ajoute la classe après le chargement
+        footer.classList.add("loaded");
       });
   </script>
+
 
 </body>
 </html>
