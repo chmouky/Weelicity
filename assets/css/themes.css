@@ -14,6 +14,17 @@
     flex-direction: column;
   }
   
+  #app {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 70px; /* 👈 Laisse de la place pour le footer fixe */
+  }
+  
+
   header {
     width: 100%;
     text-align: center;
