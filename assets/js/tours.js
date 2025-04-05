@@ -315,21 +315,22 @@ document.getElementById("back-button").addEventListener("click", () => window.hi
 document.getElementById("my-selector").addEventListener("change", function () {
   const goBtn = document.getElementById("go-button");
   const message = document.getElementById("duration-message");
-  const overlay = document.getElementById("map-overlay");
+  const overlay = document.getElementById("overlay");
 
   if (this.value) {
     goBtn.style.display = "block";
     message.classList.add("hidden");
     this.classList.add("selected");
-    overlay.style.display = "none"; // ✅ on retire le voile gris
+    overlay.style.display = "none"; // ✅ cache l’effet de flou
     updateToursByDay();
   } else {
     goBtn.style.display = "none";
     message.classList.remove("hidden");
     this.classList.remove("selected");
-    overlay.style.display = "block"; // ✅ on remet le voile gris
+    overlay.style.display = "block"; // ✅ remet l’effet
   }
 });
+
 
 
 document.querySelectorAll(".popup-close").forEach(btn => {
