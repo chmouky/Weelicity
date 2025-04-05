@@ -546,41 +546,64 @@ function updateMapMarkers(places) {
     markers.length = 0;
 
     places.forEach(place => {
-        if (place.lat !== null && place.lng !== null) {
-            // Création d'une icône SVG intégrant la photo dans un cercle
-            // Vous pouvez ajuster la taille (ici 40x40) et le rayon du cercle (18)
-            const svgIcon = `
-<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
-  <defs>
-    <clipPath id="clipCircle">
-      <circle cx="20" cy="20" r="18" />
-    </clipPath>
-  </defs>
-  <image x="0" y="0" width="40" height="40" clip-path="url(#clipCircle)" href="${place.image}" />
-  <circle cx="20" cy="20" r="18" fill="none" stroke="#FF0000" stroke-width="2"/>
-</svg>`;
-            // Encodage en base64 du SVG
-            const iconUrl = svgToDataURL(svgIcon);
+        if (place.lat !== null && place.lng !== null && place.image) {
+            const image = new Image();
+            image.crossOrigin = "anonymous"; // CORS pour les images externes
+            image.src = place.image;
 
-            const marker = new google.maps.Marker({
-                position: { lat: place.lat, lng: place.lng },
-                map: map,
-                title: place.name,
-                icon: {
-                    url: iconUrl,
-                    scaledSize: new google.maps.Size(40, 40)
-                }
-            });
+            image.onload = () => {
+                // Créer un canvas circulaire avec la photo dedans
+                const canvas = document.createElement("canvas");
+                const size = 80; // Taille de l'icône (pixels)
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext("2d");
 
-            // Clic sur un marqueur → Ouvrir le popup en fonction du type de lieu
-            marker.addListener('click', () => {
-                showLieuDetails(place);
-            });
+                // Dessiner cercle de découpe (clip)
+                ctx.beginPath();
+                ctx.arc(size / 2, size / 2, size / 2 - 4, 0, Math.PI * 2, true);
+                ctx.closePath();
+                ctx.clip();
 
-            markers.push(marker);
+                // Dessiner l'image dans le cercle
+                ctx.drawImage(image, 0, 0, size, size);
+
+                // Ajouter un contour rouge
+                ctx.beginPath();
+                ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2, true);
+                ctx.closePath();
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = "#FF0000";
+                ctx.stroke();
+
+                // Convertir en image encodée
+                const finalIconUrl = canvas.toDataURL();
+
+                // Créer le marqueur avec l'icône finale
+                const marker = new google.maps.Marker({
+                    position: { lat: place.lat, lng: place.lng },
+                    map: map,
+                    title: place.name,
+                    icon: {
+                        url: finalIconUrl,
+                        scaledSize: new google.maps.Size(40, 40)
+                    }
+                });
+
+                marker.addListener("click", () => {
+                    showLieuDetails(place);
+                });
+
+                markers.push(marker);
+            };
+
+            image.onerror = () => {
+                console.warn("❌ Impossible de charger l'image :", place.image);
+            };
         }
     });
 }
+
 
 
 
