@@ -527,6 +527,9 @@ function getRelatedPlaces(calcID) {
 /********************************************************
  * Fonction pour mettre à jour les marqueurs Google Maps
  ********************************************************/
+/********************************************************
+ * Fonction pour mettre à jour les marqueurs Google Maps
+ ********************************************************/
 function updateMapMarkers(places) {
     // Supprimer tous les anciens marqueurs
     markers.forEach(marker => marker.setMap(null));
@@ -534,18 +537,30 @@ function updateMapMarkers(places) {
 
     places.forEach(place => {
         if (place.lat !== null && place.lng !== null) {
+            // Création d'une icône SVG intégrant la photo dans un cercle
+            // Vous pouvez ajuster la taille (ici 40x40) et le rayon du cercle (18)
+            const svgIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+  <defs>
+    <clipPath id="circleClip">
+      <circle cx="20" cy="20" r="18" />
+    </clipPath>
+  </defs>
+  <image href="${place.image}" x="0" y="0" width="40" height="40" clip-path="url(#circleClip)" />
+  <circle cx="20" cy="20" r="18" fill="none" stroke="#FF0000" stroke-width="2" />
+</svg>
+            `;
+            // Encodage du SVG pour l'utiliser comme URL de l'icône
+            const encoded = encodeURIComponent(svgIcon).replace(/'/g, "%27").replace(/"/g, "%22");
+            const iconUrl = "data:image/svg+xml;charset=UTF-8," + encoded;
+
             const marker = new google.maps.Marker({
                 position: { lat: place.lat, lng: place.lng },
                 map: map,
                 title: place.name,
-                // Ici on remplace l'icône par défaut (marqueur rouge) par un cercle
                 icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    fillColor: "#FFFFFF",   // Couleur de remplissage (à modifier si besoin)
-                    fillOpacity: 1,
-                    strokeColor: "#FF0000", // Couleur du contour rouge
-                    strokeWeight: 2,
-                    scale: 10               // Taille du cercle (ajustez selon vos besoins)
+                    url: iconUrl,
+                    scaledSize: new google.maps.Size(40, 40)
                 }
             });
 
@@ -558,6 +573,7 @@ function updateMapMarkers(places) {
         }
     });
 }
+
 
 
 function showLieuDetails(lieu) {
