@@ -530,6 +530,16 @@ function getRelatedPlaces(calcID) {
 /********************************************************
  * Fonction pour mettre à jour les marqueurs Google Maps
  ********************************************************/
+/********************************************************
+ * Fonction pour convertir une chaîne SVG en Data URL en base64
+ ********************************************************/
+function svgToDataURL(svg) {
+    return "data:image/svg+xml;base64," + btoa(svg);
+}
+
+/********************************************************
+ * Fonction pour mettre à jour les marqueurs Google Maps
+ ********************************************************/
 function updateMapMarkers(places) {
     // Supprimer tous les anciens marqueurs
     markers.forEach(marker => marker.setMap(null));
@@ -542,17 +552,15 @@ function updateMapMarkers(places) {
             const svgIcon = `
 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
   <defs>
-    <clipPath id="circleClip">
+    <clipPath id="clipCircle">
       <circle cx="20" cy="20" r="18" />
     </clipPath>
   </defs>
-  <image href="${place.image}" x="0" y="0" width="40" height="40" clip-path="url(#circleClip)" />
-  <circle cx="20" cy="20" r="18" fill="none" stroke="#FF0000" stroke-width="2" />
-</svg>
-            `;
-            // Encodage du SVG pour l'utiliser comme URL de l'icône
-            const encoded = encodeURIComponent(svgIcon).replace(/'/g, "%27").replace(/"/g, "%22");
-            const iconUrl = "data:image/svg+xml;charset=UTF-8," + encoded;
+  <image x="0" y="0" width="40" height="40" clip-path="url(#clipCircle)" href="${place.image}" />
+  <circle cx="20" cy="20" r="18" fill="none" stroke="#FF0000" stroke-width="2"/>
+</svg>`;
+            // Encodage en base64 du SVG
+            const iconUrl = svgToDataURL(svgIcon);
 
             const marker = new google.maps.Marker({
                 position: { lat: place.lat, lng: place.lng },
@@ -573,6 +581,7 @@ function updateMapMarkers(places) {
         }
     });
 }
+
 
 
 
