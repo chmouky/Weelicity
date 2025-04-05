@@ -144,6 +144,7 @@
     font-weight: bold;
     cursor: pointer;
     transition: transform 0.2s ease;
+    font-size: 1.5rem; /* ⬅️ ajoute ou ajuste cette ligne */
   }
   
   #continue-popup-btn:hover {
