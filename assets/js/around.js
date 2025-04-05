@@ -139,87 +139,100 @@ function trackUserLocation() {
  ********************************************************/
 function onGoogleMapsLoaded() {
     try {
-        const defaultLat = 48.8990;
-        const defaultLng = 2.3222;
-        const zoom = 15;
-
-        map = initMap("map", defaultLat, defaultLng, zoom);
-
-        // Vérifier le paramètre dans sessionStorage et récupérer éventuellement les coordonnées simulées
-        const parametreJSON = sessionStorage.getItem("parametre");
-        let simulatedLat, simulatedLng;
-        if (parametreJSON) {
-            try {
-                const parametreData = JSON.parse(parametreJSON);
-                // Rechercher l'enregistrement dont le Nom est "Test"
-                const testParam = parametreData.find(record => record.fields.Nom === "Test");
-                if (testParam && testParam.fields.Valeur === "O") {
-                    simulatePosition = true;
-                    // Récupérer les coordonnées simulées depuis les champs ValeurA et ValeurB
-                    simulatedLat = parseFloat(testParam.fields.ValeurA);
-                    simulatedLng = parseFloat(testParam.fields.ValeurB);
-                } else {
-                    simulatePosition = false;
-                }
-            } catch (error) {
-                console.error("Erreur lors du parsing de 'parametre' :", error);
-            }
+      const defaultLat = 48.8990;
+      const defaultLng = 2.3222;
+      const zoom = 15;
+  
+      map = initMap("map", defaultLat, defaultLng, zoom);
+  
+      // Vérifier si une position simulée est définie
+      const parametreJSON = sessionStorage.getItem("parametre");
+      let simulatedLat, simulatedLng;
+      if (parametreJSON) {
+        try {
+          const parametreData = JSON.parse(parametreJSON);
+          const testParam = parametreData.find(record => record.fields.Nom === "Test");
+          if (testParam && testParam.fields.Valeur === "O") {
+            simulatePosition = true;
+            simulatedLat = parseFloat(testParam.fields.ValeurA);
+            simulatedLng = parseFloat(testParam.fields.ValeurB);
+          }
+        } catch (error) {
+          console.error("Erreur lors du parsing de 'parametre':", error);
         }
-
-        // Si la position est simulée, utiliser les coordonnées récupérées
-        if (simulatePosition && !isNaN(simulatedLat) && !isNaN(simulatedLng)) {
-            map.setCenter(new google.maps.LatLng(simulatedLat, simulatedLng));
-            if (!userMarker) {
-                userMarker = new google.maps.Marker({
-                    position: { lat: simulatedLat, lng: simulatedLng },
-                    map: map,
-                    title: "Position simulée",
-                    icon: {
-                        url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-                        scaledSize: new google.maps.Size(40, 40)
-                    }
-                });
-            } else {
-                userMarker.setPosition(new google.maps.LatLng(simulatedLat, simulatedLng));
-            }
-        } else {
-            // Sinon, on active la géolocalisation réelle
-            trackUserLocation();
-        }
-
-        // Charger les autres données des tables (around, gastro, places)
-        const aroundJSON = sessionStorage.getItem("around");
-        const gastroJSON = sessionStorage.getItem("gastro");
-        const placesJSON = sessionStorage.getItem("places");
-
-        if (!aroundJSON || !gastroJSON || !placesJSON) {
-            alert("Erreur : certaines données sont manquantes !");
-            return;
-        }
-
-        let aroundData = JSON.parse(aroundJSON);
-        let gastroData = JSON.parse(gastroJSON);
-        let placesData = JSON.parse(placesJSON);
-
-        // Construire et afficher le carrousel
-        const carouselData = aroundData.map(record => ({
-            name: record.fields.Nom || "Nom inconnu",
-            descriptionC: record.fields.DescriptionC || "Description courte indisponible",
-            description: record.fields.Description || "Description complète indisponible",
-            image: record.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image",
-            lat: record.fields.Latitude ? parseFloat(record.fields.Latitude) : null,
-            lng: record.fields.Longitude ? parseFloat(record.fields.Longitude) : null,
-            calcID: record.fields.CalcID || record.id
-        }));
-
-        displayCarousel(carouselData, gastroData);
-        setupCarouselObserver(gastroData, placesData);
-
+      }
+      if (simulatePosition && !isNaN(simulatedLat) && !isNaN(simulatedLng)) {
+        map.setCenter(new google.maps.LatLng(simulatedLat, simulatedLng));
+        userMarker = new google.maps.Marker({
+          position: { lat: simulatedLat, lng: simulatedLng },
+          map: map,
+          title: "Position simulée",
+          icon: {
+            url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+            scaledSize: new google.maps.Size(40, 40)
+          }
+        });
+      } else {
+        trackUserLocation();
+      }
+  
+      // Charger les données
+      const aroundJSON = sessionStorage.getItem("around");
+      const gastroJSON = sessionStorage.getItem("gastro");
+      const placesJSON = sessionStorage.getItem("places");
+  
+      if (!aroundJSON || !gastroJSON || !placesJSON) {
+        alert("Erreur : certaines données sont manquantes !");
+        return;
+      }
+      const aroundData = JSON.parse(aroundJSON);
+      const gastroData = JSON.parse(gastroJSON);
+      const placesData = JSON.parse(placesJSON);
+  
+      // Construire le carousel
+      const carouselData = aroundData.map(record => ({
+        name: record.fields.Nom || "Nom inconnu",
+        descriptionC: record.fields.DescriptionC || "Description courte indisponible",
+        description: record.fields.Description || "Description complète indisponible",
+        image: record.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image",
+        lat: record.fields.Latitude ? parseFloat(record.fields.Latitude) : null,
+        lng: record.fields.Longitude ? parseFloat(record.fields.Longitude) : null,
+        calcID: record.fields.CalcID || record.id,
+        zoomMin: record.fields.ZoomMin || 10
+      }));
+      displayCarousel(carouselData, gastroData);
+      setupCarouselObserver(gastroData, placesData);
+  
+      // Définition de la fonction debounce
+      function debounce(func, delay) {
+        let timeoutId;
+        return function(...args) {
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(() => func.apply(this, args), delay);
+        };
+      }
+  
+      // Mise à jour des marqueurs avec debounce lors du zoom
+      const updateMarkersDebounced = debounce(() => {
+        const currentZoom = map.getZoom();
+        console.log("🔍 Zoom changé :", currentZoom);
+  
+        // Utiliser le premier élément visible ou le premier du carousel
+        const activeItem = document.querySelector(".carousel-item.is-visible") || document.querySelector(".carousel-item");
+        if (!activeItem) return;
+        const activeCalcID = activeItem.getAttribute("data-calcid");
+        const visibleLieux = getVisibleLieux(activeCalcID, gastroData, placesData, currentZoom);
+        updateMapMarkers(visibleLieux);
+      }, 200); // Délai de 200ms
+  
+      map.addListener("zoom_changed", updateMarkersDebounced);
+  
     } catch (error) {
-        alert("🚨 Une erreur est survenue !");
-        console.error("Erreur dans onGoogleMapsLoaded :", error);
+      alert("🚨 Une erreur est survenue !");
+      console.error("Erreur dans onGoogleMapsLoaded :", error);
     }
-}
+  }
+  
 
 /********************************************************
  * 📌 Fonction : Attendre que les clés nécessaires soient dans sessionStorage
@@ -540,71 +553,72 @@ function svgToDataURL(svg) {
 /********************************************************
  * Fonction pour mettre à jour les marqueurs Google Maps
  ********************************************************/
+const imageCache = {}; // Cache pour stocker les dataURL par image URL
+
 function updateMapMarkers(places) {
-    // Supprimer tous les anciens marqueurs
-    markers.forEach(marker => marker.setMap(null));
-    markers.length = 0;
+  // Supprimer les anciens marqueurs
+  markers.forEach(marker => marker.setMap(null));
+  markers.length = 0;
 
-    places.forEach(place => {
-        if (place.lat !== null && place.lng !== null && place.image) {
-            const image = new Image();
-            image.crossOrigin = "anonymous"; // CORS pour les images externes
-            image.src = place.image;
-
-            image.onload = () => {
-                // Créer un canvas circulaire avec la photo dedans
-                const canvas = document.createElement("canvas");
-                const size = 80; // Taille de l'icône (pixels)
-                canvas.width = size;
-                canvas.height = size;
-                const ctx = canvas.getContext("2d");
-
-                // Dessiner cercle de découpe (clip)
-                ctx.beginPath();
-                ctx.arc(size / 2, size / 2, size / 2 - 4, 0, Math.PI * 2, true);
-                ctx.closePath();
-                ctx.clip();
-
-                // Dessiner l'image dans le cercle
-                ctx.drawImage(image, 0, 0, size, size);
-
-                // Ajouter un contour rouge
-                ctx.beginPath();
-                ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2, true);
-                ctx.closePath();
-                ctx.lineWidth = 4;
-                ctx.strokeStyle = "#FF0000";
-                ctx.stroke();
-
-                // Convertir en image encodée
-                const finalIconUrl = canvas.toDataURL();
-
-                // Créer le marqueur avec l'icône finale
-                const marker = new google.maps.Marker({
-                    position: { lat: place.lat, lng: place.lng },
-                    map: map,
-                    title: place.name,
-                    icon: {
-                        url: finalIconUrl,
-                        scaledSize: new google.maps.Size(40, 40)
-                    }
-                });
-
-                marker.addListener("click", () => {
-                    showLieuDetails(place);
-                });
-
-                markers.push(marker);
-            };
-
-            image.onerror = () => {
-                console.warn("❌ Impossible de charger l'image :", place.image);
-            };
-        }
-    });
+  places.forEach(place => {
+    if (place.lat !== null && place.lng !== null && place.image) {
+      const currentZoom = map.getZoom();
+      const zoomMin = place.zoomMin || 10;
+      if (currentZoom < zoomMin) return;
+      
+      // Si l'icône a déjà été générée, l'utiliser directement
+      if (imageCache[place.image]) {
+        createMarker(place, imageCache[place.image]);
+      } else {
+        const image = new Image();
+        image.crossOrigin = "anonymous";
+        image.src = place.image;
+        image.onload = () => {
+          const size = 80;
+          const canvas = document.createElement("canvas");
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext("2d");
+          ctx.beginPath();
+          ctx.arc(size / 2, size / 2, size / 2 - 4, 0, Math.PI * 2);
+          ctx.closePath();
+          ctx.clip();
+          ctx.drawImage(image, 0, 0, size, size);
+          ctx.beginPath();
+          ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
+          ctx.closePath();
+          ctx.lineWidth = 4;
+          ctx.strokeStyle = "#FF0000";
+          ctx.stroke();
+          const finalIconUrl = canvas.toDataURL();
+          // Stocker dans le cache
+          imageCache[place.image] = finalIconUrl;
+          createMarker(place, finalIconUrl);
+        };
+        image.onerror = () => {
+          console.warn("❌ Impossible de charger l'image :", place.image);
+          createMarker(place, "https://maps.google.com/mapfiles/ms/icons/red-dot.png");
+        };
+      }
+    }
+  });
 }
 
-
+function createMarker(place, iconUrl) {
+  const marker = new google.maps.Marker({
+    position: { lat: place.lat, lng: place.lng },
+    map: map,
+    title: place.name,
+    icon: {
+      url: iconUrl,
+      scaledSize: new google.maps.Size(40, 40)
+    }
+  });
+  marker.addListener("click", () => {
+    showLieuDetails(place);
+  });
+  markers.push(marker);
+}
 
 
 
@@ -906,3 +920,12 @@ function recenterMap() {
         map.panBy(0, 100);
     }
 }
+
+function debounce(func, delay) {
+    let timeoutId;
+    return function(...args) {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func.apply(this, args), delay);
+    };
+  }
+  
