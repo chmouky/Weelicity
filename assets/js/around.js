@@ -134,41 +134,6 @@ function trackUserLocation() {
     );
 }
 
-function createCircularMarkerIcon(imageUrl, size = 50, borderColor = "#FF0000") {
-    return new Promise(resolve => {
-      const canvas = document.createElement("canvas");
-      canvas.width = canvas.height = size;
-      const ctx = canvas.getContext("2d");
-  
-      const img = new Image();
-      img.crossOrigin = "Anonymous";
-      img.onload = () => {
-        // Cercle
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.clip();
-  
-        ctx.drawImage(img, 0, 0, size, size);
-  
-        // Bordure
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
-        ctx.strokeStyle = borderColor;
-        ctx.lineWidth = 3;
-        ctx.stroke();
-  
-        resolve(canvas.toDataURL("image/png"));
-      };
-      img.onerror = () => {
-        console.warn("❌ Image failed to load:", imageUrl);
-        resolve("https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg"); // fallback
-      };
-      img.src = imageUrl;
-    });
-  }
-
-
 /********************************************************
  * Fonction exécutée après le chargement de Google Maps
  ********************************************************/
@@ -177,8 +142,7 @@ function onGoogleMapsLoaded() {
         const defaultLat = 48.8990;
         const defaultLng = 2.3222;
         const zoom = 15;
-        
-          
+
         map = initMap("map", defaultLat, defaultLng, zoom);
 
         // Vérifier le paramètre dans sessionStorage et récupérer éventuellement les coordonnées simulées
@@ -237,19 +201,6 @@ function onGoogleMapsLoaded() {
         let gastroData = JSON.parse(gastroJSON);
         let placesData = JSON.parse(placesJSON);
 
-
-        // Génération des icônes pour tous les lieux dans 'placesData'
-        placesData.forEach(place => {
-            const name = place.fields.Nom;
-            const image = place.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image";
-            if (name && !window.cachedSpotIcons[name]) {
-            console.log("🌀 Génération icône pour lieu :", name);
-            createCircularMarkerIcon(image, 50, "#FF0000").then(iconUrl => {
-                window.cachedSpotIcons[name] = iconUrl;
-            });
-            }
-        });
-  
         // Construire et afficher le carrousel
         const carouselData = aroundData.map(record => ({
             name: record.fields.Nom || "Nom inconnu",
@@ -260,15 +211,8 @@ function onGoogleMapsLoaded() {
             lng: record.fields.Longitude ? parseFloat(record.fields.Longitude) : null,
             calcID: record.fields.CalcID || record.id
         }));
-        carouselData.forEach(place => {
-            console.log("🌀 Génération icône pour :", place.name); // Ajoute ce log
-            createCircularMarkerIcon(place.image, 50, "#FF0000").then(iconUrl => {
-              window.cachedSpotIcons[place.name] = iconUrl;
-            });
-          });
-          
 
-          displayCarousel(carouselData, gastroData, placesData);
+        displayCarousel(carouselData, gastroData);
         setupCarouselObserver(gastroData, placesData);
 
     } catch (error) {
@@ -322,52 +266,55 @@ function waitForStorageReady(keys, callback) {
 /********************************************************
  * Fonction pour afficher le carrousel avec les Tags filtrés
  ********************************************************/
-function displayCarousel(data, gastroData, lieuData) {
-    const carouselContainer = document.getElementById("carousel-container");
-    if (!carouselContainer) {
-      alert("Erreur : Conteneur du carrousel introuvable !");
-      return;
-    }
-  
-    carouselContainer.innerHTML = "";
-  
-    if (!data.length) {
-      alert("Aucune donnée à afficher dans le carrousel.");
-      return;
-    }
-  
-    data.forEach((record) => {
-      if (!record || !record.name) return;
-  
-      const item = document.createElement("div");
-      item.classList.add("carousel-item");
-      item.setAttribute('data-name', record.name);
-      item.setAttribute('data-calcid', record.calcID);
-  
-      const title = document.createElement("h3");
-      title.textContent = record.name || "Nom inconnu";
-      title.addEventListener('click', () => {
-        showPopup(record);
-      });
-  
-      const descriptionText = document.createElement("p");
-      descriptionText.classList.add("description-text");
-      descriptionText.textContent = record.descriptionC || "Description courte indisponible";
-  
-      const image = document.createElement("img");
-      image.src = record.image || "https://via.placeholder.com/300x150?text=Aucune+Image";
-      image.alt = record.name || "Nom inconnu";
-  
-      item.appendChild(title);
-      item.appendChild(descriptionText);
-      item.appendChild(image);
-  
-      carouselContainer.appendChild(item);
-    });
-  
-    setupCarouselObserver(gastroData, lieuData); // ✅ ICI aussi
+function displayCarousel(data, gastroData) {
+  const carouselContainer = document.getElementById("carousel-container");
+  if (!carouselContainer) {
+    alert("Erreur : Conteneur du carrousel introuvable !");
+    return;
   }
-  
+
+  carouselContainer.innerHTML = "";
+
+  if (!data.length) {
+    alert("Aucune donnée à afficher dans le carrousel.");
+    return;
+  }
+
+  data.forEach((record) => {
+    if (!record || !record.name) return;
+
+    const item = document.createElement("div");
+    item.classList.add("carousel-item");
+    item.setAttribute('data-name', record.name);
+    item.setAttribute('data-calcid', record.calcID);
+
+    // Nom du lieu
+    const title = document.createElement("h3");
+    title.textContent = record.name || "Nom inconnu";
+    title.addEventListener('click', () => {
+      showPopup(record);
+    });
+
+    // DescriptionC
+    const descriptionText = document.createElement("p");
+    descriptionText.classList.add("description-text");
+    descriptionText.textContent = record.descriptionC || "Description courte indisponible";
+
+    // Image
+    const image = document.createElement("img");
+    image.src = record.image || "https://via.placeholder.com/300x150?text=Aucune+Image";
+    image.alt = record.name || "Nom inconnu";
+
+    // Ajout des éléments dans l'ordre
+    item.appendChild(title);
+    item.appendChild(descriptionText);
+    item.appendChild(image);
+
+    carouselContainer.appendChild(item);
+  });
+
+  setupCarouselObserver(gastroData);
+}
 
 let lastAlertedItem = null;
 
@@ -577,57 +524,40 @@ function getRelatedPlaces(calcID) {
 /********************************************************
  * Fonction pour mettre à jour les marqueurs Google Maps
  ********************************************************/
-let previewMarkerSpots = null; // Marqueur de preview spécifique aux spots
-window.cachedSpotIcons = {};   // Cache global pour les icônes images circulaires
-
+/********************************************************
+ * Fonction pour mettre à jour les marqueurs Google Maps
+ ********************************************************/
 function updateMapMarkers(places) {
-    // Supprimer les anciens marqueurs
+    // Supprimer tous les anciens marqueurs
     markers.forEach(marker => marker.setMap(null));
     markers.length = 0;
-    
-    // Supprimer l'ancien preview s'il existe
-    if (previewMarkerSpots) {
-      previewMarkerSpots.setMap(null);
-      previewMarkerSpots = null;
-    }
-    
-    if (!places || places.length === 0) return;
-    
-    const place = places[0];
-    
-    // Fonction pour créer le marqueur
-    function createMarker(iconUrl) {
-      previewMarkerSpots = new google.maps.Marker({
-        position: { lat: place.lat, lng: place.lng },
-        map: map,
-        title: place.name,
-        icon: {
-          url: iconUrl,
-          scaledSize: new google.maps.Size(50, 50),
-          anchor: new google.maps.Point(25, 25)
+
+    places.forEach(place => {
+        if (place.lat !== null && place.lng !== null) {
+            const marker = new google.maps.Marker({
+                position: { lat: place.lat, lng: place.lng },
+                map: map,
+                title: place.name,
+                // Ici on remplace l'icône par défaut (marqueur rouge) par un cercle
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: "#FFFFFF",   // Couleur de remplissage (à modifier si besoin)
+                    fillOpacity: 1,
+                    strokeColor: "#FF0000", // Couleur du contour rouge
+                    strokeWeight: 2,
+                    scale: 10               // Taille du cercle (ajustez selon vos besoins)
+                }
+            });
+
+            // Clic sur un marqueur → Ouvrir le popup en fonction du type de lieu
+            marker.addListener('click', () => {
+                showLieuDetails(place);
+            });
+
+            markers.push(marker);
         }
-      });
-    
-      previewMarkerSpots.addListener("click", () => {
-        showLieuDetails(place);
-      });
-    }
-    
-    // Si l'icône est déjà en cache, on l'utilise directement
-    if (window.cachedSpotIcons[place.name]) {
-      console.log("Using cached icon for", place.name);
-      createMarker(window.cachedSpotIcons[place.name]);
-    } else {
-      console.warn(`No cached icon for ${place.name}, generating...`);
-      // Génère l'icône et mets-la en cache, puis crée le marqueur
-      createCircularMarkerIcon(place.image, 50, "#FF0000").then(iconUrl => {
-        window.cachedSpotIcons[place.name] = iconUrl;
-        createMarker(iconUrl);
-      });
-    }
-  }
- 
-  
+    });
+}
 
 
 function showLieuDetails(lieu) {
@@ -928,6 +858,3 @@ function recenterMap() {
         map.panBy(0, 100);
     }
 }
-
-
-  
