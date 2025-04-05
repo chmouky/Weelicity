@@ -135,6 +135,7 @@
   }
   
   #continue-popup-btn {
+    font-family: 'Shrikhand', cursive;
     background-color: var(--theme-color);
     color: white;
     border: 2px solid black;
@@ -142,6 +143,11 @@
     padding: 15px 30px;
     font-weight: bold;
     cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  #continue-popup-btn:hover {
+    transform: scale(1.05);
   }
   
   #overlay {
@@ -166,6 +172,21 @@
   
   header .highlight {
     color: var(--theme-color); /* 👈 applique la couleur du thème à "thème" */
+  }
+  
+  #popup-body h3 {
+    font-family: 'Shrikhand', cursive;
+    font-size: 1.4rem;
+    text-align: center;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  #popup-body p {
+    font-family: 'Shrikhand', cursive;
+    font-size: 0.875rem; /* ou plus petit si tu veux */
+    color: #555;
+    text-align: center;
   }
   
   
