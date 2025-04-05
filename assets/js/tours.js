@@ -349,10 +349,11 @@ document.getElementById("go-button").addEventListener("click", async () => {
     filteredPlacesWithCoords = ordered;
 
     let tspResult = "<ul>";
-    ordered.forEach((place, index) => {
-      tspResult += `<li><a href="#" class="popup-link" data-index="${index}">${index + 1}. ${place.name}</a></li>`;
-    });
-    tspResult += "</ul>";
+ordered.forEach((place, index) => {
+  tspResult += `<li><a href="#" class="popup-link" data-index="${index}" style="color: var(--theme-color); text-decoration: underline;">${index + 1}. ${place.name}</a></li>`;
+});
+tspResult += "</ul>";
+
     document.getElementById("popup-itinerary-description").innerHTML = tspResult;
 
     const popupLinkContainer = document.getElementById("popup-itinerary-link");
