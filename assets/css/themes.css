@@ -28,10 +28,11 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    padding: 0 10px 80px 10px;
+    padding: 0 20px 80px 20px; /* ⬅️ Marges élargies à droite/gauche */
     background-color: #f9f9f9;
     margin-top: 50px;
   }
+  
   
   .tag-card {
     width: 100%;
@@ -63,7 +64,7 @@
   
   .tag-card p {
     font-family: 'Shrikhand', cursive;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: #555;
     margin: 5px;
   }
@@ -154,4 +155,20 @@
     background: rgba(0, 0, 0, 0.5);
     z-index: 1500;
   }
+  
+
+  header .page-title {
+    font-family: 'Shrikhand', cursive;
+    font-size: 1.6rem;
+    text-align: center;
+    margin-top: 60px;
+    padding: 0 20px;
+    line-height: 1.3;
+    color: #333; /* 👈 le noir léger pour "Choisissez un" */
+  }
+  
+  header .highlight {
+    color: var(--theme-color); /* 👈 applique la couleur du thème à "thème" */
+  }
+  
   
