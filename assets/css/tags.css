@@ -1,7 +1,4 @@
-* 
-:root {
-  --theme-color: #7BBFC2;
-}
+
 {
     margin: 0;
     padding: 0;
@@ -162,5 +159,20 @@
   #back-button:active {
     transform: scale(0.9);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+
+  header .page-title {
+    font-family: 'Shrikhand', cursive;
+    font-size: 1.6rem;
+    text-align: center;
+    margin-top: 60px;
+    padding: 0 20px;
+    line-height: 1.3;
+    color: #333; /* 👈 le noir léger pour "Choisissez un" */
+  }
+  
+  header .highlight {
+    color: var(--theme-color); /* 👈 applique la couleur du thème à "thème" */
   }
   
