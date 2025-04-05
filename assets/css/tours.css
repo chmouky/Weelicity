@@ -12,6 +12,12 @@ html, body {
     user-select: none;
   }
   
+  body, #app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
   .shrikhand-text {
     width: 100vw;
     box-sizing: border-box;
