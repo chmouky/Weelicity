@@ -77,5 +77,9 @@ body {
     z-index: 1000;
   }
     
+  .custom-nav-button:focus {
+    outline: none;        /* 👈 Sécurité supplémentaire */
+    box-shadow: none;     /* 👈 Au cas où une ombre est ajoutée par défaut */
+  }
       
   
