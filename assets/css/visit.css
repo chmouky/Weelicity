@@ -31,7 +31,7 @@ body {
     padding: 0;
     margin-bottom: 2px;
     cursor: pointer;
-    transform: none
+    transform: none;
     transition: transform 0.3s ease;
     outline: none;        /* 👈 Retire le contour noir au focus */
   }
@@ -68,10 +68,7 @@ body {
   .custom-nav-button.active + .nav-label {
     color: var(--theme-color);
     font-weight: bold;
-    font-size: 16px;
-    text-shadow: 0 0 6px var(--theme-color);
   }
-  
   .nav-label {
     font-size: 11px;
     color: #444;
