@@ -1,19 +1,6 @@
-
 /* =======================================================
-   around.css - version allégée et harmonisée avec police Shrikhand
+   around.css - version harmonisée avec police Shrikhand
 ========================================================= */
-
-/* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-footer, #custom-footer-navigation {
-  padding: 10px 0; /* rétablit le padding si écrasé */
-  box-sizing: content-box; /* ou border-box si besoin */
-}
 
 /* Police globale */
 body, h1, h2, h3, h4, h5, h6, p, a, span, div, li, button {
@@ -26,9 +13,17 @@ html, body {
   height: 100%;
   width: 100%;
   overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
-/* Titre */
+/* Footer fix */
+footer, #custom-footer-navigation {
+  padding: 10px 0;
+  box-sizing: content-box;
+}
+
+/* Titre principal */
 .shrikhand-text {
   width: 100vw;
   margin: 0;
@@ -80,7 +75,7 @@ html, body {
   z-index: 1;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  padding: 0 10px 20px 10px;
+  padding: 0 10vw 20px 10vw; /* 👈 centrage visuel + espace bas */
 }
 
 .carousel-item {
@@ -115,7 +110,7 @@ html, body {
   border-radius: 10px;
 }
 
-/* Popup */
+/* Popups */
 #popup, #popup-lieu-details {
   display: none;
   position: fixed;
@@ -162,4 +157,9 @@ html, body {
 }
 #carousel-container {
   scrollbar-width: none;
+}
+
+/* Reset universel déplacé à la fin */
+* {
+  box-sizing: border-box;
 }
