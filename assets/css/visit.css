@@ -35,5 +35,21 @@ body {
     color: #444;
     margin-top: -2px; /* 🔼 Remonte le texte */
   }
-    
+  #custom-footer-navigation {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: white;
+    border-top: 1px solid #ccc;
+    padding: 12px 0;
+    height: 80px; /* 🔼 Augmente la hauteur du footer ici */
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+  .custom-nav-button {
+    transform: translateY(-2px); /* ou retire-le complètement si ça décale trop */
+  }
+      
   
