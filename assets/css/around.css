@@ -1,29 +1,12 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 html, body {
+  margin: 0 !important;
+  padding: 0 !important;
   height: 100%;
   width: 100%;
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  padding-bottom: 70px; /* ✅ Réserve de l’espace pour le footer */
   overflow: hidden;
 }
 
-/* Wrapper principal */
-#app {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Désactiver la sélection */
+/* Désactiver le comportement de sélection */
 body {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -32,7 +15,7 @@ body {
   user-select: none;
 }
 
-/* Titre principal */
+/* Titre principal (police Shrikhand) */
 .shrikhand-text {
   width: 100vw;
   box-sizing: border-box;
@@ -51,7 +34,6 @@ body {
   -webkit-backdrop-filter: blur(5px);
 }
 
-/* Carte */
 #map {
   position: absolute;
   top: 0;
@@ -60,30 +42,19 @@ body {
   height: 100vh;
 }
 
-/* Carousel */
+/* Styles pour le carousel et les popups */
 #carousel-container {
   position: fixed;
-  bottom: 90px;
+  bottom: 100px !important;
   left: 0;
   width: 100%;
   display: flex;
-  overflow-x: auto;
-  overflow-y: hidden;
   scroll-snap-type: x mandatory;
   gap: 10px;
   z-index: 1;
-  padding-bottom: 20px;
-  scrollbar-width: none;
-}
-
-#carousel-container::-webkit-scrollbar {
-  display: none;
-}
-
-#carousel-container::before,
-#carousel-container::after {
-  content: "";
-  flex: 0 0 10%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 20px; /* Ajouté pour laisser de l'espace en bas */
 }
 
 .carousel-item {
@@ -111,19 +82,20 @@ body {
   cursor: pointer;
   text-decoration: underline;
   text-align: left;
-  margin-top: -8px;
+  margin-top: -8px; /* Ajustez cette valeur selon vos besoins */
 }
 
 .carousel-item img {
   width: 60%;
   max-height: 140px;
+  height: auto;
   object-fit: contain;
   object-position: center;
   border-radius: 10px;
+  display: block;
   margin-bottom: 10px;
 }
 
-/* Toggle bouton */
 .carousel-item .toggle-btn {
   margin-top: 10px;
   width: 50px;
@@ -155,7 +127,7 @@ body {
   transform: translateX(25px);
 }
 
-/* Popup général */
+/* Styles pour les popups */
 #popup, #popup-lieu-details {
   display: none;
   position: fixed;
@@ -195,7 +167,7 @@ body {
 }
 
 #popup-lieux-list {
-  list-style-type: none;
+  list-style-type: none; /* Supprime les puces */
   padding-left: 0;
   text-align: left;
 }
@@ -220,8 +192,10 @@ body {
   font-size: 28px;
   font-weight: bold;
   cursor: pointer;
-  background: none;
+  width: auto;
+  height: auto;
   padding: 5px 10px;
+  background: none;
   transition: transform 0.2s ease;
 }
 
@@ -235,31 +209,46 @@ body {
 
 #popup-image, #popup-lieu-image {
   width: 100%;
+  height: auto;
   border-radius: 10px;
   margin: 10px 0;
 }
 
-/* Description */
+#carousel-container::-webkit-scrollbar {
+  display: none;
+}
+
+#carousel-container {
+  scrollbar-width: none;
+  bottom: 90px; /* Pour le remonter légèrement */
+}
+
+#carousel-container::before,
+#carousel-container::after {
+  content: "";
+  flex: 0 0 10%;
+}
+
 .description-text {
   font-family: 'Shrikhand', cursive;
   font-size: 0.7em;
   color: black;
   text-align: left;
   margin: 5px 0;
-  padding: 0 10px;
-  font-weight: normal;
-  margin-top: -7px;
+  padding: 0 10px; /* Ajustement de l'espacement */
+  font-weight: normal; /* 🔴 Empêche le texte d'être en gras */
+  margin-top: -7px; /* Ajustez cette valeur selon vos besoins */
 }
 
-/* Overlay */
+
 #overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1900;
+  background: rgba(0, 0, 0, 0.5); /* Fond gris à 50% d'opacité */
+  z-index: 1900; /* Doit être inférieur aux popups (ici popups à 2000) */
   display: none;
 }
 

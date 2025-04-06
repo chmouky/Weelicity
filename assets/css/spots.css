@@ -452,9 +452,9 @@ color: #333;
 text-align: right;
 line-height: 1.2em;
 max-width: 100px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
 }
 
 .overlay {

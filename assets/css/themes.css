@@ -11,7 +11,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-bottom: 70px; /* ✅ espace pour footer fixe */
+  padding-bottom: 70px; /* 👈 pour laisser la place au footer fixe *
 }
 
 #app {
