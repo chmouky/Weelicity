@@ -1,18 +1,18 @@
-
 /* =======================================================
-   around.css - version allégée et harmonisée avec police Shrikhand
+   around.css - version corrigée et harmonisée
 ========================================================= */
 
-/* Reset */
-* {
+/* Reset sans écraser les composants (évite le * universel) */
+html, body, h1, h2, h3, h4, h5, h6, p, a, span, div, li, button {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Footer : restaure sa hauteur correcte si affecté */
 footer, #custom-footer-navigation {
-  padding: 10px 0; /* rétablit le padding si écrasé */
-  box-sizing: content-box; /* ou border-box si besoin */
+  padding: 10px 0;
+  box-sizing: border-box;
 }
 
 /* Police globale */
@@ -21,7 +21,7 @@ body, h1, h2, h3, h4, h5, h6, p, a, span, div, li, button {
   font-weight: normal !important;
 }
 
-/* Body */
+/* Body & Scroll */
 html, body {
   height: 100%;
   width: 100%;
@@ -31,7 +31,6 @@ html, body {
 /* Titre */
 .shrikhand-text {
   width: 100vw;
-  margin: 0;
   font-size: 2.3em;
   color: black;
   position: fixed;
@@ -64,7 +63,6 @@ html, body {
   z-index: 1900;
   display: none;
 }
-
 .no-scroll {
   overflow: hidden;
 }
@@ -80,7 +78,8 @@ html, body {
   z-index: 1;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  padding: 0 10vw 20px 10vw; /* 👈 centrage visuel + espace bas */
+  padding: 0 10vw 20px 10vw; /* 👈 Centrage visuel sans réduire la taille */
+  box-sizing: border-box;
 }
 
 .carousel-item {
