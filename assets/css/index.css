@@ -4,12 +4,6 @@
    Variables globales, reset, et styles de base
 ========================================================= */
 
-/* Variables globales */
-:root {
-  --theme-color: #7BBFC2;
-  --background-color: #ffffff;
-  --font-color: #333333;
-}
 
 /* Reset CSS de base */
 {
@@ -30,7 +24,17 @@ body {
   line-height: 1.6;
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
 
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
 /* Conteneur principal */
 #siteWrapper {
   max-width: 1200px;
