@@ -58,7 +58,7 @@ body {
     background-color: white;
     border-top: 1px solid #ccc;
     padding: 3px 0;
-    height: 85px; /* ← ICI, c’est la hauteur du footer */
+    height: 95px; /* ← ICI, c’est la hauteur du footer */
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -70,7 +70,7 @@ body {
     font-weight: bold;
   }
   .nav-label {
-    font-size: 16px;
+    font-size: 10px;
     color: #444;
     margin: 0;
     margin-top: -4px; /* 🔼 remonte le texte sous le bouton */
