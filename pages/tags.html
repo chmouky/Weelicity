@@ -62,7 +62,18 @@
   </div>
 </div>
 
-  
+<script>
+  const path = window.location.pathname.toLowerCase();
+  const pageName = path.split('/').pop().split('.')[0]; // ex: 'tags'
+
+  document.querySelectorAll('.custom-nav-button').forEach(button => {
+    const pages = button.dataset.page.split(" ");
+    if (pages.includes(pageName)) {
+      button.classList.add('active');
+    }
+  });
+</script>
+ 
   <script src="/assets/js/tags.js" defer></script>
 </body>
 </html>
