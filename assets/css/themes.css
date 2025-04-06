@@ -11,7 +11,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-bottom: 70px; /* 👈 pour laisser la place au footer fixe *
+  padding-bottom: 70px; /* espace pour le footer */
 }
 
 #app {
@@ -47,7 +47,7 @@ header .highlight {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
-  padding: 0 20px 80px 20px;
+  padding: 0 10px 80px 10px; /* même padding que tags.css */
   background-color: #f9f9f9;
   margin-top: 50px;
 }
@@ -83,7 +83,7 @@ header .highlight {
 
 .tag-card p {
   font-family: 'Shrikhand', cursive;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   color: #555;
   margin: 5px;
 }
@@ -123,10 +123,16 @@ header .highlight {
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 #back-button:hover {
   background-color: #0056b3;
+}
+
+#back-button:active {
+  transform: scale(0.9);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Popup */
