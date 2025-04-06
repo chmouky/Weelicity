@@ -57,11 +57,17 @@ body {
     align-items: center;
     background-color: white;
     border-top: 1px solid #ccc;
-    padding: 12px 0;
+    padding: 10px 0;
     height: 80px; /* ← ICI, c’est la hauteur du footer */
     position: fixed;
     bottom: 0;
     width: 100%;
     z-index: 1000;
   }
+
+  .custom-nav-button.active + .nav-label {
+    color: var(--theme-color);
+    font-weight: bold;
+  }
+  
   
