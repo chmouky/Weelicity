@@ -58,9 +58,11 @@ footer {
   
   .custom-nav-button.active {
     background-color: var(--theme-color);
-    box-shadow: 0 0 10px var(--theme-color);
+    box-shadow: 0 0 8px var(--theme-color);
     border-radius: 12px;
-  }  
+    padding: 6px; /* pour bien entourer l’icône */
+  }
+  
 
   /* Label sous l’icône */
   .nav-label {
