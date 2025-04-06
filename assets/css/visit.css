@@ -33,6 +33,7 @@ body {
     cursor: pointer;
     transform: translateY(-5px); /* 🔼 Remonte les boutons */
     transition: transform 0.3s ease;
+    outline: none;        /* 👈 Retire le contour noir au focus */
   }
   
   .custom-nav-button img {
