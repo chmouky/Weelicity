@@ -74,7 +74,7 @@ body {
     color: #444;
     margin: 0;
     margin-top: -4px; /* 🔼 remonte le texte sous le bouton */
-    transition: color 0.3s ease, font-size 0.3s ease;
+    transition: color 0.3s ease, font-size 0.3s ease;    font-family: 'Shrikhand', cursive;
   }
   
   
