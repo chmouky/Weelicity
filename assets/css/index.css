@@ -1,73 +1,27 @@
-/* ===== Reset minimal ===== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* ===== Base ===== */
 body {
-  font-family: 'Bitter', serif;
-  background-color: #fff;
-  color: #333;
-  line-height: 1.6;
-  overflow-x: hidden;
-}
-
-/* ===== Wrapper principal ===== */
-#siteWrapper {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-/* ===== En-tête ===== */
-header {
-  text-align: center;
-  padding: 20px 0;
-  border-bottom: 1px solid #ddd;
-}
-
-header h1 {
-  font-size: 2rem;
-  color: #7BBFC2; /* ou var(--theme-color) si défini ailleurs */
-}
-
-/* ===== Section principale ===== */
-main.container {
-  padding: 20px 0;
-}
-
-.content {
-  text-align: center;
-}
-
-.content img {
-  width: 100%;
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-}
-
-/* ===== Overlay de chargement ===== */
-#loadingOverlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background-color: rgba(255, 255, 255, 0.8);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
 }
 
-#loadingOverlay img {
-  width: 120px;
-  height: auto;
-}
+  
+  button {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    margin: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: #7BBFC2;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
 
-/* ===== Pied de page (placeholder, le style vient de footer.css) ===== */
-#footer-placeholder {
-  margin-top: 40px;
-}
+  
+  button:hover {
+    background-color: #5fa6ab;
+  }
+  
