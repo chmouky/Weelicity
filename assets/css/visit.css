@@ -90,4 +90,11 @@ body {
     outline: none;
     box-shadow: none;
   }
-    
+  .custom-nav-button:focus,
+.custom-nav-button:focus-visible,
+.custom-nav-button:active,
+.custom-nav-button img:focus,
+.custom-nav-button img:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
