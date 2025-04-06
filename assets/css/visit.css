@@ -43,10 +43,19 @@ body {
     transition: filter 0.3s ease, box-shadow 0.3s ease;
   }
   
+  .custom-nav-button.active {
+    background-color: transparent; /* ❌ plus de fond */
+    border: 2px solid var(--theme-color); /* ✅ contour coloré */
+    border-radius: 12px;
+    padding: 4px; /* ajoute un petit espace autour de l’image */
+  }
+  
+
   .custom-nav-button.active img {
     filter: none; /* couleur normale */
     box-shadow: 0 0 0 2px var(--theme-color); /* contour coloré */
     border-radius: 10px; /* pour adoucir les angles */
+    filter: hue-rotate(180deg) brightness(1.2); /* ✅ effet coloré dynamique */
   }
   
   /* Tu peux ajuster le glow si tu préfères une ombre colorée */
