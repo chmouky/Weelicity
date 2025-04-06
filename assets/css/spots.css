@@ -4,30 +4,8 @@ html, body {
     height: 100%;
     width: 100%;
     overflow: hidden;
-    overflow-x: hidden;
-    font-family: 'Arial', sans-serif;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    padding-bottom: 70px; /* 🧱 Espace réservé au footer fixe */
-  }
-  
-  /* Ajoute ceci si tu as un conteneur principal */
-  #app {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  /* Désactivation sélection */
-  body {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
-  
+        overflow-x: hidden; /* Empêche tout débordement horizontal */
+}
 .shrikhand-text {
 width: 100vw;               /* Utilise la largeur de la fenêtre */
 box-sizing: border-box;     /* Pour inclure le padding dans la largeur */
@@ -46,6 +24,23 @@ backdrop-filter: blur(5px);
 -webkit-backdrop-filter: blur(5px);
 }
 
+/* Désactiver le comportement de sélection */
+body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#map {
+position: fixed !important; /* Fixe la carte pour qu’elle prenne toute la fenêtre */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+        margin: 0 !important;
+padding: 0 !important;
+}
 
 /* Styles pour le carousel et le popup */
 #carousel-container {
@@ -457,9 +452,9 @@ color: #333;
 text-align: right;
 line-height: 1.2em;
 max-width: 100px;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .overlay {
