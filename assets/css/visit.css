@@ -54,16 +54,17 @@ body {
   #custom-footer-navigation {
     display: flex;
     justify-content: space-around;
-    align-items: center;
+    align-items: flex-start; /* ✅ au lieu de center */
     background-color: white;
     border-top: 1px solid #ccc;
-    padding: 0px 0;
-    height: 95px; /* ← ICI, c’est la hauteur du footer */
+    padding: 8px 0 4px;
+    height: 95px;
     position: fixed;
     bottom: 0;
     width: 100%;
     z-index: 1000;
   }
+  
 
   .custom-nav-button.active + .nav-label {
     color: var(--theme-color);
@@ -77,5 +78,11 @@ body {
     transition: color 0.3s ease, font-size 0.3s ease;    font-family: 'Shrikhand', cursive;
   }
   
+  .custom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0px; /* réduit l'espacement entre bouton et texte */
+  }
   
   
