@@ -45,8 +45,10 @@ body {
   }
   
   .custom-nav-button.active {
-    background-color: var(--theme-color);
-    box-shadow: 0 0 10px var(--theme-color);
+    background-color: transparent; /* ❌ plus de fond */
+    border: 2px solid var(--theme-color); /* ✅ contour coloré */
     border-radius: 12px;
+    padding: 4px; /* ajoute un petit espace autour de l’image */
   }
+  
   
