@@ -1,180 +1,73 @@
-/* =======================================================
-   index.css
-   -------------------------------------------------------
-   Variables globales, reset, et styles de base
-========================================================= */
-
-
-/* Reset CSS de base */
-{
+/* ===== Reset minimal ===== */
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-html, body {
-  background-color: white;
-  margin: 0;
-  padding: 0;
-}  
-/* Style de la page */
+
+/* ===== Base ===== */
 body {
   font-family: 'Bitter', serif;
-  background-color: ##F5F5F5; /* ✅ Blanc pur */
-  color: var(--font-color);
+  background-color: #fff;
+  color: #333;
   line-height: 1.6;
-}
-
-html, body {
-  margin: 0;
-  padding: 0;
   overflow-x: hidden;
 }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-/* Conteneur principal */
+/* ===== Wrapper principal ===== */
 #siteWrapper {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }
 
-/* En-tête */
+/* ===== En-tête ===== */
 header {
-  padding: 20px 0;
   text-align: center;
+  padding: 20px 0;
   border-bottom: 1px solid #ddd;
 }
 
 header h1 {
   font-size: 2rem;
-  color: var(--theme-color);
+  color: #7BBFC2; /* ou var(--theme-color) si défini ailleurs */
 }
 
-/* Contenu principal */
+/* ===== Section principale ===== */
 main.container {
   padding: 20px 0;
 }
 
-/* Sections de contenu */
-section {
-  margin-bottom: 40px;
-}
-
 .content {
-  /* Ajoute ici les styles spécifiques de tes blocs de contenu */
   text-align: center;
 }
 
-/* Exemple pour une image dans le contenu */
 .content img {
+  width: 100%;
   max-width: 100%;
   height: auto;
   display: block;
   margin: 0 auto;
 }
 
-/* Pied de page */
-footer {
-  padding: 20px 0;
-  text-align: center;
-  border-top: 1px solid #ddd;
-  font-size: 0.9rem;
-  color: var(--font-color);
-}
-/* =======================================================
- Footer Navigation Styles
-========================================================= */
-#custom-footer-navigation {
+/* ===== Overlay de chargement ===== */
+#loadingOverlay {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 90px;
-  background-color: white;
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-start;
-  box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2);
-  border-top: 3px solid rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  padding: 10px 0 15px 0;
-  box-sizing: border-box;
-  color: #7BBFC2;
-}
-
-.custom-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.custom-nav-button {
-  border: none;
-  background: none;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(255, 255, 255, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
-  padding: 0;
-  margin-top: 10px;
-  outline: none; /* Supprime la bordure de focus */
-  box-shadow: none; /* Supprime toute ombre éventuelle */
+  z-index: 9999;
 }
 
-.custom-nav-button img {
-  max-width: 36px;
-  max-height: 36px;
-  object-fit: contain;
-  transition: transform 0.2s ease, filter 0.3s ease;
+#loadingOverlay img {
+  width: 120px;
+  height: auto;
 }
 
-/* Pour rendre le 3ème bouton plus grand */
-.custom-nav-button.eat-bigger img {
-  max-width: 48px; /* Augmente la taille de l'icône */
-  max-height: 48px;
-  transform: translateY(-15px); /* Ajuste la position */
-}
-
-.custom-nav-button.eat-bigger + .nav-label {
-  transform: translateY(-12px); /* Remonte le texte associé */
-}
-
-/* Effet au survol */
-.custom-nav-button:hover img {
-  transform: scale(1.1);
-}
-
-/* Style pour le bouton actif */
-.custom-nav-button.active img {
-  filter: brightness(0) saturate(100%) invert(72%) sepia(20%) saturate(600%) hue-rotate(180deg) brightness(90%) contrast(85%);
-  cursor: default;
-  background: none !important;
-}
-
-.custom-nav-button.active {
-  pointer-events: none;
-  background: none;
-}
-
-/* Style pour les labels sous les boutons */
-.nav-label {
-  font-size: 0.7rem;
-  color: #333;
-  margin-top: 2px;
-  text-align: center;
-}
-
-/* Supprimer tout effet de focus/click */
-.custom-nav-button:focus {
-  outline: none;
-  box-shadow: none;
-  background: none;
-}
-.custom-nav-button:active {
-  background: none !important;
+/* ===== Pied de page (placeholder, le style vient de footer.css) ===== */
+#footer-placeholder {
+  margin-top: 40px;
 }
