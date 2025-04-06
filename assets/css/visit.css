@@ -82,4 +82,12 @@ body {
     box-shadow: none;     /* 👈 Au cas où une ombre est ajoutée par défaut */
   }
       
-  
+  .custom-nav-button:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+  .custom-nav-button img:focus {
+    outline: none;
+    box-shadow: none;
+  }
+    
