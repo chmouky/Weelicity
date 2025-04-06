@@ -45,56 +45,8 @@ body {
   }
   
   .custom-nav-button.active {
-    background-color: transparent; /* ❌ plus de fond */
-    border: 2px solid var(--theme-color); /* ✅ contour coloré */
+    background-color: var(--theme-color);
+    box-shadow: 0 0 10px var(--theme-color);
     border-radius: 12px;
-    padding: 4px; /* ajoute un petit espace autour de l’image */
   }
   
-
-  .custom-nav-button.active img {
-    filter: none; /* couleur normale */
-    box-shadow: 0 0 0 2px var(--theme-color); /* contour coloré */
-    border-radius: 10px; /* pour adoucir les angles */
-    filter: brightness(0) saturate(100%) sepia(100%) hue-rotate(160deg);
-  }
-    
-  /* Tu peux ajuster le glow si tu préfères une ombre colorée */
-  .custom-nav-button.active img:hover {
-    box-shadow: 0 0 8px var(--theme-color);
-  }
-  #custom-footer-navigation {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    background-color: white;
-    border-top: 1px solid #ccc;
-    padding: 12px 0;
-    height: 80px; /* 🔼 Augmente la hauteur du footer ici */
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    z-index: 1000;
-  }
-    
-  .custom-nav-button:focus {
-    outline: none;        /* 👈 Sécurité supplémentaire */
-    box-shadow: none;     /* 👈 Au cas où une ombre est ajoutée par défaut */
-  }
-      
-  .custom-nav-button:focus-visible {
-    outline: none;
-    box-shadow: none;
-  }
-  .custom-nav-button img:focus {
-    outline: none;
-    box-shadow: none;
-  }
-  .custom-nav-button:focus,
-.custom-nav-button:focus-visible,
-.custom-nav-button:active,
-.custom-nav-button img:focus,
-.custom-nav-button img:active {
-  outline: none !important;
-  box-shadow: none !important;
-}
