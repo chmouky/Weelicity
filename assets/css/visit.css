@@ -58,7 +58,7 @@ body {
     background-color: white;
     border-top: 1px solid #ccc;
     padding: 6px 0;
-    height: 80px; /* ← ICI, c’est la hauteur du footer */
+    height: 85px; /* ← ICI, c’est la hauteur du footer */
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -73,7 +73,7 @@ body {
     font-size: 16px;
     color: #444;
     margin: 0;
-    margin-top: -0px; /* 🔼 remonte le texte sous le bouton */
+    margin-top: -4px; /* 🔼 remonte le texte sous le bouton */
     transition: color 0.3s ease, font-size 0.3s ease;
   }
   
