@@ -30,5 +30,10 @@ body {
     box-shadow: 0 0 10px var(--theme-color);
     border-radius: 12px;
   }
-  
+  .nav-label {
+    font-size: 14px;
+    color: #444;
+    margin-top: -2px; /* 🔼 Remonte le texte */
+  }
+    
   
