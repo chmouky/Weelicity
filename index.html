@@ -2,58 +2,27 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Weelicity</title>
-
-  <!-- Polices -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;700&family=Shrikhand&display=swap" />
-
-  <!-- Feuilles de style -->
-  <link rel="stylesheet" href="/assets/css/index.css" />
-  <link rel="stylesheet" href="/assets/css/footer.css" />
-
-  <!-- Manifest PWA -->
-  <link rel="manifest" href="/assets/manifest.json" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="Weelicity" />
-  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Navigation</title>
+  <link rel="stylesheet" href="../assets/css/footer.css">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../assets/css/visit.css">
 </head>
 <body>
 
-  <!-- Overlay de chargement -->
-  <div id="loadingOverlay">
-    <img src="/assets/img/index/pin_wait.gif" alt="Chargement..." />
-  </div>
+  
 
-  <!-- Contenu principal -->
-  <div id="siteWrapper">
-    <header>
-      <h1>Welcome to <span style="font-family: 'Shrikhand', cursive;">Weelicity</span></h1>
-    </header>
+  <div id="footer-placeholder"></div>
 
-    <!--<main class="container">
-    <!--  <section class="content">
-    <!--    <img src="/assets/img/pages/Home.jpg" alt="Image d’accueil de Weelicity" />
-    <!--  </section>
-    <!--</main>
-
-    <!-- Pied de page dynamique -->
-    <div id="footer-placeholder"></div>
-  </div>
-
-  <!-- Script de chargement du footer -->
   <script>
     fetch("/assets/components/footer.html")
-      .then(res => res.text())
+      .then(response => response.text())
       .then(data => {
-        document.getElementById("footer-placeholder").innerHTML = data;
-        document.getElementById("footer-placeholder").classList.add("loaded");
+        const footer = document.getElementById("footer-placeholder");
+        footer.innerHTML = data;
+        footer.classList.add("loaded");
       });
   </script>
-
-  <!-- Scripts principaux -->
-  <script src="/assets/js/utils.js"></script>
-  <script src="/assets/js/index.js"></script>
+    <script src="../assets/js/visit.js"></script>
 </body>
 </html>
