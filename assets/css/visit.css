@@ -57,7 +57,7 @@ body {
     border-radius: 10px; /* pour adoucir les angles */
     filter: brightness(0) saturate(100%) sepia(100%) hue-rotate(160deg);
   }
-   
+    
   /* Tu peux ajuster le glow si tu préfères une ombre colorée */
   .custom-nav-button.active img:hover {
     box-shadow: 0 0 8px var(--theme-color);
