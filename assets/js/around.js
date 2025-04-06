@@ -556,53 +556,77 @@ function svgToDataURL(svg) {
 const imageCache = {}; // Cache pour stocker les dataURL par image URL
 
 function updateMapMarkers(places) {
-  // Supprimer les anciens marqueurs
-  markers.forEach(marker => marker.setMap(null));
-  markers.length = 0;
-
-  places.forEach(place => {
-    if (place.lat !== null && place.lng !== null && place.image) {
-      const currentZoom = map.getZoom();
-      const zoomMin = place.zoomMin || 10;
-      if (currentZoom < zoomMin) return;
-      
-      // Si l'icône a déjà été générée, l'utiliser directement
-      if (imageCache[place.image]) {
-        createMarker(place, imageCache[place.image]);
-      } else {
-        const image = new Image();
-        image.crossOrigin = "anonymous";
-        image.src = place.image;
-        image.onload = () => {
-          const size = 80;
-          const canvas = document.createElement("canvas");
-          canvas.width = size;
-          canvas.height = size;
-          const ctx = canvas.getContext("2d");
-          ctx.beginPath();
-          ctx.arc(size / 2, size / 2, size / 2 - 4, 0, Math.PI * 2);
-          ctx.closePath();
-          ctx.clip();
-          ctx.drawImage(image, 0, 0, size, size);
-          ctx.beginPath();
-          ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
-          ctx.closePath();
-          ctx.lineWidth = 4;
-          ctx.strokeStyle = "#FF0000";
-          ctx.stroke();
-          const finalIconUrl = canvas.toDataURL();
-          // Stocker dans le cache
-          imageCache[place.image] = finalIconUrl;
-          createMarker(place, finalIconUrl);
-        };
-        image.onerror = () => {
-          console.warn("❌ Impossible de charger l'image :", place.image);
-          createMarker(place, "https://maps.google.com/mapfiles/ms/icons/red-dot.png");
-        };
-      }
+    // Montre l'overlay de chargement
+    const overlay = document.getElementById("loadingOverlay");
+    if (overlay) overlay.style.display = "flex";
+  
+    // Supprimer les anciens marqueurs
+    markers.forEach(marker => marker.setMap(null));
+    markers.length = 0;
+  
+    let loaded = 0;
+    const total = places.length;
+  
+    if (total === 0) {
+      if (overlay) overlay.style.display = "none";
+      return;
     }
-  });
-}
+  
+    places.forEach(place => {
+      if (place.lat !== null && place.lng !== null && place.image) {
+        const currentZoom = map.getZoom();
+        const zoomMin = place.zoomMin || 10;
+        if (currentZoom < zoomMin) {
+          loaded++;
+          if (loaded === total && overlay) overlay.style.display = "none";
+          return;
+        }
+  
+        if (imageCache[place.image]) {
+          createMarker(place, imageCache[place.image]);
+          loaded++;
+          if (loaded === total && overlay) overlay.style.display = "none";
+        } else {
+          const image = new Image();
+          image.crossOrigin = "anonymous";
+          image.src = place.image;
+          image.onload = () => {
+            const size = 80;
+            const canvas = document.createElement("canvas");
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext("2d");
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, size / 2 - 4, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.clip();
+            ctx.drawImage(image, 0, 0, size, size);
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "#FF0000";
+            ctx.stroke();
+            const finalIconUrl = canvas.toDataURL();
+            imageCache[place.image] = finalIconUrl;
+            createMarker(place, finalIconUrl);
+            loaded++;
+            if (loaded === total && overlay) overlay.style.display = "none";
+          };
+          image.onerror = () => {
+            console.warn("❌ Image non chargée :", place.image);
+            createMarker(place, "https://maps.google.com/mapfiles/ms/icons/red-dot.png");
+            loaded++;
+            if (loaded === total && overlay) overlay.style.display = "none";
+          };
+        }
+      } else {
+        loaded++;
+        if (loaded === total && overlay) overlay.style.display = "none";
+      }
+    });
+  }
+  
 
 function createMarker(place, iconUrl) {
   const marker = new google.maps.Marker({
