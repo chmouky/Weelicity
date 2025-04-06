@@ -25,15 +25,33 @@ body {
     background-color: #5fa6ab;
   }
 
-  .custom-nav-button.active {
-    background-color: var(--theme-color);
-    box-shadow: 0 0 10px var(--theme-color);
-    border-radius: 12px;
+  .custom-nav-button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-bottom: 2px;
+    cursor: pointer;
+    transform: translateY(-5px); /* 🔼 Remonte les boutons */
+    transition: transform 0.3s ease;
   }
-  .nav-label {
-    font-size: 14px;
-    color: #444;
-    margin-top: -2px; /* 🔼 Remonte le texte */
+  
+  .custom-nav-button img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    filter: grayscale(100%) brightness(0.5); /* aspect par défaut */
+    transition: filter 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .custom-nav-button.active img {
+    filter: none; /* couleur normale */
+    box-shadow: 0 0 0 2px var(--theme-color); /* contour coloré */
+    border-radius: 10px; /* pour adoucir les angles */
+  }
+  
+  /* Tu peux ajuster le glow si tu préfères une ombre colorée */
+  .custom-nav-button.active img:hover {
+    box-shadow: 0 0 8px var(--theme-color);
   }
   #custom-footer-navigation {
     display: flex;
@@ -48,8 +66,6 @@ body {
     width: 100%;
     z-index: 1000;
   }
-  .custom-nav-button {
-    transform: translateY(-2px); /* ou retire-le complètement si ça décale trop */
-  }
+    
       
   
