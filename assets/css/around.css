@@ -82,6 +82,13 @@ html, body {
   padding: 0 10px 20px 10px;
 }
 
+#carousel-container::before,
+#carousel-container::after {
+  content: "";
+  flex: 0 0 10vw; /* ajuste la valeur (ici 10% de la largeur de la fenêtre) selon tes besoins */
+}
+
+
 .carousel-item {
   flex: 0 0 80%;
   background-color: white;
