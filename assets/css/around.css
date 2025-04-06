@@ -10,6 +10,11 @@
   box-sizing: border-box;
 }
 
+footer, #custom-footer-navigation {
+  padding: 10px 0; /* rétablit le padding si écrasé */
+  box-sizing: content-box; /* ou border-box si besoin */
+}
+
 /* Police globale */
 body, h1, h2, h3, h4, h5, h6, p, a, span, div, li, button {
   font-family: 'Shrikhand', cursive !important;
