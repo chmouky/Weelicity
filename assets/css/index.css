@@ -25,3 +25,15 @@ body {
     background-color: #5fa6ab;
   }
   
+
+  .content img {
+    max-width: 90vw;   /* Ne dépasse jamais 90% de la largeur écran */
+    max-height: 60vh;  /* Ne dépasse pas 60% de la hauteur écran */
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 12px; /* optionnel pour un coin arrondi */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* optionnel pour style */
+  }
+  
