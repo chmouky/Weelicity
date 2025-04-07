@@ -57,7 +57,6 @@ body {
     display: flex;
     justify-content: space-around;
     align-items: flex-start; /* ✅ au lieu de center */
-    background-color: white;
     border-top: 1px solid #ccc;
     padding: 8px 0 4px;
     height: 95px;
@@ -65,6 +64,10 @@ body {
     bottom: 0;
     width: 100%;
     z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.75); /* fond semi-transparent */
+    backdrop-filter: blur(10px); /* flou moderne */
+    -webkit-backdrop-filter: blur(10px); /* compatibilité Safari */
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1); /* effet de relief */
   }
   
 
