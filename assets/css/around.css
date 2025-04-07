@@ -169,3 +169,68 @@ html, body {
 #carousel-container {
   scrollbar-width: none;
 } *
+
+ /* FOOTER */
+ .custom-nav-button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 2px;
+  cursor: pointer;
+  transform: none;
+  transition: transform 0.3s ease;
+  outline: none;        /* 👈 Retire le contour noir au focus */
+}
+
+.custom-nav-button img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  filter: grayscale(100%) brightness(0.5); /* aspect par défaut */
+  transition: filter 0.3s ease, box-shadow 0.3s ease;
+}
+
+.custom-nav-button.active {
+  border: 2px solid var(--theme-color); /* ✅ contour coloré */
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.2); /* semi-transparent */
+  padding: 8px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 0 6px rgba(123, 191, 194, 0.3);
+}
+
+#custom-footer-navigation {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start; /* ✅ au lieu de center */
+  background-color: white;
+  border-top: 1px solid #ccc;
+  padding: 8px 0 4px;
+  height: 95px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+  backdrop-filter: blur(12px);
+}
+
+
+.custom-nav-button.active + .nav-label {
+  color: var(--theme-color);
+  font-weight: bold;
+}
+.nav-label {
+  font-size: 11px;
+  color: #444;
+  margin: 0;
+  margin-top: -4px; /* 🔼 remonte le texte sous le bouton */
+  transition: color 0.3s ease, font-size 0.3s ease;    font-family: 'Shrikhand', cursive;
+}
+
+.custom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0px; /* réduit l'espacement entre bouton et texte */
+}
