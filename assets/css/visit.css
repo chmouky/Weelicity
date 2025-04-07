@@ -47,16 +47,20 @@ body {
   }
   
   .custom-nav-button.active {
-    background-color: transparent; /* ❌ plus de fond */
     border: 2px solid var(--theme-color); /* ✅ contour coloré */
     border-radius: 12px;
-    padding: 4px; /* ajoute un petit espace autour de l’image */
+    background-color: rgba(255, 255, 255, 0.2); /* semi-transparent */
+    padding: 8px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 0 6px rgba(123, 191, 194, 0.3);
   }
   
   #custom-footer-navigation {
     display: flex;
     justify-content: space-around;
     align-items: flex-start; /* ✅ au lieu de center */
+    background-color: white;
     border-top: 1px solid #ccc;
     padding: 8px 0 4px;
     height: 95px;
@@ -64,10 +68,6 @@ body {
     bottom: 0;
     width: 100%;
     z-index: 1000;
-    background-color: rgba(255, 255, 255, 0.75); /* fond semi-transparent */
-    backdrop-filter: blur(10px); /* flou moderne */
-    -webkit-backdrop-filter: blur(10px); /* compatibilité Safari */
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1); /* effet de relief */
   }
   
 
