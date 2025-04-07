@@ -46,14 +46,19 @@ body {
     transition: filter 0.3s ease, box-shadow 0.3s ease;
   }
   
-  .custom-nav-button.active {
-    border: 2px solid var(--theme-color); /* ✅ contour coloré */
-    border-radius: 12px;
-    background-color: rgba(255, 255, 255, 0.2); /* semi-transparent */
-    padding: 8px;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 0 6px rgba(123, 191, 194, 0.3);
+  .custom-nav-button.active::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 16px;
+    border: 2px solid var(--theme-color); /* 👈 ton cadre bleu */
+    background-color: rgba(255, 255, 255, 0.2); /* 👈 pour accentuer le flou */
+    backdrop-filter: blur(12px); /* 👈 effet flouté */
+    -webkit-backdrop-filter: blur(12px); /* Safari support */
+    z-index: -1;
   }
   
   #custom-footer-navigation {
@@ -68,6 +73,7 @@ body {
     bottom: 0;
     width: 100%;
     z-index: 1000;
+    backdrop-filter: blur(12px);
   }
   
 
