@@ -558,7 +558,7 @@ const imageCache = {}; // Cache pour stocker les dataURL par image URL
 
 function updateMapMarkers(places) {
     // Montre l'overlay de chargement
-    const overlay = document.getElementById("loadingOverlay");
+    const overlay = document.getElementById("overlay");
     if (overlay) overlay.style.display = "flex";
   
     // Supprimer les anciens marqueurs
