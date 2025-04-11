@@ -674,7 +674,9 @@ function showLieuDetails(lieu) {
 
     // Mise à jour des éléments du popup
     document.getElementById("popup-lieu-title").textContent = lieu.name || "Nom inconnu";
-    document.getElementById("popup-lieu-description").textContent = description;
+    const descriptionContainer = document.getElementById("popup-lieu-description");
+    descriptionContainer.textContent = description;
+
     if (lieu.inout || lieu.ticket) {
         const extraInfo = document.createElement("p");
         extraInfo.style.marginTop = "10px";
@@ -684,34 +686,32 @@ function showLieuDetails(lieu) {
             ${lieu.inout ? `<strong>Access:</strong> ${lieu.inout}<br>` : ""}
             ${lieu.ticket ? `<strong>Ticket:</strong> ${lieu.ticket}` : ""}
         `;
-        const container = document.getElementById("popup-lieu-description");
-        container.appendChild(extraInfo);
+        descriptionContainer.appendChild(extraInfo);
     }
 
     const popupLieuImage = document.getElementById("popup-lieu-image");
-    popupLieuImage.src = (lieu.image && lieu.image.trim()) ? lieu.image.trim() : "https://via.placeholder.com/300x150?text=Aucune+Image";
-    popupLieuImage.alt = lieu.name || "Nom inconnu";
-    
+    const imageUrl = (lieu.image && lieu.image.trim()) ? lieu.image.trim() : "https://via.placeholder.com/300x150?text=Aucune+Image";
+
     // Réinitialisation et création des liens
     const popupLinks = document.getElementById("popup-lieu-links");
     popupLinks.innerHTML = "";
     let googleMapsRouteLink = `https://www.google.com/maps/dir/?api=1&destination=${lieu.lat},${lieu.lng}`;
     const googleSearchQuery = `Visit ${encodeURIComponent(lieu.name)} Paris`;
     const googleSearchLink = `https://www.google.com/search?q=${googleSearchQuery}`;
-    
+
     popupLinks.innerHTML = `
         ${webLink.trim() ? `<a href="${webLink}" target="_blank" style="display: block; margin-top: 10px; text-decoration: underline; color: var(--theme-color); font-weight: bold;">🌐 Site Web</a>` : ""}
         <a href="${googleMapsRouteLink}" target="_blank" style="display: block; margin-top: 10px; text-decoration: underline; color: var(--theme-color); font-weight: bold;">🚶‍♂️ Go !</a>
         <a href="${googleSearchLink}" target="_blank" style="display: block; margin-top: 5px; text-decoration: underline; color: var(--theme-color); font-weight: bold;">🔍 More details</a>
     `;
-    
-    // Mise à jour du lien "Go !" si la géolocalisation est disponible
+
+    // Mise à jour du lien "Go !" si la géolocalisation est dispo
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
             const userLat = position.coords.latitude;
             const userLng = position.coords.longitude;
             googleMapsRouteLink = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLng}&destination=${lieu.lat},${lieu.lng}`;
-            const googleLink = popupLinks.querySelector("a[href^='https://www.google.com/maps/dir/']");
+            const googleLink = popupLinks.querySelector("a[href^='https://www.google.com/maps/dir/']"); 
             if (googleLink) {
                 googleLink.href = googleMapsRouteLink;
             }
@@ -719,19 +719,48 @@ function showLieuDetails(lieu) {
             console.error("Erreur de géolocalisation :", error);
         });
     }
-    
-    // IMPORTANT : Positionner l'overlay et le popup au-dessus des autres éléments
-    var overlay = document.getElementById("overlay");
-    overlay.style.zIndex = "9999";      // Place l'overlay au-dessus de la plupart des éléments
-    overlay.style.display = "block";
-    
-    var popupDetails = document.getElementById("popup-lieu-details");
-    popupDetails.style.zIndex = "10000"; // Le popup doit être au-dessus de l'overlay
-    popupDetails.style.display = "block";
-    
-    // Désactiver le scroll
-    document.body.classList.add("no-scroll");
+
+    // Masque le popup au début
+    const popupDetails = document.getElementById("popup-lieu-details");
+    popupDetails.style.display = "none";
+
+    const overlay = document.getElementById("overlay");
+
+    // Quand l'image est chargée, on affiche tout avec animation
+    popupLieuImage.onload = () => {
+        overlay.style.zIndex = "9999";
+        overlay.style.display = "block";
+
+        popupDetails.style.zIndex = "10000";
+        popupDetails.style.display = "block";
+        popupDetails.classList.remove("popup-animated"); // reset
+        void popupDetails.offsetWidth; // reflow
+        popupDetails.classList.add("popup-animated");
+
+        document.body.classList.add("no-scroll");
+    };
+
+    popupLieuImage.onerror = () => {
+        popupLieuImage.src = "https://via.placeholder.com/300x150?text=Aucune+Image";
+        popupLieuImage.alt = lieu.name || "Nom inconnu";
+
+        overlay.style.zIndex = "9999";
+        overlay.style.display = "block";
+
+        popupDetails.style.zIndex = "10000";
+        popupDetails.style.display = "block";
+        popupDetails.classList.remove("popup-animated");
+        void popupDetails.offsetWidth;
+        popupDetails.classList.add("popup-animated");
+
+        document.body.classList.add("no-scroll");
+    };
+
+    // Déclenche le chargement
+    popupLieuImage.src = imageUrl;
+    popupLieuImage.alt = lieu.name || "Nom inconnu";
 }
+
 
 /********************************************************
  * Fonction pour récupérer les lieux associés dans Gastro
