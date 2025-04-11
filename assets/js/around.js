@@ -102,7 +102,8 @@ function trackUserLocation() {
                 };
 
                 // 🔄 Centre la carte sur la position décalée
-                map.setCenter(adjustedCenter);
+                map.setCenter(userPosition);
+                map.panBy(0, 100); // Décale la carte de 100px vers le bas
 
                 // ✅ Garde le marqueur bien à la position réelle
                 if (!userMarker) {
@@ -168,7 +169,7 @@ function onGoogleMapsLoaded() {
           map: map,
           title: "Position simulée",
           icon: {
-            url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+            url: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
             scaledSize: new google.maps.Size(40, 40)
           }
         });
