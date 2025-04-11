@@ -59,19 +59,19 @@
       });
   </script>
   <div id="footer-placeholder"></div>
-  <div id="loadingOverlay" style="
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 3000;
-  background: rgba(255, 255, 255, 0.8);
-  padding: 20px;
-  border-radius: 15px;
-  display: none;
-">
-  <img id="loadingGif" src="../assets/img/index/pin_wait.gif" alt="Chargement..." style="width: 120px; height: auto;">
+  <!-- Overlay partagé (popup + loading) -->
+<div id="overlay">
+  <img id="loadingGif" src="../assets/img/index/pin_wait.gif" alt="Chargement..." style="
+    width: 120px;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+  ">
 </div>
+
 
 </body>
 </html>

@@ -557,9 +557,14 @@ function svgToDataURL(svg) {
 const imageCache = {}; // Cache pour stocker les dataURL par image URL
 
 function updateMapMarkers(places) {
-    // Montre l'overlay de chargement
     const overlay = document.getElementById("overlay");
-    if (overlay) overlay.style.display = "flex";
+    const loadingGif = document.getElementById("loadingGif");
+  
+    // Affiche l'overlay et le gif
+    if (overlay && loadingGif) {
+      overlay.style.display = "block";
+      loadingGif.style.display = "block";
+    }
   
     // Supprimer les anciens marqueurs
     markers.forEach(marker => marker.setMap(null));
@@ -569,7 +574,10 @@ function updateMapMarkers(places) {
     const total = places.length;
   
     if (total === 0) {
-      if (overlay) overlay.style.display = "none";
+      if (overlay && loadingGif) {
+        overlay.style.display = "none";
+        loadingGif.style.display = "none";
+      }
       return;
     }
   
@@ -579,14 +587,20 @@ function updateMapMarkers(places) {
         const zoomMin = place.zoomMin || 10;
         if (currentZoom < zoomMin) {
           loaded++;
-          if (loaded === total && overlay) overlay.style.display = "none";
+          if (loaded === total && overlay && loadingGif) {
+            overlay.style.display = "none";
+            loadingGif.style.display = "none";
+          }
           return;
         }
   
         if (imageCache[place.image]) {
           createMarker(place, imageCache[place.image]);
           loaded++;
-          if (loaded === total && overlay) overlay.style.display = "none";
+          if (loaded === total && overlay && loadingGif) {
+            overlay.style.display = "none";
+            loadingGif.style.display = "none";
+          }
         } else {
           const image = new Image();
           image.crossOrigin = "anonymous";
@@ -612,18 +626,27 @@ function updateMapMarkers(places) {
             imageCache[place.image] = finalIconUrl;
             createMarker(place, finalIconUrl);
             loaded++;
-            if (loaded === total && overlay) overlay.style.display = "none";
+            if (loaded === total && overlay && loadingGif) {
+              overlay.style.display = "none";
+              loadingGif.style.display = "none";
+            }
           };
           image.onerror = () => {
             console.warn("❌ Image non chargée :", place.image);
             createMarker(place, "https://maps.google.com/mapfiles/ms/icons/red-dot.png");
             loaded++;
-            if (loaded === total && overlay) overlay.style.display = "none";
+            if (loaded === total && overlay && loadingGif) {
+              overlay.style.display = "none";
+              loadingGif.style.display = "none";
+            }
           };
         }
       } else {
         loaded++;
-        if (loaded === total && overlay) overlay.style.display = "none";
+        if (loaded === total && overlay && loadingGif) {
+          overlay.style.display = "none";
+          loadingGif.style.display = "none";
+        }
       }
     });
   }
