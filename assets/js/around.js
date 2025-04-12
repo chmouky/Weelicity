@@ -558,22 +558,22 @@ const imageCache = {}; // Cache pour stocker les dataURL par image URL
 
 function updateMapMarkers(places) {
     const loadingContainer = document.getElementById("loadingContainer");
-  
-    // Affiche le conteneur de chargement
+    
+    // Affiche le conteneur de chargement (et donc le GIF)
     if (loadingContainer) loadingContainer.style.display = "flex";
-  
-    // Supprimer les anciens marqueurs
+    
+    // Supprime les anciens marqueurs
     markers.forEach(marker => marker.setMap(null));
     markers.length = 0;
-  
+    
     let loaded = 0;
     const total = places.length;
-  
+    
     if (total === 0) {
       if (loadingContainer) loadingContainer.style.display = "none";
       return;
     }
-  
+    
     places.forEach(place => {
       if (place.lat !== null && place.lng !== null && place.image) {
         const currentZoom = map.getZoom();
@@ -583,7 +583,7 @@ function updateMapMarkers(places) {
           if (loaded === total && loadingContainer) loadingContainer.style.display = "none";
           return;
         }
-  
+    
         if (imageCache[place.image]) {
           createMarker(place, imageCache[place.image]);
           loaded++;
