@@ -557,14 +557,10 @@ function svgToDataURL(svg) {
 const imageCache = {}; // Cache pour stocker les dataURL par image URL
 
 function updateMapMarkers(places) {
-    const overlay = document.getElementById("overlay");
-    const loadingGif = document.getElementById("loadingGif");
+    const loadingContainer = document.getElementById("loadingContainer");
   
-    // Affiche l'overlay et le gif
-    if (overlay && loadingGif) {
-      overlay.style.display = "block";
-      loadingGif.style.display = "block";
-    }
+    // Affiche le conteneur de chargement
+    if (loadingContainer) loadingContainer.style.display = "flex";
   
     // Supprimer les anciens marqueurs
     markers.forEach(marker => marker.setMap(null));
@@ -574,10 +570,7 @@ function updateMapMarkers(places) {
     const total = places.length;
   
     if (total === 0) {
-      if (overlay && loadingGif) {
-        overlay.style.display = "none";
-        loadingGif.style.display = "none";
-      }
+      if (loadingContainer) loadingContainer.style.display = "none";
       return;
     }
   
@@ -587,20 +580,14 @@ function updateMapMarkers(places) {
         const zoomMin = place.zoomMin || 10;
         if (currentZoom < zoomMin) {
           loaded++;
-          if (loaded === total && overlay && loadingGif) {
-            overlay.style.display = "none";
-            loadingGif.style.display = "none";
-          }
+          if (loaded === total && loadingContainer) loadingContainer.style.display = "none";
           return;
         }
   
         if (imageCache[place.image]) {
           createMarker(place, imageCache[place.image]);
           loaded++;
-          if (loaded === total && overlay && loadingGif) {
-            overlay.style.display = "none";
-            loadingGif.style.display = "none";
-          }
+          if (loaded === total && loadingContainer) loadingContainer.style.display = "none";
         } else {
           const image = new Image();
           image.crossOrigin = "anonymous";
@@ -626,30 +613,22 @@ function updateMapMarkers(places) {
             imageCache[place.image] = finalIconUrl;
             createMarker(place, finalIconUrl);
             loaded++;
-            if (loaded === total && overlay && loadingGif) {
-              overlay.style.display = "none";
-              loadingGif.style.display = "none";
-            }
+            if (loaded === total && loadingContainer) loadingContainer.style.display = "none";
           };
           image.onerror = () => {
             console.warn("❌ Image non chargée :", place.image);
             createMarker(place, "https://maps.google.com/mapfiles/ms/icons/red-dot.png");
             loaded++;
-            if (loaded === total && overlay && loadingGif) {
-              overlay.style.display = "none";
-              loadingGif.style.display = "none";
-            }
+            if (loaded === total && loadingContainer) loadingContainer.style.display = "none";
           };
         }
       } else {
         loaded++;
-        if (loaded === total && overlay && loadingGif) {
-          overlay.style.display = "none";
-          loadingGif.style.display = "none";
-        }
+        if (loaded === total && loadingContainer) loadingContainer.style.display = "none";
       }
     });
   }
+  
   
   
 
