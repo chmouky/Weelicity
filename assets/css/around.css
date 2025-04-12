@@ -184,3 +184,8 @@ html, body {
 .popup-animated {
   animation: popupFadeIn 0.3s ease-out forwards;
 }
+
+#loadingGif {
+  will-change: transform;
+}
+
