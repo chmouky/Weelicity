@@ -554,9 +554,12 @@ function svgToDataURL(svg) {
 /********************************************************
  * Fonction pour mettre à jour les marqueurs Google Maps
  ********************************************************/
+const imageCache = {}; // Cache pour stocker les dataURL par image URL
 function updateMapMarkers(places) {
     const gifWrapper = document.getElementById("loadingGifWrapper");
-    if (gifWrapper) gifWrapper.classList.add("visible");
+    if (gifWrapper) {
+      gifWrapper.classList.add("visible"); // Affiche le GIF (le conteneur passe en visible via opacity/visibility)
+    }
   
     // Supprimer les anciens marqueurs
     markers.forEach(marker => marker.setMap(null));

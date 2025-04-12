@@ -13,9 +13,10 @@
   <link rel="stylesheet" href="../assets/css/styles.css">
   <link rel="stylesheet" href="../assets/css/around.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap">
-  
+
   <!-- Styles pour le GIF de chargement -->
   <style>
+    /* Le conteneur est positionné au centre et reste dans le DOM même lorsqu'il est caché */
     #loadingGifWrapper {
       position: fixed;
       top: 50%;
@@ -26,6 +27,7 @@
       opacity: 0;
       transition: opacity 0.2s ease;
     }
+    /* Ajouter la classe "visible" pour l'afficher */
     #loadingGifWrapper.visible {
       visibility: visible;
       opacity: 1;
@@ -41,6 +43,7 @@
   <div id="carousel-container">
     <div class="spacer"></div>
   </div>
+
   <!-- Popup principal -->
   <div id="popup">
     <div id="popup-header">
@@ -51,6 +54,7 @@
     <ul id="popup-lieux-list"></ul>
     <div id="popup-link"></div>
   </div>
+
   <!-- Popup pour les détails du lieu sélectionné -->
   <div id="popup-lieu-details">
     <div id="popup-lieu-header">
