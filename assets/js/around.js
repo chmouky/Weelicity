@@ -651,6 +651,7 @@ function updateMapMarkers(places) {
     });
   }
   
+  
 
 function createMarker(place, iconUrl) {
   const marker = new google.maps.Marker({
