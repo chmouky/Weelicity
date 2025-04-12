@@ -8,18 +8,35 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Votre App">
 
-    <!-- CSS séparés -->
-    <link rel="stylesheet" href="../assets/css/footer.css">
-    <link rel="stylesheet" href="../assets/css/styles.css">
-    <link rel="stylesheet" href="../assets/css/around.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap">
-
+  <!-- CSS séparés -->
+  <link rel="stylesheet" href="../assets/css/footer.css">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../assets/css/around.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap">
+  
+  <!-- Styles pour le GIF de chargement -->
+  <style>
+    #loadingGifWrapper {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 3000;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    #loadingGifWrapper.visible {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
-  <!-- Titre principal en haut de la page -->
+  <!-- Titre principal -->
   <h1 class="shrikhand-text">Look around you</h1>
 
-  <div id="map"></div> 
+  <div id="map"></div>
   <div id="overlay"></div>
   <div id="carousel-container">
     <div class="spacer"></div>
@@ -46,33 +63,25 @@
     <div id="popup-lieu-links"></div>
   </div>
 
+  <!-- Footer placeholder -->
+  <div id="footer-placeholder"></div>
+
   <!-- JavaScript séparé -->
-   <script src="../assets/js/utils.js"></script>
-   <script src="../assets/js/around.js"></script>
-   <script>
+  <script src="../assets/js/utils.js"></script>
+  <script src="../assets/js/around.js"></script>
+  <script>
     fetch("/assets/components/footer.html")
       .then(response => response.text())
       .then(data => {
         const footer = document.getElementById("footer-placeholder");
         footer.innerHTML = data;
-        footer.classList.add("loaded"); // 👈 ajoute la classe après le chargement
+        footer.classList.add("loaded");
       });
   </script>
-  <div id="footer-placeholder"></div>
-  <!-- Overlay partagé (popup + loading) -->
-<!-- Overlay pour le chargement uniquement -->
 
-<div id="loadingGifWrapper" style="
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 3000;
-  display: none;
-">
-  <img id="loadingGif" src="../assets/img/index/pin_wait.gif" alt="Chargement..." style="width: 120px; height: auto;">
-</div>
-
-
+  <!-- Conteneur du GIF de chargement -->
+  <div id="loadingGifWrapper">
+    <img id="loadingGif" src="assets/img/index/pin_wait.gif" alt="Chargement..." style="width: 120px; height: auto;">
+  </div>
 </body>
 </html>

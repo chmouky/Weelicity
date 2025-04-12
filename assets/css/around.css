@@ -189,3 +189,19 @@ html, body {
   will-change: transform;
 }
 
+#loadingGifWrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3000;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+#loadingGifWrapper.visible {
+  visibility: visible;
+  opacity: 1;
+}
+

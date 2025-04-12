@@ -554,11 +554,9 @@ function svgToDataURL(svg) {
 /********************************************************
  * Fonction pour mettre à jour les marqueurs Google Maps
  ********************************************************/
-const imageCache = {}; // Cache pour stocker les dataURL par image URL
-
 function updateMapMarkers(places) {
-    const gif = document.getElementById("loadingGifWrapper");
-    if (gif) gif.style.display = "block"; // 👈 Affiche le GIF de chargement
+    const gifWrapper = document.getElementById("loadingGifWrapper");
+    if (gifWrapper) gifWrapper.classList.add("visible");
   
     // Supprimer les anciens marqueurs
     markers.forEach(marker => marker.setMap(null));
@@ -568,7 +566,7 @@ function updateMapMarkers(places) {
     const total = places.length;
   
     if (total === 0) {
-      if (gif) gif.style.display = "none";
+      if (gifWrapper) gifWrapper.classList.remove("visible");
       return;
     }
   
@@ -578,14 +576,14 @@ function updateMapMarkers(places) {
         const zoomMin = place.zoomMin || 10;
         if (currentZoom < zoomMin) {
           loaded++;
-          if (loaded === total && gif) gif.style.display = "none";
+          if (loaded === total && gifWrapper) gifWrapper.classList.remove("visible");
           return;
         }
   
         if (imageCache[place.image]) {
           createMarker(place, imageCache[place.image]);
           loaded++;
-          if (loaded === total && gif) gif.style.display = "none";
+          if (loaded === total && gifWrapper) gifWrapper.classList.remove("visible");
         } else {
           const image = new Image();
           image.crossOrigin = "anonymous";
@@ -611,22 +609,21 @@ function updateMapMarkers(places) {
             imageCache[place.image] = finalIconUrl;
             createMarker(place, finalIconUrl);
             loaded++;
-            if (loaded === total && gif) gif.style.display = "none";
+            if (loaded === total && gifWrapper) gifWrapper.classList.remove("visible");
           };
           image.onerror = () => {
             console.warn("❌ Image non chargée :", place.image);
             createMarker(place, "https://maps.google.com/mapfiles/ms/icons/red-dot.png");
             loaded++;
-            if (loaded === total && gif) gif.style.display = "none";
+            if (loaded === total && gifWrapper) gifWrapper.classList.remove("visible");
           };
         }
       } else {
         loaded++;
-        if (loaded === total && gif) gif.style.display = "none";
+        if (loaded === total && gifWrapper) gifWrapper.classList.remove("visible");
       }
     });
   }
-  
   
   
 
