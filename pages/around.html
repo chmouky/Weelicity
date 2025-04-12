@@ -61,10 +61,17 @@
   <div id="footer-placeholder"></div>
   <!-- Overlay partagé (popup + loading) -->
 <!-- Overlay pour le chargement uniquement -->
-<!-- Conteneur de chargement (overlay pour le GIF uniquement) -->
 
-
-
+<div id="loadingGifWrapper" style="
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3000;
+  display: none;
+">
+  <img id="loadingGif" src="assets/img/index/pin_wait.gif" alt="Chargement..." style="width: 120px; height: auto;">
+</div>
 
 
 </body>
