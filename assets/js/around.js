@@ -180,53 +180,60 @@ function onGoogleMapsLoaded() {
       }
   
       // Charger les données
-      const aroundJSON = sessionStorage.getItem("around");
-      const gastroJSON = sessionStorage.getItem("gastro");
-      const placesJSON = sessionStorage.getItem("places");
-  
-      if (!aroundJSON || !gastroJSON || !placesJSON) {
-        alert("Erreur : certaines données sont manquantes !");
-        return;
-      }
-  
-      // 🔢 Tri par champ "Affichage"
-      let aroundData = JSON.parse(aroundJSON);
-      aroundData = aroundData.sort((a, b) => {
-        const ordreA = a.fields.Affichage ?? 999;
-        const ordreB = b.fields.Affichage ?? 999;
-        return ordreA - ordreB;
-      });
-  
-      const gastroData = JSON.parse(gastroJSON);
-      const placesData = JSON.parse(placesJSON);
-  
-      // Construire le carrousel
-      const carouselData = aroundData.map(record => ({
-        name: record.fields.Nom || "Nom inconnu",
-        descriptionC: record.fields.DescriptionC || "Description courte indisponible",
-        description: record.fields.Description || "Description complète indisponible",
-        image: record.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image",
-        lat: record.fields.Latitude ? parseFloat(record.fields.Latitude) : null,
-        lng: record.fields.Longitude ? parseFloat(record.fields.Longitude) : null,
-        calcID: record.fields.CalcID || record.id,
-        zoomMin: record.fields.ZoomMin || 10
-      }));
-  
-      displayCarousel(carouselData, gastroData);
-      setupCarouselObserver(gastroData, placesData);
-  
-      // 👉 Scroll vers le carrousel avec Affichage = 1
-      const firstItem = aroundData.find(item => item.fields.Affichage === 1);
-      if (firstItem && firstItem.fields.CalcID) {
-        const firstCalcID = firstItem.fields.CalcID;
-        setTimeout(() => {
-          const targetItem = document.querySelector(`.carousel-item[data-calcid="${firstCalcID}"]`);
-          if (targetItem) {
-            targetItem.scrollIntoView({ behavior: "auto", inline: "center" });
-          }
-        }, 300);
-      }
-  
+const aroundJSON = sessionStorage.getItem("around");
+const gastroJSON = sessionStorage.getItem("gastro");
+const placesJSON = sessionStorage.getItem("places");
+
+if (!aroundJSON || !gastroJSON || !placesJSON) {
+  alert("Erreur : certaines données sont manquantes !");
+  return;
+}
+
+// Parse et tri par champ "Affichage"
+let aroundData = JSON.parse(aroundJSON);
+
+// Affiche les valeurs avant le tri pour déboguer
+console.log("Avant tri - Affichage:", aroundData.map(item => item.fields.Affichage));
+
+aroundData.sort((a, b) => {
+  const ordreA = (a.fields.Affichage !== undefined && a.fields.Affichage !== null) ? Number(a.fields.Affichage) : 999;
+  const ordreB = (b.fields.Affichage !== undefined && b.fields.Affichage !== null) ? Number(b.fields.Affichage) : 999;
+  return ordreA - ordreB;
+});
+
+// Affiche les valeurs après le tri pour confirmer
+console.log("Après tri - Affichage:", aroundData.map(item => item.fields.Affichage));
+
+const gastroData = JSON.parse(gastroJSON);
+const placesData = JSON.parse(placesJSON);
+
+// Construire le carrousel
+const carouselData = aroundData.map(record => ({
+  name: record.fields.Nom || "Nom inconnu",
+  descriptionC: record.fields.DescriptionC || "Description courte indisponible",
+  description: record.fields.Description || "Description complète indisponible",
+  image: record.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image",
+  lat: record.fields.Latitude ? parseFloat(record.fields.Latitude) : null,
+  lng: record.fields.Longitude ? parseFloat(record.fields.Longitude) : null,
+  calcID: record.fields.CalcID || record.id,
+  zoomMin: record.fields.ZoomMin || 10
+}));
+
+displayCarousel(carouselData, gastroData);
+setupCarouselObserver(gastroData, placesData);
+
+// Exemple : scroll vers l'élément ayant Affichage = 1
+const firstItem = aroundData.find(item => Number(item.fields.Affichage) === 1);
+if (firstItem && firstItem.fields.CalcID) {
+  const firstCalcID = firstItem.fields.CalcID;
+  setTimeout(() => {
+    const targetItem = document.querySelector(`.carousel-item[data-calcid="${firstCalcID}"]`);
+    if (targetItem) {
+      targetItem.scrollIntoView({ behavior: "auto", inline: "center" });
+    }
+  }, 300);
+}
+
       // Zoom dynamique sur changement
       const updateMarkersDebounced = debounce(() => {
         const currentZoom = map.getZoom();
