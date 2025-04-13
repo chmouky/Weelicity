@@ -10,6 +10,8 @@ let simulatePosition = false; // Variable globale
 
 document.addEventListener("DOMContentLoaded", async () => {
 
+    document.getElementById("loadingGifWrapper")?.classList.add("visible");
+
     waitForStorageReady(["around", "places", "gastro", "quartiers", "street", "parametre"], () => {  
         loadGoogleMaps("https://google-map-back.samueltoledano94.workers.dev/load-google-maps", "onGoogleMapsLoaded");
     });
@@ -203,6 +205,12 @@ function onGoogleMapsLoaded() {
       }));
       displayCarousel(carouselData, gastroData);
       setupCarouselObserver(gastroData, placesData);
+
+      // Simule le carrousel "Spots" (calcID = "2") comme actif au démarrage
+      setTimeout(() => {
+        const item = document.querySelector('.carousel-item[data-calcid="2"]');
+        if (item) item.scrollIntoView({ behavior: "auto", inline: "center" });
+      }, 200);
   
       // Définition de la fonction debounce
       function debounce(func, delay) {
@@ -213,18 +221,16 @@ function onGoogleMapsLoaded() {
         };
       }
   
-      // Mise à jour des marqueurs avec debounce lors du zoom
       const updateMarkersDebounced = debounce(() => {
         const currentZoom = map.getZoom();
         console.log("🔍 Zoom changé :", currentZoom);
   
-        // Utiliser le premier élément visible ou le premier du carousel
         const activeItem = document.querySelector(".carousel-item.is-visible") || document.querySelector(".carousel-item");
         if (!activeItem) return;
         const activeCalcID = activeItem.getAttribute("data-calcid");
         const visibleLieux = getVisibleLieux(activeCalcID, gastroData, placesData, currentZoom);
         updateMapMarkers(visibleLieux);
-      }, 200); // Délai de 200ms
+      }, 200);
   
       map.addListener("zoom_changed", updateMarkersDebounced);
   
@@ -232,7 +238,8 @@ function onGoogleMapsLoaded() {
       alert("🚨 Une erreur est survenue !");
       console.error("Erreur dans onGoogleMapsLoaded :", error);
     }
-  }
+}
+
   
 
 /********************************************************
