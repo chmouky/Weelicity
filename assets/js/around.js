@@ -188,18 +188,19 @@ function onGoogleMapsLoaded() {
         alert("Erreur : certaines données sont manquantes !");
         return;
       }
+  
+      // 🔢 Tri par champ "Affichage"
       let aroundData = JSON.parse(aroundJSON);
-
-      // 🔢 Trie les éléments selon le champ "Affichage" (ordre croissant)
       aroundData = aroundData.sort((a, b) => {
         const ordreA = a.fields.Affichage ?? 999;
         const ordreB = b.fields.Affichage ?? 999;
         return ordreA - ordreB;
       });
+  
       const gastroData = JSON.parse(gastroJSON);
       const placesData = JSON.parse(placesJSON);
   
-      // Construire le carousel
+      // Construire le carrousel
       const carouselData = aroundData.map(record => ({
         name: record.fields.Nom || "Nom inconnu",
         descriptionC: record.fields.DescriptionC || "Description courte indisponible",
@@ -210,24 +211,23 @@ function onGoogleMapsLoaded() {
         calcID: record.fields.CalcID || record.id,
         zoomMin: record.fields.ZoomMin || 10
       }));
+  
       displayCarousel(carouselData, gastroData);
       setupCarouselObserver(gastroData, placesData);
-
-      // Simule le carrousel "Spots" (calcID = "2") comme actif au démarrage
-      setTimeout(() => {
-        const item = document.querySelector('.carousel-item[data-calcid="2"]');
-        if (item) item.scrollIntoView({ behavior: "auto", inline: "center" });
-      }, 200);
   
-      // Définition de la fonction debounce
-      function debounce(func, delay) {
-        let timeoutId;
-        return function(...args) {
-          clearTimeout(timeoutId);
-          timeoutId = setTimeout(() => func.apply(this, args), delay);
-        };
+      // 👉 Scroll vers le carrousel avec Affichage = 1
+      const firstItem = aroundData.find(item => item.fields.Affichage === 1);
+      if (firstItem && firstItem.fields.CalcID) {
+        const firstCalcID = firstItem.fields.CalcID;
+        setTimeout(() => {
+          const targetItem = document.querySelector(`.carousel-item[data-calcid="${firstCalcID}"]`);
+          if (targetItem) {
+            targetItem.scrollIntoView({ behavior: "auto", inline: "center" });
+          }
+        }, 300);
       }
   
+      // Zoom dynamique sur changement
       const updateMarkersDebounced = debounce(() => {
         const currentZoom = map.getZoom();
         console.log("🔍 Zoom changé :", currentZoom);
@@ -245,7 +245,8 @@ function onGoogleMapsLoaded() {
       alert("🚨 Une erreur est survenue !");
       console.error("Erreur dans onGoogleMapsLoaded :", error);
     }
-}
+  }
+  
 
   
 
