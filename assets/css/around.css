@@ -71,16 +71,15 @@ html, body {
 /* Carousel */
 #carousel-container {
   position: fixed;
-  bottom: 20px;  /* ajuste si nécessaire */
+  bottom: 90px;
   left: 0;
   width: 100%;
-  height: 100px;  /* définit la hauteur du carousel */
   display: flex;
   gap: 10px;
   z-index: 1;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  padding: 0 10px;  /* supprime le padding vertical */
+  padding: 0 10px 20px 10px;
 }
 
 #carousel-container::before,
@@ -90,13 +89,15 @@ html, body {
 }
 
 
-..carousel-item {
-  position: relative;
+.carousel-item {
   flex: 0 0 80%;
-  height: 100%;      /* occupe toute la hauteur du conteneur */
-  overflow: hidden;  /* masque tout dépassement */
+  height: 120px; /* 👈 ajuste la hauteur ici selon ce que tu veux */
+  border-radius: 15px;
+  overflow: hidden; /* 🔁 cache le débordement de l'image */
   scroll-snap-align: center;
-  padding: 0;        /* pas de padding interne */
+  padding: 0;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .carousel-item h3 {
@@ -111,8 +112,14 @@ html, body {
 .carousel-item img {
   width: 100%;
   height: 100%;
-  object-fit: cover;  /* l'image couvre tout le container */
+  object-fit: cover; /* ✅ remplissage total */
   display: block;
+  border-radius: 0;
+}
+
+.carousel-item h3,
+.carousel-item p {
+  display: none;
 }
 
 
