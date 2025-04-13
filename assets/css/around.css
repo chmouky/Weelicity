@@ -71,16 +71,16 @@ html, body {
 /* Carousel */
 #carousel-container {
   position: fixed;
-  bottom: 20px;  /* ajuste cette valeur si besoin */
+  bottom: 20px;  /* ajuste si nécessaire */
   left: 0;
   width: 100%;
-  height: 100px; /* hauteur réduite (par exemple 100px) */
+  height: 100px;  /* définit la hauteur du carousel */
   display: flex;
   gap: 10px;
   z-index: 1;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  padding: 0 10px;  /* réduis le padding vertical */
+  padding: 0 10px;  /* supprime le padding vertical */
 }
 
 #carousel-container::before,
@@ -90,19 +90,13 @@ html, body {
 }
 
 
-.carousel-item {
+..carousel-item {
+  position: relative;
   flex: 0 0 80%;
-  height: 100%;  /* important pour utiliser toute la hauteur */
-  background-color: white;
-  border-radius: 15px;
-  overflow: hidden;  /* masque le débordement si nécessaire */
+  height: 100%;      /* occupe toute la hauteur du conteneur */
+  overflow: hidden;  /* masque tout dépassement */
   scroll-snap-align: center;
-  /* Optionnel : si tu souhaites masquer le texte ou le repositionner, 
-     ajuste la structure HTML/CSS en conséquence */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;  /* supprime le padding pour que l'image remplisse entièrement */
+  padding: 0;        /* pas de padding interne */
 }
 
 .carousel-item h3 {
@@ -117,9 +111,8 @@ html, body {
 .carousel-item img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* l'image couvre tout le conteneur */
-  /* Optionnel : tu peux conserver le border-radius si tu le souhaites */
-  border-radius: 15px;
+  object-fit: cover;  /* l'image couvre tout le container */
+  display: block;
 }
 
 
