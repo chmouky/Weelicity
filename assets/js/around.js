@@ -188,7 +188,14 @@ function onGoogleMapsLoaded() {
         alert("Erreur : certaines données sont manquantes !");
         return;
       }
-      const aroundData = JSON.parse(aroundJSON);
+      let aroundData = JSON.parse(aroundJSON);
+
+      // 🔢 Trie les éléments selon le champ "Affichage" (ordre croissant)
+      aroundData = aroundData.sort((a, b) => {
+        const ordreA = a.fields.Affichage ?? 999;
+        const ordreB = b.fields.Affichage ?? 999;
+        return ordreA - ordreB;
+      });
       const gastroData = JSON.parse(gastroJSON);
       const placesData = JSON.parse(placesJSON);
   
