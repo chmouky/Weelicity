@@ -1,18 +1,29 @@
-function addSwipeListeners() {
-  const threshold = 100;
-  const swipeDuration = 300;
+const threshold = 100;
+const swipeDuration = 300;
 
+function resetButtons() {
+  const boxes = document.querySelectorAll(".clickable-box");
+  boxes.forEach(box => {
+    box.style.transition = "none";
+    box.style.transform = "translateX(0)";
+    void box.offsetWidth; // force le reflow
+    box.style.transition = `transform ${swipeDuration}ms ease-out`;
+  });
+}
+
+function addSwipeListeners() {
   const elements = [
-    { element: document.getElementById('tags-btn'), targetPage: '../pages/tags.html' },
-    { element: document.getElementById('theme-btn'), targetPage: '../pages/themes.html' }
+    { id: 'tags-btn', targetPage: '../pages/tags.html' },
+    { id: 'theme-btn', targetPage: '../pages/themes.html' }
   ];
 
-  elements.forEach(({ element, targetPage }) => {
+  elements.forEach(({ id, targetPage }) => {
+    const element = document.getElementById(id);
+    if (!element) return;
+
     let startX = 0;
     let currentX = 0;
     let isDragging = false;
-
-    element.style.transform = "translateX(0)"; // 🔁 reset au cas où
 
     element.addEventListener("touchstart", (e) => {
       startX = e.touches[0].clientX;
@@ -44,18 +55,25 @@ function addSwipeListeners() {
         element.style.transform = `translateX(0)`;
       }
     });
+
+    // 💡 Clique classique (pas que swipe)
+    element.addEventListener("click", () => {
+      element.style.transition = `transform ${swipeDuration}ms ease-out`;
+      element.style.transform = `translateX(100vw)`;
+      setTimeout(() => {
+        window.location.href = targetPage;
+      }, swipeDuration);
+    });
   });
 }
 
-document.addEventListener("DOMContentLoaded", addSwipeListeners);
-
-
-// 🔁 Réinitialiser lors d’un retour en arrière
-window.addEventListener("pageshow", () => {
-  document.querySelectorAll(".half-screen").forEach(el => {
-    el.style.transition = "none";
-    el.style.transform = "translateX(0)";
-  });
+// 💡 On load
+document.addEventListener("DOMContentLoaded", () => {
+  resetButtons();
+  addSwipeListeners();
 });
 
-document.addEventListener("DOMContentLoaded", addSwipeListeners);
+// ✅ Réinitialise aussi au retour arrière
+window.addEventListener("pageshow", () => {
+  resetButtons();
+});
