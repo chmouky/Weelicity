@@ -1,32 +1,19 @@
-function initNavigationBoxes() {
-  const boxes = [
-    {
-      element: document.getElementById("box-tags"),
-      targetPage: "../pages/tags.html"
-    },
-    {
-      element: document.getElementById("box-themes"),
-      targetPage: "../pages/themes.html"
-    }
+function addSwipeListeners() {
+  const threshold = 100;
+  const swipeDuration = 300;
+
+  const elements = [
+    { element: document.getElementById('tags-btn'), targetPage: '../pages/tags.html' },
+    { element: document.getElementById('theme-btn'), targetPage: '../pages/themes.html' }
   ];
 
-  boxes.forEach(({ element, targetPage }) => {
+  elements.forEach(({ element, targetPage }) => {
     let startX = 0;
     let currentX = 0;
     let isDragging = false;
-    const threshold = 100;
-    const swipeDuration = 300;
 
-    // 👉 CLICK : même effet que swipe
-    element.addEventListener("click", () => {
-      element.style.transition = `transform ${swipeDuration}ms ease-out`;
-      element.style.transform = `translateX(100vw)`;
-      setTimeout(() => {
-        window.location.href = targetPage;
-      }, swipeDuration);
-    });
+    element.style.transform = "translateX(0)"; // 🔁 reset au cas où
 
-    // 👉 SWIPE vers la droite
     element.addEventListener("touchstart", (e) => {
       startX = e.touches[0].clientX;
       isDragging = true;
@@ -46,18 +33,29 @@ function initNavigationBoxes() {
       isDragging = false;
       const deltaX = currentX - startX;
 
-      element.style.transition = `transform ${swipeDuration}ms ease-out`;
-
       if (deltaX > threshold) {
+        element.style.transition = `transform ${swipeDuration}ms ease-out`;
         element.style.transform = `translateX(100vw)`;
         setTimeout(() => {
           window.location.href = targetPage;
         }, swipeDuration);
       } else {
+        element.style.transition = `transform ${swipeDuration}ms ease-out`;
         element.style.transform = `translateX(0)`;
       }
     });
   });
 }
 
-document.addEventListener("DOMContentLoaded", initNavigationBoxes);
+document.addEventListener("DOMContentLoaded", addSwipeListeners);
+
+
+// 🔁 Réinitialiser lors d’un retour en arrière
+window.addEventListener("pageshow", () => {
+  document.querySelectorAll(".half-screen").forEach(el => {
+    el.style.transition = "none";
+    el.style.transform = "translateX(0)";
+  });
+});
+
+document.addEventListener("DOMContentLoaded", addSwipeListeners);
