@@ -237,3 +237,14 @@ html, body {
   opacity: 1;
 }
 
+#map-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3); /* gris semi-transparent */
+  z-index: 999;
+  display: none;
+  pointer-events: none; /* pour ne pas bloquer les clics */
+}
