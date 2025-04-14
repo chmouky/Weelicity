@@ -91,50 +91,45 @@ html, body {
 
 .carousel-item {
   flex: 0 0 80%;
-  height: 140px; /* 👈 ajuste la hauteur ici selon ce que tu veux */
-  border-radius: 15px;
-  overflow: hidden; /* 🔁 cache le débordement de l'image */
-  scroll-snap-align: center;
-  padding: 0;
+  height: 140px;
   position: relative;
+  border-radius: 15px;
+  overflow: hidden;
+  scroll-snap-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.carousel-item h3 {
-  margin: 0 0 5px 0;
-  font-size: 1.5em;
-  color: var(--theme-color);
-  text-decoration: underline;
-  cursor: pointer;
-  text-align: left;
-}
-
-.carousel-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* ✅ remplissage total */
-  display: block;
-  border-radius: 0;
-}
-
+/* Texte derrière l’image */
 .carousel-item h3,
 .carousel-item .description-text {
-  position: relative;
-  z-index: 2;
-  color: white;
-  margin: 5px 10px 0 10px;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-  background: rgba(0, 0, 0, 0.4); /* fond flouté pour lisibilité */
-  padding: 4px 6px;
-  border-radius: 6px;
-  width: fit-content;
-  max-width: 90%;
+  position: absolute;
+  z-index: 1; /* Derrière l’image */
+  margin: 0;
+  left: 10px;
+  color: white; /* Ou n'importe quelle couleur pour tester */
+}
+
+.carousel-item h3 {
+  top: 10px;
+  font-size: 1.2em;
 }
 
 .carousel-item .description-text {
-  font-size: 0.8em;
-  margin-top: 2px;
+  top: 40px;
+  font-size: 0.9em;
 }
+
+/* Image en haut de tout */
+.carousel-item img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2; /* Devant le texte */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 
 
 /* Popup */
