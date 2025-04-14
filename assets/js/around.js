@@ -303,54 +303,58 @@ function waitForStorageReady(keys, callback) {
  * Fonction pour afficher le carrousel avec les Tags filtrés
  ********************************************************/
 function displayCarousel(data, gastroData) {
-  const carouselContainer = document.getElementById("carousel-container");
-  if (!carouselContainer) {
-    alert("Erreur : Conteneur du carrousel introuvable !");
-    return;
-  }
-
-  carouselContainer.innerHTML = "";
-
-  if (!data.length) {
-    alert("Aucune donnée à afficher dans le carrousel.");
-    return;
-  }
-
-  data.forEach((record) => {
-    if (!record || !record.name) return;
-
-    const item = document.createElement("div");
-    item.classList.add("carousel-item");
-    item.setAttribute('data-name', record.name);
-    item.setAttribute('data-calcid', record.calcID);
-
-    // Nom du lieu
-    const title = document.createElement("h3");
-    title.textContent = record.name || "Nom inconnu";
-    title.addEventListener('click', () => {
-      showPopup(record);
+    const carouselContainer = document.getElementById("carousel-container");
+    if (!carouselContainer) {
+      alert("Erreur : Conteneur du carrousel introuvable !");
+      return;
+    }
+  
+    carouselContainer.innerHTML = "";
+  
+    if (!data.length) {
+      alert("Aucune donnée à afficher dans le carrousel.");
+      return;
+    }
+  
+    data.forEach((record) => {
+      if (!record || !record.name) return;
+  
+      const item = document.createElement("div");
+      item.classList.add("carousel-item");
+      item.setAttribute('data-name', record.name);
+      item.setAttribute('data-calcid', record.calcID);
+  
+      // Image en arrière-plan
+      const image = document.createElement("img");
+      image.src = record.image || "https://via.placeholder.com/300x150?text=Aucune+Image";
+      image.alt = record.name || "Nom inconnu";
+  
+      // Texte centré sur l'image
+      const textOverlay = document.createElement("div");
+      textOverlay.classList.add("text-overlay");
+  
+      const title = document.createElement("h3");
+      title.textContent = record.name || "Nom inconnu";
+      title.addEventListener('click', () => {
+        showPopup(record);
+      });
+  
+      const descriptionText = document.createElement("p");
+      descriptionText.classList.add("description-text");
+      descriptionText.textContent = record.descriptionC || "Description courte indisponible";
+  
+      textOverlay.appendChild(title);
+      textOverlay.appendChild(descriptionText);
+  
+      // Ajout à l'item
+      item.appendChild(image);
+      item.appendChild(textOverlay);
+      carouselContainer.appendChild(item);
     });
-
-    // DescriptionC
-    const descriptionText = document.createElement("p");
-    descriptionText.classList.add("description-text");
-    descriptionText.textContent = record.descriptionC || "Description courte indisponible";
-
-    // Image
-    const image = document.createElement("img");
-    image.src = record.image || "https://via.placeholder.com/300x150?text=Aucune+Image";
-    image.alt = record.name || "Nom inconnu";
-
-    // Ajout des éléments dans l'ordre
-    item.appendChild(title);
-    item.appendChild(descriptionText);
-    item.appendChild(image);
-
-    carouselContainer.appendChild(item);
-  });
-
-  setupCarouselObserver(gastroData);
-}
+  
+    setupCarouselObserver(gastroData);
+  }
+  
 
 let lastAlertedItem = null;
 
