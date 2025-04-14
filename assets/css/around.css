@@ -91,7 +91,7 @@ html, body {
 
 .carousel-item {
   flex: 0 0 80%;
-  height: 120px; /* 👈 ajuste la hauteur ici selon ce que tu veux */
+  height: 140px; /* 👈 ajuste la hauteur ici selon ce que tu veux */
   border-radius: 15px;
   overflow: hidden; /* 🔁 cache le débordement de l'image */
   scroll-snap-align: center;
@@ -118,8 +118,22 @@ html, body {
 }
 
 .carousel-item h3,
-.carousel-item p {
-  display: none;
+.carousel-item .description-text {
+  position: relative;
+  z-index: 2;
+  color: white;
+  margin: 5px 10px 0 10px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.4); /* fond flouté pour lisibilité */
+  padding: 4px 6px;
+  border-radius: 6px;
+  width: fit-content;
+  max-width: 90%;
+}
+
+.carousel-item .description-text {
+  font-size: 0.8em;
+  margin-top: 2px;
 }
 
 
