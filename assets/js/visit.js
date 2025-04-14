@@ -34,9 +34,12 @@ function addSwipeListeners() {
       if (deltaX > threshold) {
         element.style.transition = `transform ${swipeDuration}ms ease-out`;
         element.style.transform = `translateX(100vw)`;
-        setTimeout(() => {
-          window.location.href = targetPage;
-        }, swipeDuration);
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            window.location.href = targetPage;
+          }, swipeDuration - 10);
+        });
+        
       } else {
         element.style.transition = `transform ${swipeDuration}ms ease-out`;
         element.style.transform = `translateX(0)`;
