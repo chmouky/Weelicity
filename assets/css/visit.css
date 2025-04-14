@@ -17,24 +17,26 @@ body, html {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  gap: 20px; /* espace entre les boutons */
+  gap: 40px; /* espace entre les boutons */
 }
 
 .clickable-box {
-  width: 80vw;
+  flex: 1 1 40%;
   max-width: 300px;
   padding: 30px;
   background-color: var(--theme-color);
   color: white;
-  font-size: 1.5em;
+  font-size: 1.3em;
   text-align: center;
-  border: 2px solid white;
   border-radius: 15px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
   cursor: pointer;
   transition: transform 0.2s ease;
   touch-action: pan-y;
+  border: 3px solid transparent;
+  border-image: url('path/to/handdrawn-border.svg') 30 round;
 }
+
 
 .clickable-box:active {
   transform: scale(0.98);
