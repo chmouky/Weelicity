@@ -1,29 +1,45 @@
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+body, html {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
+  padding: 0;
+  height: 100%;
+  font-family: 'Arial', sans-serif;
 }
 
-  
-  button {
-    padding: 15px 30px;
-    font-size: 1.2em;
-    margin: 10px;
-    border: none;
-    border-radius: 8px;
-    background-color: #7BBFC2;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
+.split-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
 
-  
-  button:hover {
-    background-color: #5fa6ab;
-  }
+.half {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  position: relative;
+  overflow: hidden;
+}
 
-  
-  
+.top {
+  background-color: #7BBFC2;
+}
+
+.bottom {
+  background-color: #6F91A3;
+}
+
+.content {
+  text-align: center;
+  color: white;
+}
+
+.content h2 {
+  font-size: 2em;
+  margin-bottom: 0.5em;
+}
+
+.content p {
+  font-size: 1.1em;
+}

@@ -14,7 +14,21 @@
   <button id="theme-btn">Aller à Thème</button>
 
   <div id="footer-placeholder"></div>
-
+  <div class="split-container">
+    <div class="half top" id="tags-btn">
+      <div class="content">
+        <h2>Explorer par Lieux</h2>
+        <p>Trouvez les spots autour de vous</p>
+      </div>
+    </div>
+    <div class="half bottom" id="theme-btn">
+      <div class="content">
+        <h2>Explorer par Thèmes</h2>
+        <p>Découvrez selon vos envies</p>
+      </div>
+    </div>
+  </div>
+  
   <script>
     fetch("/assets/components/footer.html")
       .then(response => response.text())
