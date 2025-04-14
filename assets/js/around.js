@@ -426,7 +426,7 @@ function setupCarouselObserver(gastroData, lieuData) {
                     } catch (error) {
                         console.error("🚨 Erreur de parsing JSON des streets :", error);
                         return;
-                    }
+                    } 
 
                     streetData.forEach(street => {
                         let coords;
