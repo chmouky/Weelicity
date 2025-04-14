@@ -8,6 +8,8 @@ function addSwipeListeners() {
   ];
 
   elements.forEach(({ element, targetPage }) => {
+    element.style.transition = "none";
+    element.style.transform = "translateX(0)";
     let startX = 0;
     let currentX = 0;
     let isDragging = false;
