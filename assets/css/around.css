@@ -142,6 +142,7 @@ html, body {
 .carousel-item h3 {
   font-size: 1.6em;
   margin-bottom: 5px;
+  color: var(--theme-color);
 }
 
 .carousel-item .description-text {
