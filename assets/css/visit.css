@@ -17,12 +17,12 @@ body, html {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  gap: 40px; /* espace entre les boutons */
+  gap: 80px; /* espace entre les boutons */
 }
 
 .clickable-box {
   width: 300px;
-  height: 70px; /* ✅ hauteur fixe */
+  height: 170px; /* ✅ hauteur fixe */
   display: flex;
   align-items: center;
   justify-content: center;
