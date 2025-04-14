@@ -1,5 +1,5 @@
 
-function handleSwipe(el, callback) {
+function handleSwipeWithAnimation(el, targetUrl) {
   let touchStartX = 0;
 
   el.addEventListener("touchstart", e => {
@@ -11,18 +11,18 @@ function handleSwipe(el, callback) {
     const swipeDistance = touchEndX - touchStartX;
 
     if (swipeDistance > 50) {
-      callback(); // swipe vers la droite
+      el.classList.add("swipe-right");
+      setTimeout(() => {
+        window.location.href = targetUrl;
+      }, 400); // temps pour laisser l'animation se jouer
     }
   });
 }
 
-handleSwipe(document.getElementById("topSection"), () => {
-  window.location.href = "../pages/tags.html";
-});
+handleSwipeWithAnimation(document.getElementById("topContainer"), "../pages/tags.html");
+handleSwipeWithAnimation(document.getElementById("bottomContainer"), "../pages/themes.html");
 
-handleSwipe(document.getElementById("bottomSection"), () => {
-  window.location.href = "../pages/themes.html";
-});
+
 
 
 // Swipe vers la droite
