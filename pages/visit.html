@@ -14,20 +14,20 @@
   <button id="theme-btn">Aller à Thème</button>
 
   <div id="footer-placeholder"></div>
-  <div class="split-container">
-    <div class="half top" id="tags-btn">
-      <div class="content">
-        <h2>Explorer par Lieux</h2>
-        <p>Trouvez les spots autour de vous</p>
-      </div>
-    </div>
-    <div class="half bottom" id="theme-btn">
-      <div class="content">
-        <h2>Explorer par Thèmes</h2>
-        <p>Découvrez selon vos envies</p>
-      </div>
+  <div class="split top" id="topSection">
+    <div class="content">
+      <h2>Découvrir par Tags</h2>
+      <p>Explore les lieux à travers des mots-clés.</p>
     </div>
   </div>
+  
+  <div class="split bottom" id="bottomSection">
+    <div class="content">
+      <h2>Explorer par Thème</h2>
+      <p>Visite selon l’ambiance ou l’univers.</p>
+    </div>
+  </div>
+  
   
   <script>
     fetch("/assets/components/footer.html")

@@ -1,34 +1,29 @@
 
-function addSwipeListener(element, callback) {
+function handleSwipe(el, callback) {
   let touchStartX = 0;
-  let touchEndX = 0;
 
-  element.addEventListener("touchstart", (e) => {
-    touchStartX = e.changedTouches[0].screenX;
+  el.addEventListener("touchstart", e => {
+    touchStartX = e.touches[0].clientX;
   });
 
-  element.addEventListener("touchend", (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipe();
-  });
-
-  function handleSwipe() {
+  el.addEventListener("touchend", e => {
+    const touchEndX = e.changedTouches[0].clientX;
     const swipeDistance = touchEndX - touchStartX;
+
     if (swipeDistance > 50) {
-      // vers la droite
-      callback();
+      callback(); // swipe vers la droite
     }
-  }
+  });
 }
 
-// Clic normal
-document.getElementById("tags-btn").addEventListener("click", () => {
+handleSwipe(document.getElementById("topSection"), () => {
   window.location.href = "../pages/tags.html";
 });
 
-document.getElementById("theme-btn").addEventListener("click", () => {
+handleSwipe(document.getElementById("bottomSection"), () => {
   window.location.href = "../pages/themes.html";
 });
+
 
 // Swipe vers la droite
 addSwipeListener(document.getElementById("tags-btn"), () => {
