@@ -1,45 +1,33 @@
-body {
+html, body {
   margin: 0;
+  padding: 0;
   height: 100vh;
-  font-family: 'Shrikhand', cursive;
   overflow: hidden;
+  font-family: 'Shrikhand', cursive;
 }
 
-.swipe-container {
-  width: 100%;
-  height: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+.half-screen {
   position: relative;
-  touch-action: pan-y;
-  transition: transform 0.5s ease-in-out;
-}
-
-.top {
-  background-color: #A8DADC;
-}
-
-.bottom {
-  background-color: #F7B267;
-}
-
-.content {
+  width: 100vw;
+  height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: white;
-  padding: 20px;
-}
-
-.content h2 {
   font-size: 2em;
-  margin-bottom: 10px;
+  text-align: center;
+  transition: transform 0.3s ease-out;
+  will-change: transform;
 }
 
-.content p {
-  font-size: 1em;
-  opacity: 0.9;
+#top-half {
+  background: #7BBFC2;
 }
 
-.swipe-right {
-  transform: translateX(100vw);
+#bottom-half {
+  background: #FF8C42;
+}
+
+.label {
+  padding: 20px;
 }
