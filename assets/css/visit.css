@@ -21,9 +21,8 @@ body, html {
 }
 
 .clickable-box {
-  flex: 1 1 40%;
   max-width: 300px;
-  padding: 30px;
+  padding: 15px 30px; /* réduit la hauteur en baissant le padding vertical */
   background-color: var(--theme-color);
   color: white;
   font-size: 1.3em;
@@ -35,6 +34,7 @@ body, html {
   border: 2px solid black;
   box-shadow: 0 0 0 4px white, 0 0 0 6px black;
 }
+
 
 
 .clickable-box:active {
