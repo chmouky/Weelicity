@@ -586,9 +586,8 @@ function updateMapMarkers(places) {
     const overlay = document.getElementById("map-overlay");
   
     if (gifWrapper) gifWrapper.classList.add("visible");
-    if (overlay) overlay.style.display = "block"; // 👉 Affiche l'overlay
+    if (overlay) overlay.style.display = "block";
   
-    // Supprimer les anciens marqueurs
     markers.forEach(marker => marker.setMap(null));
     markers.length = 0;
   
@@ -597,7 +596,7 @@ function updateMapMarkers(places) {
   
     if (total === 0) {
       if (gifWrapper) gifWrapper.classList.remove("visible");
-      if (overlay) overlay.style.display = "none"; // 👉 Cache l'overlay
+      if (overlay) overlay.style.display = "none";
       return;
     }
   
@@ -608,7 +607,7 @@ function updateMapMarkers(places) {
         if (currentZoom < zoomMin) {
           loaded++;
           if (loaded === total && gifWrapper) gifWrapper.classList.remove("visible");
-          if (loaded === total && overlay) overlay.style.display = "none"; // 👉 Cache
+          if (loaded === total && overlay) overlay.style.display = "none";
           return;
         }
   
@@ -622,7 +621,24 @@ function updateMapMarkers(places) {
           image.crossOrigin = "anonymous";
           image.src = place.image;
           image.onload = () => {
-            // ...
+            const size = 80;
+            const canvas = document.createElement("canvas");
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext("2d");
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, size / 2 - 4, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.clip();
+            ctx.drawImage(image, 0, 0, size, size);
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "#FF0000";
+            ctx.stroke();
+            const finalIconUrl = canvas.toDataURL();
+  
             imageCache[place.image] = finalIconUrl;
             createMarker(place, finalIconUrl);
             loaded++;
