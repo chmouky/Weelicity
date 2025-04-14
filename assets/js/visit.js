@@ -8,8 +8,6 @@ function addSwipeListeners() {
   ];
 
   elements.forEach(({ element, targetPage }) => {
-    element.style.transition = "none";
-    element.style.transform = "translateX(0)";
     let startX = 0;
     let currentX = 0;
     let isDragging = false;
@@ -46,5 +44,13 @@ function addSwipeListeners() {
     });
   });
 }
+
+// 🔁 Réinitialiser lors d’un retour en arrière
+window.addEventListener("pageshow", () => {
+  document.querySelectorAll(".half-screen").forEach(el => {
+    el.style.transition = "none";
+    el.style.transform = "translateX(0)";
+  });
+});
 
 document.addEventListener("DOMContentLoaded", addSwipeListeners);
