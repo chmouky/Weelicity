@@ -1,54 +1,49 @@
-html, body {
+:root {
+  --theme-color: #7BBFC2;
+}
+
+body, html {
   margin: 0;
   padding: 0;
   height: 100vh;
+  background: #f5f5f5;
   overflow: hidden;
   font-family: 'Shrikhand', cursive;
-  background-color: #f5f5f5;
-  touch-action: pan-x;
 }
 
-.half-screen {
-  position: relative;
-  width: 100vw;
-  height: 50vh;
+.navigation-wrapper {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  height: 100vh;
+  gap: 20px; /* espace entre les boutons */
 }
 
 .clickable-box {
+  width: 80vw;
+  max-width: 300px;
+  padding: 30px;
   background-color: var(--theme-color);
   color: white;
-  border: 4px solid white;
-  border-radius: 20px;
-  padding: 50px 20px;
-  width: 80vw;
-  max-width: 400px;
+  font-size: 1.5em;
   text-align: center;
-  font-size: 1.8em;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  transition: transform 0.3s ease;
-  will-change: transform;
+  border: 2px solid white;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  touch-action: pan-y;
 }
 
-.clickable-box small {
-  font-size: 0.6em;
-  display: block;
-  margin-top: 10px;
+.clickable-box:active {
+  transform: scale(0.98);
 }
 
 body {
   font-family: var(--theme-font);
 }
 
-#top-half .clickable-box {
-  background-color: #7BBFC2; /* var(--theme-color) */
-}
-
-#bottom-half .clickable-box {
-  background-color: #FF8C42;
-}
 
 
 .label {
