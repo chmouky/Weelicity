@@ -23,23 +23,23 @@ body, html {
 }
 
 .clickable-box {
+  position: relative; /* pour positionner le texte d'action */
   width: 300px;
-  height: 170px; /* ✅ hauteur fixe */
+  height: 170px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  padding: 0 20px; /* pas de padding vertical */
+  padding: 0 20px;
   background-color: var(--theme-color);
   color: white;
   font-size: 1.3em;
-  text-align: center;
+  text-align: left;
   border-radius: 15px;
   cursor: pointer;
   transition: transform 0.2s ease;
   touch-action: pan-y;
   border: 2px solid black;
   box-shadow: 0 0 0 4px white, 0 0 0 6px black;
-  touch-action: pan-x;
 }
 
 
@@ -83,4 +83,31 @@ body {
 .subtext {
   font-size: 1.2em;
   color: white;
+}
+
+.main-text {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 1.5em;
+}
+
+.highlight {
+  font-weight: bold;
+  color: black;
+  font-size: 1.5em;
+}
+
+.subtext {
+  font-size: 1.1em;
+  color: white;
+}
+
+.action-hint {
+  position: absolute;
+  bottom: 10px;
+  right: 15px;
+  font-size: 0.75em;
+  color: white;
+  opacity: 0.8;
 }
