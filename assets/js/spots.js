@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+const markerIconCache = new Map(); // Clé = URL image brute, Valeur = dataURL circulaire
 
 
   // Sauvegarder l'état des boutons activés
@@ -901,6 +902,10 @@ if (activeIndex >= items.length - 1) {
 
 
 function createCircularMarkerIcon(imageUrl, size = 50) {
+  if (markerIconCache.has(imageUrl)) {
+    return Promise.resolve(markerIconCache.get(imageUrl));
+  }
+
   const canvas = document.createElement("canvas");
   canvas.width = size;
   canvas.height = size;
@@ -919,21 +924,23 @@ function createCircularMarkerIcon(imageUrl, size = 50) {
 
       ctx.drawImage(img, 0, 0, size, size);
 
-      // Optionnel : contour blanc
       ctx.beginPath();
       ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2, true);
       ctx.lineWidth = 4;
       ctx.strokeStyle = "#fff";
       ctx.stroke();
 
-      resolve(canvas.toDataURL());
+      const iconDataUrl = canvas.toDataURL();
+      markerIconCache.set(imageUrl, iconDataUrl); // 💾 Mise en cache
+      resolve(iconDataUrl);
     };
 
     img.onerror = () => {
-      resolve("https://via.placeholder.com/50"); // Fallback
+      resolve("https://via.placeholder.com/50"); // Fallback si erreur
     };
   });
 }
+
 
 
 document.getElementById("carousel-container").addEventListener("scroll", updateCarouselArrows);
