@@ -32,14 +32,28 @@ document.addEventListener("DOMContentLoaded", () => {
           selectedTags.clear();
           selectedTags.add(CalcID);
     
+          // 🔵 Titre en couleur
           popupTitle.textContent = Nom;
+          popupTitle.style.color = 'var(--theme-color)';
+    
           popupContent.textContent = Description || 'No detailed description available.';
     
           const selectedTheme = themes.find(t => t.fields?.CalcID === CalcID);
           const daySelector = document.getElementById("day-selector");
           const dayContainer = document.getElementById("popup-days-container");
     
-          // Reset et griser le bouton
+          // Affichage du texte durée
+          let durationText = document.getElementById("day-count-text");
+          if (!durationText) {
+            durationText = document.createElement("p");
+            durationText.id = "day-count-text";
+            durationText.style.fontFamily = "'Shrikhand', cursive";
+            durationText.style.fontSize = "0.9rem";
+            durationText.style.color = "#555";
+            durationText.style.marginTop = "8px";
+            dayContainer.appendChild(durationText);
+          }
+    
           daySelector.innerHTML = "";
           continuePopupBtn.disabled = true;
           continuePopupBtn.style.opacity = 0.5;
@@ -47,26 +61,47 @@ document.addEventListener("DOMContentLoaded", () => {
           const dayCount = selectedTheme?.fields?.Days;
     
           if (dayCount && !isNaN(dayCount)) {
-            for (let i = 1; i <= parseInt(dayCount); i++) {
+            const count = parseInt(dayCount);
+            dayContainer.style.display = "block";
+            durationText.textContent = `This tour lasts ${count} day${count > 1 ? 's' : ''}`;
+    
+            if (count === 1) {
+              // S'il n'y a qu'un jour → bouton activé directement
               const option = document.createElement("option");
-              option.value = i;
-              option.textContent = i;
+              option.value = 1;
+              option.textContent = "1";
               daySelector.appendChild(option);
+              daySelector.value = "1";
+              continuePopupBtn.disabled = false;
+              continuePopupBtn.style.opacity = 1;
+            } else {
+              // Plusieurs jours : ajouter placeholder
+              const placeholder = document.createElement("option");
+              placeholder.value = "";
+              placeholder.textContent = "-- Select --";
+              placeholder.disabled = true;
+              placeholder.selected = true;
+              daySelector.appendChild(placeholder);
+    
+              for (let i = 1; i <= count; i++) {
+                const option = document.createElement("option");
+                option.value = i;
+                option.textContent = i;
+                daySelector.appendChild(option);
+              }
+    
+              daySelector.addEventListener("change", () => {
+                if (daySelector.value) {
+                  continuePopupBtn.disabled = false;
+                  continuePopupBtn.style.opacity = 1;
+                }
+              }, { once: true });
             }
     
-            dayContainer.style.display = "block";
-    
-            // Activer le bouton quand un jour est sélectionné
-            daySelector.addEventListener("change", () => {
-              if (daySelector.value) {
-                continuePopupBtn.disabled = false;
-                continuePopupBtn.style.opacity = 1;
-              }
-            }, { once: true });
-    
           } else {
-            // Si pas de jour dispo
+            // Pas de valeur pour Days
             dayContainer.style.display = "none";
+            durationText.textContent = "";
           }
     
           overlay.style.display = "block";
