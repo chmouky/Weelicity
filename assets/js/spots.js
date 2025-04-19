@@ -372,13 +372,14 @@ const ticketText = (Array.isArray(record.ticket) &&
                     inoutSpan.style.cursor = "pointer";
                     inoutSpan.addEventListener("click", (e) => {
                       let message = "";
-                      if (inoutText.includes("IN or OUT")) {
+                      if (inoutText.startsWith("Visit IN or OUT")) {
                         message = "IN/OUT: Worth visiting both inside and out";
-                      } else if (inoutText.includes("Inside")) {
+                      } else if (inoutText.startsWith("Visit Inside")) {
                         message = "Inside: Visit mainly from the inside";
-                      } else if (inoutText.includes("Outside")) {
+                      } else if (inoutText.startsWith("Visit Outside")) {
                         message = "Outside: Best viewed from the outside";
                       }
+                      
                       showBubble(e, message);
                     });
                     infoDiv.appendChild(inoutSpan);
