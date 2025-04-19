@@ -13,8 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
   
     function displayThemes(themes) {
       if (!themes?.length) return;
+    
       themes.forEach(theme => {
-        const { Nom, DescriptionC, URLPhoto, CalcID, Description } = theme.fields || {};
+        const { Nom, DescriptionC, URLPhoto, CalcID, Description, Days } = theme.fields || {};
         const card = document.createElement('div');
         card.className = "tag-card";
         card.dataset.calcid = CalcID;
@@ -23,50 +24,56 @@ document.addEventListener("DOMContentLoaded", () => {
           <h3>${Nom}</h3>
           <p>${DescriptionC || 'Pas de description'}</p>
         `;
+    
         card.addEventListener('click', () => {
+          // Sélection unique
           document.querySelectorAll('.tag-card').forEach(c => c.classList.remove('selected'));
           selectedTags.clear();
           selectedTags.add(CalcID);
           card.classList.add('selected');
-        
+    
+          // Remplir le popup
           popupTitle.textContent = Nom;
           popupContent.textContent = Description || 'No detailed description available.';
-        
-          // 🔍 Trouver l'objet complet pour ce thème
-          const selectedTheme = themes.find(t => t.fields?.CalcID === CalcID);
+    
+          // Gestion du selecteur de jours
           const daySelector = document.getElementById("day-selector");
-          daySelector.innerHTML = ""; // Reset
-          
-          if (selectedTheme?.fields?.Days && !isNaN(selectedTheme.fields.Days)) {
-            const maxDays = parseInt(selectedTheme.fields.Days);
+          daySelector.innerHTML = ""; // reset
+          continuePopupBtn.disabled = true;
+          continuePopupBtn.style.opacity = 0.5;
+    
+          if (Days && !isNaN(Days)) {
+            const maxDays = parseInt(Days);
             for (let i = 1; i <= maxDays; i++) {
               const option = document.createElement("option");
               option.value = i;
               option.textContent = i;
               daySelector.appendChild(option);
             }
+    
             document.getElementById("popup-days-container").style.display = "block";
+    
+            daySelector.addEventListener("change", () => {
+              if (daySelector.value) {
+                continuePopupBtn.disabled = false;
+                continuePopupBtn.style.opacity = 1;
+              }
+            }, { once: true }); // évite d’ajouter plusieurs fois le même listener
+    
           } else {
             document.getElementById("popup-days-container").style.display = "none";
           }
-          continuePopupBtn.disabled = true;
-          continuePopupBtn.style.opacity = 0.5;
-          daySelector.addEventListener("change", () => {
-            if (daySelector.value) {
-              continuePopupBtn.disabled = false;
-              continuePopupBtn.style.opacity = 1;
-            }
-          });
-          
+    
+          // Afficher le popup
           overlay.style.display = "block";
           popup.style.display = "flex";
           document.body.style.overflow = "hidden";
         });
-        
+    
         tagGrid.appendChild(card);
       });
     }
-  
+    
     document.querySelector("#popup .close-btn").addEventListener("click", closePopup);
     overlay.addEventListener("click", closePopup);
   
