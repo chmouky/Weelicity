@@ -363,8 +363,45 @@ const ticketText = (Array.isArray(record.ticket) &&
                   ? "Need Ticket"
                   : "";
 
-infoDiv.innerHTML = `${inoutText}${(inoutText && ticketText) ? "<br>" : ""}${ticketText}`;
-item.appendChild(infoDiv);
+                  infoDiv.innerHTML = "";
+
+                  // 📌 Ajout texte In/Out cliquable
+                  if (inoutText) {
+                    const inoutSpan = document.createElement("span");
+                    inoutSpan.textContent = inoutText;
+                    inoutSpan.style.cursor = "pointer";
+                    inoutSpan.addEventListener("click", (e) => {
+                      let message = "";
+                      if (inoutText.includes("IN or OUT")) {
+                        message = "IN/OUT: Worth visiting both inside and out";
+                      } else if (inoutText.includes("Inside")) {
+                        message = "Inside: Visit mainly from the inside";
+                      } else if (inoutText.includes("Outside")) {
+                        message = "Outside: Best viewed from the outside";
+                      }
+                      showBubble(e, message);
+                    });
+                    infoDiv.appendChild(inoutSpan);
+                  }
+                  
+                  // 📌 Saut de ligne si les deux sont présents
+                  if (inoutText && ticketText) {
+                    infoDiv.appendChild(document.createElement("br"));
+                  }
+                  
+                  // 📌 Ajout texte Ticket cliquable
+                  if (ticketText) {
+                    const ticketSpan = document.createElement("span");
+                    ticketSpan.textContent = ticketText;
+                    ticketSpan.style.cursor = "pointer";
+                    ticketSpan.addEventListener("click", (e) => {
+                      showBubble(e, "Need Ticket: Entrance ticket required");
+                    });
+                    infoDiv.appendChild(ticketSpan);
+                  }
+                  
+                  item.appendChild(infoDiv);
+                  
 
 
       carouselContainer.appendChild(item);
