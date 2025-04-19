@@ -316,10 +316,29 @@ function displayCarousel(data) {
       item.appendChild(image);
 
       // 📌 Bouton toggle (ON/OFF)
+      const toggleContainer = document.createElement("div");
+      toggleContainer.classList.add("toggle-container");
+
+      const noLabel = document.createElement("span");
+      noLabel.classList.add("toggle-label", "no-label");
+      noLabel.textContent = "NO";
+
+      const yesLabel = document.createElement("span");
+      yesLabel.classList.add("toggle-label", "yes-label");
+      yesLabel.textContent = "YES";
+
       const toggleBtn = document.createElement("div");
       toggleBtn.classList.add("toggle-btn");
       toggleBtn.addEventListener("click", () => toggleButton(toggleBtn, record));
-      item.appendChild(toggleBtn);
+
+      // Ajout dans le conteneur
+      toggleContainer.appendChild(noLabel);
+      toggleContainer.appendChild(toggleBtn);
+      toggleContainer.appendChild(yesLabel);
+
+      // Ajout au carrousel
+      item.appendChild(toggleContainer);
+
 
 // 🔽 Ajout du bloc Inout / Ticket
 const infoDiv = document.createElement("div");
