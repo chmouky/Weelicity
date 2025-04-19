@@ -9,7 +9,7 @@ function resetButtons() {
     void box.offsetWidth; // force le reflow
     box.style.transition = `transform ${swipeDuration}ms ease-out`;
   });
-}
+} 
 
 function addSwipeListeners() {
   const elements = [

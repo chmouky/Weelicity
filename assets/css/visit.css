@@ -87,10 +87,13 @@ body {
 
 .main-text {
   display: flex;
-  gap: 10px;
-  align-items: center;
+  flex-direction: column; /* 👈 empile les éléments verticalement */
+  gap: 5px;
+  align-items: center; /* 👈 aligne à gauche (ou center si tu préfères centré) */
   font-size: 1.5em;
+  padding: 10px 0;
 }
+
 
 .highlight {
   font-weight: bold;
