@@ -179,13 +179,6 @@ header .highlight {
   transform: scale(1.05);
 }
 
-#continue-popup-btn:disabled {
-  cursor: not-allowed;
-  filter: grayscale(100%);
-  opacity: 0.5;
-}
-
-
 #overlay {
   display: none;
   position: fixed;

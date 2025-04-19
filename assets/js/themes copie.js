@@ -28,41 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
           selectedTags.clear();
           selectedTags.add(CalcID);
           card.classList.add('selected');
-        
           popupTitle.textContent = Nom;
           popupContent.textContent = Description || 'No detailed description available.';
-        
-          // 🔍 Trouver l'objet complet pour ce thème
-          const selectedTheme = themes.find(t => t.fields?.CalcID === CalcID);
-          const daySelector = document.getElementById("day-selector");
-          daySelector.innerHTML = ""; // Reset
-          
-          if (selectedTheme?.fields?.Days && !isNaN(selectedTheme.fields.Days)) {
-            const maxDays = parseInt(selectedTheme.fields.Days);
-            for (let i = 1; i <= maxDays; i++) {
-              const option = document.createElement("option");
-              option.value = i;
-              option.textContent = i;
-              daySelector.appendChild(option);
-            }
-            document.getElementById("popup-days-container").style.display = "block";
-          } else {
-            document.getElementById("popup-days-container").style.display = "none";
-          }
-          continuePopupBtn.disabled = true;
-          continuePopupBtn.style.opacity = 0.5;
-          daySelector.addEventListener("change", () => {
-            if (daySelector.value) {
-              continuePopupBtn.disabled = false;
-              continuePopupBtn.style.opacity = 1;
-            }
-          });
-          
           overlay.style.display = "block";
           popup.style.display = "flex";
           document.body.style.overflow = "hidden";
         });
-        
         tagGrid.appendChild(card);
       });
     }
@@ -74,18 +45,14 @@ document.addEventListener("DOMContentLoaded", () => {
       popup.style.display = "none";
       overlay.style.display = "none";
       document.body.style.overflow = "auto"; 
-      continuePopupBtn.disabled = false; // pour réinitialiser
-      continuePopupBtn.style.opacity = 1;
     }
   
     continuePopupBtn.addEventListener("click", () => {
       const selected = document.querySelector(".tag-card.selected");
       if (!selected) return alert("❌ Aucun thème sélectionné !");
       const calcId = selected.dataset.calcid;
-      const selectedDays = document.getElementById("day-selector")?.value || 1;
-      window.location.href = `tours?themeID=${encodeURIComponent(calcId)}&days=${selectedDays}`;
+      window.location.href = `tours?themeID=${encodeURIComponent(calcId)}`;
     });
-    
   
     const stored = sessionStorage.getItem("themetour");
     if (stored) {
