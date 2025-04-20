@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
               // S'il n'y a qu'un jour → bouton activé directement
               const option = document.createElement("option");
               option.value = 1;
-              option.textContent = "1";
+              option.textContent = "1 day";
               daySelector.appendChild(option);
               daySelector.value = "1";
               continuePopupBtn.disabled = false;
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
               for (let i = 1; i <= count; i++) {
                 const option = document.createElement("option");
                 option.value = i;
-                option.textContent = i;
+                option.textContent = `${i} day${i > 1 ? 's' : ''}`;
                 daySelector.appendChild(option);
               }
     
