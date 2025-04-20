@@ -300,6 +300,7 @@ function updateSelectorDays() {
   const tours = JSON.parse(sessionStorage.getItem("tour")) || [];
   const themeID = getThemeIDFromURL();
   const days = [...new Set(tours.filter(t => t.fields.CalcTheme?.toString() === themeID).map(t => Number(t.fields.Day)))];
+  const selector = document.getElementById("my-selector");
   selector.innerHTML = '<option value="" selected disabled>Select a duration</option>';
   days.sort((a, b) => a - b).forEach(day => {
     const opt = document.createElement("option");
