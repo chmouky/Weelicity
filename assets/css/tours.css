@@ -308,22 +308,7 @@ html, body {
     animation: none;
   }
   
-  #duration-message {
-    position: fixed;
-    top: 130px;
-    right: 15px;
-    font-size: 1.2em;
-    font-family: 'Shrikhand', cursive;
-    color: black;
-    background: white;
-    padding: 10px 15px;
-    border-radius: 10px;
-    border: 2px solid black;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    max-width: 200px;
-    z-index: 1000;
-  }
-  
+    
   #duration-message::after {
     content: "";
     position: absolute;
@@ -371,19 +356,6 @@ html, body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
   
-
-  #map-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(255, 255, 255, 0.7); /* gris clair semi-transparent */
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    z-index: 900;
-    display: none; /* caché par défaut */
-  }
   
   #overlay:empty {
     pointer-events: all;

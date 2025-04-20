@@ -11,6 +11,10 @@ function getThemeIDFromURL() {
   return params.get("themeID");
 }
 
+function getDayFromURL() {
+  return parseInt(new URLSearchParams(window.location.search).get('days'), 10) || null;
+}
+
 function initMap(containerId, lat, lng, zoom) {
   return new google.maps.Map(document.getElementById(containerId), {
     center: { lat, lng },
@@ -27,26 +31,31 @@ function updateToursByDay() {
   if (!tourJSON) return;
 
   const themeID = getThemeIDFromURL();
-  let tours = JSON.parse(tourJSON);
-  const dayValue = parseInt(document.getElementById("my-selector").value, 10);
+  const dayValue = getDayFromURL();                     // ← passe par l’URL
 
-  const filteredTours = tours.filter(tour =>
-    Number(tour.fields.Day) === dayValue &&
-    tour.fields.CalcTheme?.toString() === themeID
-  ).sort((a, b) => Number(a.fields.Tri) - Number(b.fields.Tri));
+  // si pas de dayValue valide, on ne fait rien
+  if (!dayValue) return;
+
+  let tours = JSON.parse(tourJSON);
+  const filteredTours = tours
+    .filter(tour =>
+      Number(tour.fields.Day) === dayValue &&
+      tour.fields.CalcTheme?.toString() === themeID
+    )
+    .sort((a, b) => Number(a.fields.Tri) - Number(b.fields.Tri));
 
   const carouselData = filteredTours.map(tour => ({
-    name: tour.fields.Nom,
-    descriptionC: tour.fields.DescriptionC,
+    name:        tour.fields.Nom,
     description: tour.fields.Description,
-    image: tour.fields.URLPhoto,
-    lat: parseFloat(tour.fields.Latitude),
-    lng: parseFloat(tour.fields.Longitude),
-    calcID: tour.fields.CalcID.toString()
+    image:       tour.fields.URLPhoto,
+    lat:         parseFloat(tour.fields.Latitude),
+    lng:         parseFloat(tour.fields.Longitude),
+    calcID:      tour.fields.CalcID.toString()
   }));
 
   displayCarousel(carouselData);
 }
+
 
 function displayCarousel(data) {
   const container = document.getElementById("carousel-container");
@@ -265,7 +274,9 @@ function showLieuDetails(lieu) {
   
   function onGoogleMapsLoaded() {
     map = window.initMap("map", 48.8200, 2.3222, 11.5);
-    updateSelectorDays();
+    updateToursByDay();   // on affiche d’emblée le carrousel
+    document.getElementById("overlay").style.display = "none"; // plus de flou
+  
   
     // 📍 Affiche la position de l'utilisateur avec un marqueur jaune
     if (navigator.geolocation) {
@@ -296,9 +307,40 @@ function showLieuDetails(lieu) {
   }
   
 
-
+function updateSelectorDays() {
+  const tours = JSON.parse(sessionStorage.getItem("tour")) || [];
+  const themeID = getThemeIDFromURL();
+  const days = [...new Set(tours.filter(t => t.fields.CalcTheme?.toString() === themeID).map(t => Number(t.fields.Day)))];
+  const selector = document.getElementById("my-selector");
+  selector.innerHTML = '<option value="" selected disabled>Select a duration</option>';
+  days.sort((a, b) => a - b).forEach(day => {
+    const opt = document.createElement("option");
+    opt.value = day;
+    opt.textContent = `${day} day${day > 1 ? 's' : ''}`;
+    selector.appendChild(opt);
+  });
+}
 
 document.getElementById("back-button").addEventListener("click", () => window.history.back());
+
+document.getElementById("my-selector").addEventListener("change", function () {
+  const goBtn = document.getElementById("go-button");
+  const message = document.getElementById("duration-message");
+  const overlay = document.getElementById("overlay");
+
+  if (this.value) {
+    goBtn.style.display = "block";
+    message.classList.add("hidden");
+    this.classList.add("selected");
+    overlay.style.display = "none"; // ✅ cache l’effet de flou
+    updateToursByDay();
+  } else {
+    goBtn.style.display = "none";
+    message.classList.remove("hidden");
+    this.classList.remove("selected");
+    overlay.style.display = "block"; // ✅ remet l’effet
+  }
+});
 
 
 
