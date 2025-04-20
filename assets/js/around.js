@@ -686,27 +686,23 @@ function updateMapMarkers(places) {
 
 // Fonction auxiliaire pour ajouter un marqueur
 function createMarker(place, iconUrl) {
-  const marker = new google.maps.Marker({
-    position: { lat: place.lat, lng: place.lng },
-    map,
-    title: place.name,
-    icon: {
-      url: iconUrl,
-      scaledSize: new google.maps.Size(40, 40)
-    }
-  });
-  marker.addListener("click", () => {
-    showLieuDetails(place);
-  });
-  markers.push(marker);
-}
-
-  marker.addListener("click", () => {
-    showLieuDetails(place);
-  });
-  markers.push(marker);
-}
-
+    const marker = new google.maps.Marker({
+      position: { lat: place.lat, lng: place.lng },
+      map,
+      title: place.name,
+      icon: {
+        url: iconUrl,
+        scaledSize: new google.maps.Size(40, 40)
+      }
+    });
+    marker.addListener("click", () => {
+      showLieuDetails(place);
+    });
+    markers.push(marker);
+  }
+  
+  // Plus aucune ligne en trop ici !
+  
 
 
 function showLieuDetails(lieu) {
