@@ -681,6 +681,9 @@ function updateMapMarkers(places) {
         };
       }
     });
+    // À la fin de TOUT le chargement :
+    gif.classList.remove("visible");
+    if (overlay) overlay.style.display = "none";
   }, 0);
 }
 
