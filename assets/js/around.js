@@ -580,124 +580,103 @@ function svgToDataURL(svg) {
 /********************************************************
  * Fonction pour mettre à jour les marqueurs Google Maps
  ********************************************************/
-// Cache pour les icônes déjà générées
-// Cache pour les icônes déjà générées
-const imageCache = {};
-
+const imageCache = {}; // Cache pour stocker les dataURL par image URL
 function updateMapMarkers(places) {
-  const gif     = document.getElementById("loadingGifWrapper");
-  const overlay = document.getElementById("map-overlay");
-
-  // 1) Affiche immédiatement le GIF et l'overlay
-  gif.classList.add("visible");
-  if (overlay) overlay.style.display = "block";
-
-  // 2) Décale tout le boulot au prochain cycle pour laisser le navigateur
-  //    rafraîchir et animer le GIF
-  setTimeout(() => {
-    // Supprime les anciens marqueurs
-    markers.forEach(m => m.setMap(null));
+    const gifWrapper = document.getElementById("loadingGifWrapper");
+    const overlay = document.getElementById("map-overlay");
+  
+    if (gifWrapper) gifWrapper.classList.add("visible");
+    if (overlay) overlay.style.display = "block";
+  
+    markers.forEach(marker => marker.setMap(null));
     markers.length = 0;
-
+  
     let loaded = 0;
     const total = places.length;
-
-    // Si aucun lieu, on cache tout de suite
+  
     if (total === 0) {
-      gif.classList.remove("visible");
+      if (gifWrapper) gifWrapper.classList.remove("visible");
       if (overlay) overlay.style.display = "none";
       return;
     }
-
+  
     places.forEach(place => {
-      // Cas où on skippe ce lieu
-      if (place.lat == null || place.lng == null || !place.image) {
-        loaded++;
-        if (loaded === total) {
-          gif.classList.remove("visible");
-          if (overlay) overlay.style.display = "none";
+      if (place.lat !== null && place.lng !== null && place.image) {
+        const currentZoom = map.getZoom();
+        const zoomMin = place.zoomMin || 10;
+        if (currentZoom < zoomMin) {
+          loaded++;
+          if (loaded === total && gifWrapper) gifWrapper.classList.remove("visible");
+          if (loaded === total && overlay) overlay.style.display = "none";
+          return;
         }
-        return;
-      }
-
-      // Si déjà dans le cache, on crée immédiatement
-      if (imageCache[place.image]) {
-        createMarker(place, imageCache[place.image]);
-        loaded++;
-        if (loaded === total) {
-          gif.classList.remove("visible");
-          if (overlay) overlay.style.display = "none";
+  
+        if (imageCache[place.image]) {
+          createMarker(place, imageCache[place.image]);
+          loaded++;
+          if (loaded === total && gifWrapper) gifWrapper.classList.remove("visible");
+          if (loaded === total && overlay) overlay.style.display = "none";
+        } else {
+          const image = new Image();
+          image.crossOrigin = "anonymous";
+          image.src = place.image;
+          image.onload = () => {
+            const size = 80;
+            const canvas = document.createElement("canvas");
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext("2d");
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, size / 2 - 4, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.clip();
+            ctx.drawImage(image, 0, 0, size, size);
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "#FF0000";
+            ctx.stroke();
+            const finalIconUrl = canvas.toDataURL();
+  
+            imageCache[place.image] = finalIconUrl;
+            createMarker(place, finalIconUrl);
+            loaded++;
+            if (loaded === total && gifWrapper) gifWrapper.classList.remove("visible");
+            if (loaded === total && overlay) overlay.style.display = "none";
+          };
+          image.onerror = () => {
+            createMarker(place, "https://maps.google.com/mapfiles/ms/icons/red-dot.png");
+            loaded++;
+            if (loaded === total && gifWrapper) gifWrapper.classList.remove("visible");
+            if (loaded === total && overlay) overlay.style.display = "none";
+          };
         }
       } else {
-        // Charge l'image, dessine le canvas, met en cache, puis crée
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.src = place.image;
-
-        img.onload = () => {
-          const size = 80;
-          const canvas = document.createElement("canvas");
-          canvas.width = size;
-          canvas.height = size;
-          const ctx = canvas.getContext("2d");
-
-          // Cercle de découpe
-          ctx.beginPath();
-          ctx.arc(size/2, size/2, size/2 - 4, 0, Math.PI*2);
-          ctx.closePath();
-          ctx.clip();
-
-          // Dessine l'image
-          ctx.drawImage(img, 0, 0, size, size);
-
-          // Contour rouge
-          ctx.beginPath();
-          ctx.arc(size/2, size/2, size/2 - 2, 0, Math.PI*2);
-          ctx.closePath();
-          ctx.lineWidth = 4;
-          ctx.strokeStyle = "#FF0000";
-          ctx.stroke();
-
-          const iconUrl = canvas.toDataURL();
-          imageCache[place.image] = iconUrl;
-
-          createMarker(place, iconUrl);
-
-          loaded++;
-          if (loaded === total) {
-            gif.classList.remove("visible");
-            if (overlay) overlay.style.display = "none";
-          }
-        };
-
-        img.onerror = () => {
-          // Fallback en cas d’erreur
-          createMarker(place, "https://maps.google.com/mapfiles/ms/icons/red-dot.png");
-          loaded++;
-          if (loaded === total) {
-            gif.classList.remove("visible");
-            if (overlay) overlay.style.display = "none";
-          }
-        };
+        loaded++;
+        if (loaded === total && gifWrapper) gifWrapper.classList.remove("visible");
+        if (loaded === total && overlay) overlay.style.display = "none";
       }
     });
-  }, 0);
-}
+  }
+  
 
-// Fonction auxiliaire pour ajouter un marqueur
 function createMarker(place, iconUrl) {
   const marker = new google.maps.Marker({
     position: { lat: place.lat, lng: place.lng },
-    map,
+    map: map,
     title: place.name,
-    icon: { url: iconUrl, scaledSize: new google.maps.Size(40, 40) }
+    icon: {
+      url: iconUrl,
+      scaledSize: new google.maps.Size(40, 40)
+    }
   });
-  marker.addListener("click", () => showLieuDetails(place));
+  marker.addListener("click", () => {
+    showLieuDetails(place);
+  });
   markers.push(marker);
 }
 
-  // Plus aucune ligne en trop ici !
-  
 
 
 function showLieuDetails(lieu) {
