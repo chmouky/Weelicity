@@ -584,15 +584,15 @@ function svgToDataURL(svg) {
 const imageCache = {}; 
 
 function updateMapMarkers(places) {
-  const gifWrapper = document.getElementById("loadingGifWrapper");
-  const overlay    = document.getElementById("map-overlay");
-
-  // 1) Affiche le GIF et le voile immédiatement
-  if (gifWrapper) gifWrapper.classList.add("visible");
-  if (overlay)    overlay.style.display = "block";
-
-  // 2) Décale tout le gros travail au prochain cycle d'événements
-  setTimeout(() => {
+    const gif = document.getElementById("loadingGifWrapper");
+    const overlay = document.getElementById("map-overlay");
+  
+    // 1) Affiche immédiatement le GIF
+    gif.classList.add("visible");
+    if (overlay) overlay.style.display = "block";
+  
+    // 2) Décale la suite pour laisser le browser faire un premier paint
+    setTimeout(() => {
     // Supprime les anciens marqueurs
     markers.forEach(marker => marker.setMap(null));
     markers.length = 0;
