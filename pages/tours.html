@@ -83,9 +83,10 @@
   <!-- Google Maps chargé dynamiquement -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("overlay").style.display = "block";
-      loadGoogleMaps("https://google-map-back.samueltoledano94.workers.dev/load-google-maps", "onGoogleMapsLoaded");
-    });
+    document.getElementById("overlay").style.display = "none"; // plus de flou
+    loadGoogleMaps("https://google-map-back.samueltoledano94.workers.dev/load-google-maps", "onGoogleMapsLoaded");
+  });
+
   </script>
 </body>
 </html>

@@ -296,39 +296,9 @@ function showLieuDetails(lieu) {
   }
   
 
-function updateSelectorDays() {
-  const tours = JSON.parse(sessionStorage.getItem("tour")) || [];
-  const themeID = getThemeIDFromURL();
-  const days = [...new Set(tours.filter(t => t.fields.CalcTheme?.toString() === themeID).map(t => Number(t.fields.Day)))];
-  selector.innerHTML = '<option value="" selected disabled>Select a duration</option>';
-  days.sort((a, b) => a - b).forEach(day => {
-    const opt = document.createElement("option");
-    opt.value = day;
-    opt.textContent = `${day} day${day > 1 ? 's' : ''}`;
-    selector.appendChild(opt);
-  });
-}
+
 
 document.getElementById("back-button").addEventListener("click", () => window.history.back());
-
-document.getElementById("my-selector").addEventListener("change", function () {
-  const goBtn = document.getElementById("go-button");
-  const message = document.getElementById("duration-message");
-  const overlay = document.getElementById("overlay");
-
-  if (this.value) {
-    goBtn.style.display = "block";
-    message.classList.add("hidden");
-    this.classList.add("selected");
-    overlay.style.display = "none"; // ✅ cache l’effet de flou
-    updateToursByDay();
-  } else {
-    goBtn.style.display = "none";
-    message.classList.remove("hidden");
-    this.classList.remove("selected");
-    overlay.style.display = "block"; // ✅ remet l’effet
-  }
-});
 
 
 
