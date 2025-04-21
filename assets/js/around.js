@@ -32,7 +32,7 @@ function setupPopupCloseEvents() {
 }
 function closePopup(event) {
     // remonte jusqu'à n'importe quel conteneur de popup
-    const popup = event.target.closest(".popup");
+    const popup = event.target.closest("#popup, #popup-lieu-details");
     if (!popup) return;
   
     popup.style.display = "none";
