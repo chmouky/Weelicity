@@ -31,15 +31,15 @@ function setupPopupCloseEvents() {
     });
 }
 function closePopup(event) {
-    const popup = event.target.closest("#popup, #popup-lieu-details");
-    if (popup) {
-        popup.style.display = "none";
-        console.log("🔴 Popup fermé :", popup.id);
-    }
-    // Masquer l'overlay et réactiver le scroll
+    // remonte jusqu'à n'importe quel conteneur de popup
+    const popup = event.target.closest(".popup");
+    if (!popup) return;
+  
+    popup.style.display = "none";
     document.getElementById("overlay").style.display = "none";
     document.body.classList.remove("no-scroll");
-}
+  }
+  
 
 /********************************************************
  * Fonction pour initialiser la carte Google Maps
