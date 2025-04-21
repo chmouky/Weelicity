@@ -1,32 +1,17 @@
-import { createAuth0Client } from '@auth0/auth0-spa-js';
-
 async function main() {
-  // Initialiser Auth0
-  let auth0;
-  try {
-    auth0 = await createAuth0Client({
-      domain: 'dev-1of24kih8koq07ek.us.auth0.com',
-      clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
-      authorizationParams: {
-        redirect_uri: window.location.origin + '/callback', // Ajoutez une page callback si nécessaire
-      },
-    });
-  } catch (error) {
-    console.error('❌ Erreur lors de l’initialisation d’Auth0 :', error);
-    return;
-  }
+  const auth0 = await window.auth0.createAuth0Client({
+    domain: 'dev-1of24kih8koq07ek.us.auth0.com',
+    clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
+    authorizationParams: {
+      redirect_uri: window.location.origin + '/callback',
+    },
+  });
 
-  // Gérer le callback après redirection
   if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
-    try {
-      await auth0.handleRedirectCallback();
-      window.history.replaceState({}, document.title, window.location.pathname);
-    } catch (error) {
-      console.error('❌ Erreur lors du callback Auth0 :', error);
-    }
+    await auth0.handleRedirectCallback();
+    window.history.replaceState({}, document.title, '/');
   }
 
-  // Vérifier l’état de l’authentification
   const isAuthenticated = await auth0.isAuthenticated();
   const loginButton = document.getElementById('login-button');
   const logoutButton = document.getElementById('logout-button');
@@ -37,39 +22,17 @@ async function main() {
     loginButton.style.display = 'none';
     logoutButton.style.display = 'block';
   } else {
-    console.log('🔓 Non connecté');
     loginButton.style.display = 'block';
     logoutButton.style.display = 'none';
   }
 
-  // Associer les actions aux boutons
-  loginButton.addEventListener('click', async () => {
-    try {
-      await auth0.loginWithRedirect({
-        appState: { targetUrl: window.location.pathname },
-      });
-    } catch (error) {
-      console.error('❌ Erreur lors de la connexion :', error);
-    }
-  });
+  loginButton.addEventListener('click', () => auth0.loginWithRedirect());
+  logoutButton.addEventListener('click', () => auth0.logout({ returnTo: window.location.origin }));
 
-  logoutButton.addEventListener('click', async () => {
-    try {
-      await auth0.logout({
-        returnTo: window.location.origin,
-      });
-    } catch (error) {
-      console.error('❌ Erreur lors de la déconnexion :', error);
-    }
-  });
-
-  // Chargement des données Airtable (indépendant de l’authentification, si souhaité)
   document.addEventListener('DOMContentLoaded', async () => {
     try {
       const res = await fetch('https://airtable-all-table2.samueltoledano94.workers.dev');
       const data = await res.json();
-
-      // Stocker les données dans sessionStorage
       sessionStorage.setItem('tags', JSON.stringify(data.Tag));
       sessionStorage.setItem('places', JSON.stringify(data.Lieu));
       sessionStorage.setItem('tour', JSON.stringify(data.Tour));
@@ -81,13 +44,12 @@ async function main() {
       sessionStorage.setItem('street', JSON.stringify(data.Street));
       sessionStorage.setItem('parametre', JSON.stringify(data.Parametre));
 
-      // Retirer l’overlay de chargement
       document.getElementById('loadingOverlay')?.remove();
       document.body.style.pointerEvents = 'auto';
     } catch (err) {
-      console.error('❌ Erreur de chargement des données :', err);
+      console.error('❌ Erreur de chargement :', err);
     }
   });
 }
 
-main().catch(err => console.error('❌ Erreur principale :', err));
+main().catch(err => console.error('❌ Erreur :', err));
