@@ -37,3 +37,12 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* optionnel pour style */
   }
   
+  .content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 100px); /* pour laisser de la place en haut si besoin */
+    padding-top: 30px; /* ← remonte légèrement */
+    box-sizing: border-box;
+  }
+  
