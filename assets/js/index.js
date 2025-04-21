@@ -1,26 +1,34 @@
-
 import { createAuth0Client } from 'https://cdn.jsdelivr.net/npm/@auth0/auth0-spa-js@2.0.4/+esm';
 
 const auth0 = await createAuth0Client({
-  domain: "TON_DOMAINE.auth0.com",
-  client_id: "TA_CLIENT_ID",
+  domain: "weelicity.auth0.com", // ← remplace par ton vrai domaine Auth0
+  client_id: "OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL",        // ← remplace par ton vrai client ID
   authorizationParams: {
     redirect_uri: window.location.origin
   }
 });
 
+// 🔁 Gère le retour de Auth0 après login
+if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
+  await auth0.handleRedirectCallback();
+  window.history.replaceState({}, document.title, "/");
+}
+
+// 🔐 Vérifie l'authentification
 const isAuthenticated = await auth0.isAuthenticated();
 
 if (!isAuthenticated) {
-  // Redirige vers la page de connexion
   await auth0.loginWithRedirect({
     appState: { targetUrl: window.location.pathname }
   });
-} else {
-  // Optionnel : tu peux récupérer l'utilisateur
-  const user = await auth0.getUser();
-  console.log("Utilisateur connecté :", user);
+  return; // ⛔ stop ici, sinon ça continue le chargement
 }
+
+// ✅ Si on est connecté, on peut récupérer l’utilisateur et continuer
+const user = await auth0.getUser();
+console.log("✅ Connecté :", user);
+
+// 🟢 À partir d’ici : tu peux charger tes données, retirer le GIF, etc.
 
 
 
