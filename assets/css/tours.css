@@ -361,3 +361,8 @@ html, body {
     pointer-events: all;
   }
   
+  #popup-lieu-header,
+#popup-header,
+#popup-itinerary-header {
+  position: relative;
+}
