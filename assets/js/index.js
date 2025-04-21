@@ -1,3 +1,29 @@
+
+import { createAuth0Client } from 'https://cdn.jsdelivr.net/npm/@auth0/auth0-spa-js@2.0.4/+esm';
+
+const auth0 = await createAuth0Client({
+  domain: "TON_DOMAINE.auth0.com",
+  client_id: "TA_CLIENT_ID",
+  authorizationParams: {
+    redirect_uri: window.location.origin
+  }
+});
+
+const isAuthenticated = await auth0.isAuthenticated();
+
+if (!isAuthenticated) {
+  // Redirige vers la page de connexion
+  await auth0.loginWithRedirect({
+    appState: { targetUrl: window.location.pathname }
+  });
+} else {
+  // Optionnel : tu peux récupérer l'utilisateur
+  const user = await auth0.getUser();
+  console.log("Utilisateur connecté :", user);
+}
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
   // Récupérer la position de l'utilisateur
   if (typeof getUserLocation === "function") {
@@ -44,3 +70,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
