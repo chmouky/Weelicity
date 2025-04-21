@@ -3,8 +3,8 @@ async function main() {
     domain: 'dev-1of24kih8koq07ek.us.auth0.com',
     clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
     authorizationParams: {
-      redirect_uri: window.location.origin + '/callback',
-    },
+      redirect_uri: window.location.origin
+    }    
   });
 
   if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
