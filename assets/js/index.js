@@ -2,7 +2,7 @@ import { createAuth0Client } from 'https://cdn.jsdelivr.net/npm/@auth0/auth0-spa
 
 async function main() {
   const auth0 = await createAuth0Client({
-    domain: "weelicity.auth0.com",
+    domain: "dev-1of24kih8koq07ek.us.auth0.com",
     client_id: "OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL",
     authorizationParams: {
       redirect_uri: window.location.origin
