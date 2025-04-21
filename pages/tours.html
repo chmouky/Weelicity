@@ -86,6 +86,16 @@
     document.getElementById("overlay").style.display = "none"; // plus de flou
     loadGoogleMaps("https://google-map-back.samueltoledano94.workers.dev/load-google-maps", "onGoogleMapsLoaded");
   });
+  
+  document.addEventListener("DOMContentLoaded", () => {
+  document.body.addEventListener("click", (e) => {
+    if (e.target.classList.contains("popup-close")) {
+      document.querySelectorAll("#popup, #popup-lieu-details, #popup-itinerary").forEach(p => p.style.display = "none");
+      document.getElementById("overlay").style.display = "none";
+      document.body.classList.remove("no-scroll");
+    }
+  });
+});
 
   </script>
 </body>

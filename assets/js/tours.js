@@ -344,15 +344,6 @@ document.getElementById("my-selector").addEventListener("change", function () {
 
 
 
-document.body.addEventListener("click", (e) => {
-  if (e.target.classList.contains("popup-close")) {
-    document.querySelectorAll("#popup, #popup-lieu-details, #popup-itinerary").forEach(p => p.style.display = "none");
-    document.getElementById("overlay").style.display = "none";
-    document.body.classList.remove("no-scroll");
-  }
-});
-
-
 
 document.getElementById("go-button").addEventListener("click", async () => {
   try {
