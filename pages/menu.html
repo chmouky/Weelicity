@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu</title>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <style>
+    :root {
+      --theme-color: #7BBFC2; /* ou ta vraie couleur principale */
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Shrikhand', cursive;
+      background-color: #fff;
+      color: #333;
+    }
+
+    #menu-wrapper {
+      padding: 20px;
+    }
+
+    #auth-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 16px;
+      font-size: 1em;
+      border: none;
+      border-radius: 6px;
+      background-color: var(--theme-color);
+      color: white;
+      cursor: pointer;
+    }
+
+    .menu-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--theme-color);
+      font-size: 1.2em;
+      cursor: pointer;
+    }
+
+    .menu-icon {
+      font-size: 1.4em;
+    }
+  </style>
+</head>
+<body>
+  <div id="menu-wrapper">
+    <div id="auth-buttons">
+      <button id="login-button" style="display:none;">Se connecter</button>
+      <button id="logout-button" style="display:none;">Se déconnecter</button>
+    </div>
+
+    <div class="menu-item">My Tours <span class="menu-icon">&gt;</span></div>
+    <div class="menu-item">My Explanations <span class="menu-icon">&gt;</span></div>
+    <div class="menu-item">Share the App <span class="menu-icon">&gt;</span></div>
+    <div class="menu-item">Setup <span class="menu-icon">&gt;</span></div>
+  </div>
+
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
+  <script>
+    window.addEventListener("DOMContentLoaded", async () => {
+      const auth0 = await window.auth0.createAuth0Client({
+        domain: 'dev-1of24kih8koq07ek.us.auth0.com',
+        clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
+        authorizationParams: {
+          redirect_uri: window.location.origin
+        }
+      });
+
+      const isAuthenticated = await auth0.isAuthenticated();
+      const loginBtn = document.getElementById("login-button");
+      const logoutBtn = document.getElementById("logout-button");
+
+      if (isAuthenticated) {
+        loginBtn.style.display = "none";
+        logoutBtn.style.display = "inline-block";
+      } else {
+        loginBtn.style.display = "inline-block";
+        logoutBtn.style.display = "none";
+      }
+
+      loginBtn.addEventListener("click", () => auth0.loginWithRedirect());
+      logoutBtn.addEventListener("click", () => auth0.logout({ returnTo: window.location.origin }));
+    });
+  </script>
+</body>
+</html>
