@@ -5,53 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Menu</title>
   <link rel="stylesheet" href="/assets/css/styles.css">
-  <style>
-    :root {
-      --theme-color: #7BBFC2; /* ou ta vraie couleur principale */
-    }
 
-    body {
-      margin: 0;
-      font-family: 'Shrikhand', cursive;
-      background-color: #fff;
-      color: #333;
-    }
-
-    #menu-wrapper {
-      padding: 20px;
-    }
-
-    #auth-buttons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    button {
-      padding: 10px 16px;
-      font-size: 1em;
-      border: none;
-      border-radius: 6px;
-      background-color: var(--theme-color);
-      color: white;
-      cursor: pointer;
-    }
-
-    .menu-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 0;
-      border-bottom: 1px solid var(--theme-color);
-      font-size: 1.2em;
-      cursor: pointer;
-    }
-
-    .menu-icon {
-      font-size: 1.4em;
-    }
-  </style>
 </head>
 <body>
   <div id="menu-wrapper">
@@ -95,5 +49,20 @@
       logoutBtn.addEventListener("click", () => auth0.logout({ returnTo: window.location.origin }));
     });
   </script>
+
+   <!-- Footer placeholder -->
+   <div id="footer-placeholder"></div>
+
+   <!-- JavaScript séparé -->
+   <script src="../assets/js/utils.js"></script>
+   <script>
+     fetch("/assets/components/footer.html")
+       .then(response => response.text())
+       .then(data => {
+         const footer = document.getElementById("footer-placeholder");
+         footer.innerHTML = data;
+         footer.classList.add("loaded");
+       });
+   </script>
 </body>
 </html>
