@@ -35,9 +35,12 @@
       const logoutBtn = document.getElementById("logout-button");
 
       if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
-        await auth0.handleRedirectCallback();
-        window.history.replaceState({}, document.title, '/pages/menu.html');
-      }
+      const result = await auth0.handleRedirectCallback();
+      const targetUrl = result.appState?.targetUrl || '/';
+      window.history.replaceState({}, document.title, targetUrl);
+      window.location.href = targetUrl;
+    }
+
 
       const isAuthenticated = await auth0.isAuthenticated();
 
