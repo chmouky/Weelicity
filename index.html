@@ -8,18 +8,15 @@
 
   <link rel="manifest" href="assets/manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Weelicity">
   <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
 
-  <!-- CSS principaux -->
+  <!-- CSS -->
   <link rel="stylesheet" href="assets/css/index.css">
   <link rel="stylesheet" href="assets/css/footer.css">
   <link rel="stylesheet" href="assets/css/styles.css">
-
-  <!-- Polices -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,700;1,400;1,700&family=Shrikhand:ital,wght@0,400">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter&family=Shrikhand">
 </head>
 <body>
   <!-- Overlay de chargement -->
@@ -35,18 +32,12 @@
     align-items: center;
     z-index: 9999;
   ">
-    <img id="loadingGif" src="assets/img/index/pin_wait.gif" alt="Chargement..." style="width: 120px; height: auto;">
+    <img src="assets/img/index/pin_wait.gif" alt="Chargement..." style="width: 120px; height: auto;">
   </div>
 
   <div id="siteWrapper">
-    <header>
-      <h1></h1>
-      <div id="auth-buttons">
-        <button id="login-button" style="display: none;">Se connecter</button>
-        <button id="logout-button" style="display: none;">Se déconnecter</button>
-      </div>
-    </header>
-    
+    <header><h1></h1></header>
+
     <main id="page" class="container">
       <section>
         <div class="content">
@@ -54,26 +45,21 @@
         </div>
       </section>
     </main>
-    <div id="footer-placeholder"></div>
-    <!-- ✅ Footer chargé dynamiquement à l'intérieur du siteWrapper -->
-  </div>
-  
 
-  <!-- Chargement du footer -->
+    <div id="footer-placeholder"></div>
+  </div>
+
+  <!-- Footer -->
   <script>
     fetch("/assets/components/footer.html")
-      .then(response => response.text())
-      .then(data => {
-        const footer = document.getElementById("footer-placeholder");
-        footer.innerHTML = data;
-        footer.classList.add("loaded");
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("footer-placeholder").innerHTML = html;
       });
   </script>
 
-  <!-- JS principal -->
+  <!-- Scripts -->
   <script src="/assets/js/utils.js"></script>
   <script type="module" src="/assets/js/index.js"></script>
-<script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
-
 </body>
 </html>

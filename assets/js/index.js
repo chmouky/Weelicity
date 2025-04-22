@@ -1,16 +1,13 @@
 async function loadAirtableDataIfNeeded() {
-  const requiredKeys = [
-    'tags', 'places', 'tour', 'themetour', 'quartiers', 'gastro',
-    'brands', 'around', 'street', 'parametre'
-  ];
+  const keys = ['tags', 'places', 'tour', 'themetour', 'quartiers', 'gastro', 'brands', 'around', 'street', 'parametre'];
 
-  const isStorageReady = requiredKeys.every(key => {
+  const isReady = keys.every(key => {
     const item = sessionStorage.getItem(key);
     return item && item !== 'null' && item !== '[]' && item !== '{}';
   });
 
-  if (isStorageReady) {
-    console.log("✅ Données déjà présentes dans sessionStorage, pas de fetch.");
+  if (isReady) {
+    console.log("✅ Données déjà présentes.");
     document.getElementById('loadingOverlay')?.remove();
     document.body.style.pointerEvents = 'auto';
     return;
@@ -27,51 +24,4 @@ async function loadAirtableDataIfNeeded() {
     sessionStorage.setItem('quartiers', JSON.stringify(data.Quartier));
     sessionStorage.setItem('gastro', JSON.stringify(data.Gastro));
     sessionStorage.setItem('brands', JSON.stringify(data.Brands));
-    sessionStorage.setItem('around', JSON.stringify(data.Around));
-    sessionStorage.setItem('street', JSON.stringify(data.Street));
-    sessionStorage.setItem('parametre', JSON.stringify(data.Parametre));
-
-    console.log("📦 Données Airtable chargées.");
-  } catch (err) {
-    console.error("❌ Erreur de chargement Airtable :", err);
-  }
-
-  document.getElementById('loadingOverlay')?.remove();
-  document.body.style.pointerEvents = 'auto';
-}
-
-async function main() {
-  const auth0 = await window.auth0.createAuth0Client({
-    domain: 'dev-1of24kih8koq07ek.us.auth0.com',
-    clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
-    authorizationParams: {
-      redirect_uri: window.location.origin
-    }
-  });
-
-  if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
-    await auth0.handleRedirectCallback();
-    window.history.replaceState({}, document.title, '/');
-  }
-
-  const isAuthenticated = await auth0.isAuthenticated();
-  const loginButton = document.getElementById('login-button');
-  const logoutButton = document.getElementById('logout-button');
-
-  if (isAuthenticated) {
-    const user = await auth0.getUser();
-    console.log('✅ Connecté :', user);
-    loginButton.style.display = 'none';
-    logoutButton.style.display = 'block';
-  } else {
-    loginButton.style.display = 'block';
-    logoutButton.style.display = 'none';
-  }
-
-  loginButton.addEventListener('click', () => auth0.loginWithRedirect());
-  logoutButton.addEventListener('click', () => auth0.logout({ returnTo: window.location.origin }));
-
-  await loadAirtableDataIfNeeded();
-}
-
-main().catch(err => console.error('❌ Erreur dans main() :', err));
+    sessionStorage
