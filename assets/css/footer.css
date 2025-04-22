@@ -77,3 +77,7 @@ footer {
     height: 32px;
   }
   
+  .custom-nav-button.active img {
+    filter: brightness(0) saturate(100%) invert(40%) sepia(100%) saturate(500%) hue-rotate(var(--theme-color, 200deg)) brightness(1) contrast(1);
+  }
+  

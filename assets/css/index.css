@@ -42,7 +42,7 @@ body {
     justify-content: center;
     align-items: center;
     height: calc(100vh - 100px); /* pour laisser de la place en haut si besoin */
-    padding-top: 30px; /* ← remonte légèrement */
+    padding-top: 40px; /* ← remonte légèrement */
     box-sizing: border-box;
   }
   
