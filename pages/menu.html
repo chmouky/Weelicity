@@ -6,10 +6,8 @@
   <title>Menu</title>
   <link rel="stylesheet" href="/assets/css/styles.css">
   <link rel="stylesheet" href="/assets/css/menu.css">
-
-
 </head>
-<body>
+<body class="menu-page">
   <div id="menu-wrapper">
     <div id="auth-buttons">
       <button id="login-button" style="display:none;">Se connecter</button>
@@ -20,8 +18,6 @@
     <div class="menu-item">My Explanations <span class="menu-icon">&gt;</span></div>
     <div class="menu-item">Share the App <span class="menu-icon">&gt;</span></div>
     <div class="menu-item">Setup <span class="menu-icon">&gt;</span></div>
-    <body class="menu-page">
-
   </div>
 
   <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
@@ -31,14 +27,19 @@
         domain: 'dev-1of24kih8koq07ek.us.auth0.com',
         clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
         authorizationParams: {
-        redirect_uri: window.location.origin + '/pages/menu.html'
-      }
-
+          redirect_uri: window.location.origin + '/pages/menu.html'
+        }
       });
 
-      const isAuthenticated = await auth0.isAuthenticated();
       const loginBtn = document.getElementById("login-button");
       const logoutBtn = document.getElementById("logout-button");
+
+      if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
+        await auth0.handleRedirectCallback();
+        window.history.replaceState({}, document.title, '/pages/menu.html');
+      }
+
+      const isAuthenticated = await auth0.isAuthenticated();
 
       if (isAuthenticated) {
         loginBtn.style.display = "none";
@@ -48,24 +49,27 @@
         logoutBtn.style.display = "none";
       }
 
-      loginBtn.addEventListener("click", () => auth0.loginWithRedirect());
-      logoutBtn.addEventListener("click", () => auth0.logout({ returnTo: window.location.origin }));
+      loginBtn.addEventListener("click", () => {
+        auth0.loginWithRedirect({
+          appState: { targetUrl: '/pages/menu.html' }
+        });
+      });
+
+      logoutBtn.addEventListener("click", () => {
+        auth0.logout({ returnTo: window.location.origin + '/pages/menu.html' });
+      });
     });
   </script>
 
-   <!-- Footer placeholder -->
-   <div id="footer-placeholder"></div>
-
-   <!-- JavaScript séparé -->
-   <script src="../assets/js/utils.js"></script>
-   <script>
-     fetch("/assets/components/footer.html")
-       .then(response => response.text())
-       .then(data => {
-         const footer = document.getElementById("footer-placeholder");
-         footer.innerHTML = data;
-         footer.classList.add("loaded");
-       });
-   </script>
+  <!-- Footer -->
+  <div id="footer-placeholder"></div>
+  <script src="/assets/js/utils.js"></script>
+  <script>
+    fetch("/assets/components/footer.html")
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("footer-placeholder").innerHTML = data;
+      });
+  </script>
 </body>
 </html>
