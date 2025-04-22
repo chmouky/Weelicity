@@ -46,7 +46,6 @@
       </section>
     </main>
 
-    <div id="footer-placeholder"></div>
   </div>
 
   <!-- Footer -->
@@ -61,5 +60,15 @@
   <!-- Scripts -->
   <script src="/assets/js/utils.js"></script>
   <script type="module" src="/assets/js/index.js"></script>
+  <script>
+    fetch("/assets/components/footer.html")
+      .then(response => response.text())
+      .then(data => {
+        const footer = document.getElementById("footer-placeholder");
+        footer.innerHTML = data;
+        footer.classList.add("loaded");
+      });
+  </script>
+
 </body>
 </html>

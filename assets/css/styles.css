@@ -1,3 +1,8 @@
 :root {
-    --theme-color: #7BBFC2;
-  }
+  --theme-color: #7BBFC2;
+  --main-font: 'Shrikhand', cursive;
+}
+
+body.menu-page {
+  font-family: var(--main-font) !important;
+}
