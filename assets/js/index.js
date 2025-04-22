@@ -24,4 +24,17 @@ async function loadAirtableDataIfNeeded() {
     sessionStorage.setItem('quartiers', JSON.stringify(data.Quartier));
     sessionStorage.setItem('gastro', JSON.stringify(data.Gastro));
     sessionStorage.setItem('brands', JSON.stringify(data.Brands));
-    sessionStorage
+    sessionStorage.setItem('around', JSON.stringify(data.Around));
+    sessionStorage.setItem('street', JSON.stringify(data.Street));
+    sessionStorage.setItem('parametre', JSON.stringify(data.Parametre));
+
+    console.log("📦 Données Airtable chargées.");
+  } catch (err) {
+    console.error("❌ Erreur de chargement Airtable :", err);
+  }
+
+  document.getElementById('loadingOverlay')?.remove();
+  document.body.style.pointerEvents = 'auto';
+}
+
+loadAirtableDataIfNeeded().catch(err => console.error('❌ Erreur dans le chargement initial :', err));
