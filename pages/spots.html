@@ -24,26 +24,19 @@
   </button>
 
   <div id="carousel-container"></div>
-
-
   <button id="go-button">Go!</button>
 
-
-<!-- Popup de sauvegarde -->
-<div id="save-popup">
-  <span id="save-popup-close">&times;</span>
-  <h2>My Saved Tours</h2>
-  <ul id="saved-tours-list">
-    <li>Aucune sauvegarde pour l'instant</li>
-  </ul>
-</div>
-
-
-
-
+  <!-- Popup de sauvegarde -->
+  <div id="save-popup">
+    <span id="save-popup-close">×</span>
+    <h2>My Saved Tours</h2>
+    <ul id="saved-tours-list">
+      <li>Aucune sauvegarde pour l'instant</li>
+    </ul>
+  </div>
 
   <!-- Popups et overlay -->
-<div id="popup" class="popup">
+  <div id="popup" class="popup">
     <div class="popup-content">
       <span class="popup-close">×</span>
       <h2 id="popup-title"></h2>
@@ -62,8 +55,7 @@
     <div id="popup-itinerary-description"></div>
     <div id="popup-itinerary-link"></div>
   </div>
-    <div id="overlay" class="overlay"></div>
-  
+  <div id="overlay" class="overlay"></div>
 
   <!-- Pied de page dynamique -->
   <div id="footer-placeholder"></div>
@@ -73,15 +65,11 @@
       .then(data => {
         const footer = document.getElementById("footer-placeholder");
         footer.innerHTML = data;
-        footer.classList.add("loaded"); // ← ajoute l'opacité / transition
+        footer.classList.add("loaded");
       });
   </script>
-  
 
   <script src="../assets/js/utils.js"></script>
   <script src="../assets/js/spots.js"></script>
-  
-  
-
 </body>
 </html>

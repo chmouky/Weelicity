@@ -1,63 +1,88 @@
+/* Réinitialisation générale */
 html, body {
     margin: 0 !important;
     padding: 0 !important;
     height: 100%;
     width: 100%;
     overflow: hidden;
-        overflow-x: hidden; /* Empêche tout débordement horizontal */
-}
-.shrikhand-text {
-width: 100vw;               /* Utilise la largeur de la fenêtre */
-box-sizing: border-box;     /* Pour inclure le padding dans la largeur */
-margin: 0;                  /* Supprime les marges par défaut */
-font-family: 'Shrikhand', cursive;
-font-size: 2.3em;
-color: black;
-position: fixed;
-top: 0;
-left: 0;
-z-index: 1000;              /* Au-dessus de la carte */
-text-align: center;
-padding: 20px;
-background: rgba(255, 255, 255, 0.5);
-backdrop-filter: blur(5px);
--webkit-backdrop-filter: blur(5px);
-}
-
-/* Désactiver le comportement de sélection */
-body {
+    overflow-x: hidden; /* Empêche tout débordement horizontal */
+  }
+  
+  /* Désactiver le comportement de sélection */
+  body {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-}
-#map {
-position: relative !important; /* Fixe la carte pour qu’elle prenne toute la fenêtre */
+    font-family: 'Shrikhand', cursive; /* Applique la police globalement */
+  }
+  
+  /* Titre principal */
+  .shrikhand-text {
+    width: 100vw;
+    box-sizing: border-box;
+    margin: 0;
+    font-family: 'Shrikhand', cursive;
+    font-size: 2.3em;
+    color: black;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+  
+  /* Carte Google Maps */
+  #map {
+    position: relative !important;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-        margin: 0 !important;
-padding: 0 !important;
-}
-
-/* Styles pour le carousel et le popup */
-#carousel-container {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Bouton de sauvegarde */
+  #save-tour-btn {
+    position: fixed; /* Changé de absolute à fixed pour être relatif au viewport */
+    bottom: 160px; /* Augmenté pour être clairement au-dessus du carrousel */
+    right: 20px;
+    z-index: 5000; /* Supérieur à .carousel-arrow (z-index: 3000) et #carousel-container (z-index: 1) */
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  #save-tour-btn img {
+    width: 50px;
+    height: auto;
+    border-radius: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Carrousel */
+  #carousel-container {
     position: fixed;
-    bottom: 70px;
+    bottom: 100px;
     left: 0;
     width: 100%;
     display: flex;
-    overflow-x: auto; /* Permet uniquement le défilement horizontal */
-    overflow-y: hidden; /* Empêche le défilement vertical */
+    overflow-x: auto;
+    overflow-y: hidden;
     scroll-snap-type: x mandatory;
     gap: 10px;
-    z-index: 1;
+    z-index: 1; /* Faible pour rester sous le bouton */
     padding: 10px 0;
-}
-
-.carousel-item {
+  }
+  
+  .carousel-item {
     flex: 0 0 80%;
     height: 240px;
     background-color: white;
@@ -74,24 +99,24 @@ padding: 0 !important;
     scroll-snap-align: center;
     padding: 10px;
     font-family: 'Shrikhand', cursive;
-}
-
-.carousel-item h3 {
+  }
+  
+  .carousel-item h3 {
     margin: 0 0 5px 0;
     font-size: 1em;
-    color: var(--theme-color);
+    color: var(--theme-color, #007bff);
     cursor: pointer;
     text-decoration: underline;
-}
-
-.carousel-item img {
-      width: 100%;       /* Occupe toute la largeur du conteneur */
-height: 140px;     /* Hauteur fixe pour uniformiser l'affichage */
-object-fit: cover; /* Recadre l'image pour remplir le conteneur sans déformation */
-border-radius: 10px;
-}
-
-.carousel-item .toggle-btn {
+  }
+  
+  .carousel-item img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .carousel-item .toggle-btn {
     margin-top: 10px;
     width: 50px;
     height: 25px;
@@ -100,9 +125,9 @@ border-radius: 10px;
     position: relative;
     cursor: pointer;
     transition: background-color 0.3s ease;
-}
-
-.carousel-item .toggle-btn::before {
+  }
+  
+  .carousel-item .toggle-btn::before {
     content: '';
     position: absolute;
     top: 2px;
@@ -112,17 +137,174 @@ border-radius: 10px;
     background-color: white;
     border-radius: 50%;
     transition: transform 0.3s ease;
-}
-
-.carousel-item .toggle-btn.active {
+  }
+  
+  .carousel-item .toggle-btn.active {
     background-color: green;
-}
-
-.carousel-item .toggle-btn.active::before {
+  }
+  
+  .carousel-item .toggle-btn.active::before {
     transform: translateX(25px);
-}
-
-#popup {
+  }
+  
+  /* Flèches du carrousel */
+  .carousel-arrow {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    z-index: 3000; /* Inférieur à #save-tour-btn */
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: bottom 0.3s ease;
+  }
+  
+  .carousel-arrow img {
+    height: 90px;
+    width: 60px;
+    object-fit: fill !important;
+  }
+  
+  /* Autres styles (inchangés) */
+  #carousel-container::-webkit-scrollbar {
+    display: none;
+  }
+  
+  #carousel-container {
+    scrollbar-width: none;
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.10); }
+    100% { transform: scale(1); }
+  }
+  
+  #go-button {
+    position: fixed;
+    top: 440px;
+    left: 8px;
+    width: 90px;
+    height: 70px;
+    background-color: var(--theme-color, #007bff);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1000;
+    animation: pulse 1.5s infinite ease-in-out;
+    display: none;
+  }
+  
+  #search-container {
+    position: fixed;
+    top: 90px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 20px;
+    padding: 5px 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: width 0.3s ease-in-out;
+    width: 40px;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 2000;
+  }
+  
+  #search-icon {
+    font-size: 20px;
+    cursor: pointer;
+    color: black;
+  }
+  
+  #search-bar {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    padding: 5px;
+    width: 0;
+    transition: width 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0;
+  }
+  
+  #search-container.active {
+    width: 220px;
+  }
+  
+  #search-container.active #search-bar {
+    width: 170px;
+    opacity: 1;
+  }
+  
+  #back-button {
+    position: fixed;
+    top: 90px;
+    left: 15px;
+    background-color: var(--theme-color, #007bff);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 1002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  #back-button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+  }
+  
+  #back-button:active {
+    transform: scale(0.9);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .bubble {
+    position: absolute;
+    background: #f1f1f1;
+    color: #333;
+    padding: 8px 12px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-family: 'Shrikhand', cursive;
+    font-size: 14px;
+    z-index: 3000;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  
+  .carousel-info {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 5px 8px;
+    border-radius: 8px;
+    font-size: 0.5em;
+    color: #333;
+    text-align: right;
+    line-height: 1.2em;
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  #popup {
     display: none;
     position: fixed;
     top: 50%;
@@ -135,22 +317,30 @@ border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     padding: 20px;
     text-align: center;
-z-index: 2000 !important; /* Toujours au-dessus du popup itinéraire */
-}
-
-#popup h3 {
-    margin-top: 0;
-    color: var(--theme-color);
-}
-
-#popup p {
-    margin: 10px 0;
-    font-size: 0.9em;
+    z-index: 2000 !important;
+  }
+  
+  #popup h2 {
+    font-family: 'Shrikhand', cursive;
+    font-size: 1.3rem;
+    text-align: center;
+    color: var(--theme-color, #007bff);
+    margin-bottom: 10px;
+  }
+  
+  #popup p {
+    font-size: 0.9rem;
     color: #555;
-    text-align: left; /* Aligner le texte à gauche */
-}
-
-#popup-close {
+    text-align: center;
+  }
+  
+  #popup a {
+    font-size: 0.85rem;
+    text-decoration: underline;
+    color: var(--theme-color, #007bff);
+  }
+  
+  #popup-close {
     margin-top: 15px;
     padding: 10px 20px;
     background-color: #007bff;
@@ -158,359 +348,148 @@ z-index: 2000 !important; /* Toujours au-dessus du popup itinéraire */
     border: none;
     border-radius: 5px;
     cursor: pointer;
-}
-
-#popup-close:hover {
-    background-color: #0056b3;
-}
-#popup-link {
-    margin: 10px 0;
-    font-size: 0.9em;
-    text-align: center;
-        text-decoration: underline;
-}
-
-#carousel-container::-webkit-scrollbar {
-    display: none;
-}
-
-#carousel-container {
-    scrollbar-width: none;
-    bottom: 100px !important; /* Ajuste cette valeur selon l'effet désiré */
-}
-
-@keyframes pulse {
-0% { transform: scale(1); }
-50% { transform: scale(1.10); }
-100% { transform: scale(1); }
-}
-
-#go-button {
-position: fixed;
-top: 440px;
-left: 8px;
-width: 90px;
-height: 70px;
-background-color: var(--theme-color);
-color: white;
-font-size: 16px;
-font-weight: bold;
-border-radius: 50%;
-cursor: pointer;
-z-index: 1000;
-animation: pulse 1.5s infinite ease-in-out;
-display: none; /* Caché par défaut */
-}
-
-
-
-/* Effet d'
-.classname-ou-id {
-     display: none;
-}
-#popup-itinerary {
-display: none;
-position: fixed;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-width: 80%;
-max-width: 400px;
-background-color: white;
-border-radius: 10px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-padding: 20px;
-z-index: 1000;
-text-align: center;
-}
-
-#popup-itinerary-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-position: relative; /* Nécessaire pour positionner la croix */
-margin-bottom: 10px;
-}
-
-#popup-itinerary-title {
-margin: 0;
-font-size: 1.5em;
-color: black;
-text-align: center;
-width: 100%;
-}
-
-#popup-itinerary ul {
-text-align: left; /* Alignement du texte à gauche */
-padding-left: 20px; /* Ajoute une marge intérieure pour un meilleur rendu */
-list-style-position: inside; /* Positionne les puces à l'intérieur */
-}
-
-#popup-itinerary-close {
-font-size: 2.0em;
-font-weight: bold;
-color: black;
-cursor: pointer;
-position: absolute;
-right: 10px;
-top: 0;
-}
-
-#popup-itinerary-close:hover {
-color: #555;
-}
-#popup-itinerary ul li a {
-text-decoration: underline !important;
-color: black !important;
-font-weight: bold;
-cursor: pointer;
-}
-/* Style de la croix de fermeture */
-.popup-close {
-position: absolute;
-top: 10px;
-right: 15px;
-font-size: 2.0em;
-font-weight: bold;
-color: black;
-cursor: pointer;
-}
-
-.popup-close:hover {
-color: #555;
-transition: color 0.2s ease;
-}
-#google-maps-button {
-display: block; /* Permet d'utiliser margin auto */
-margin: 15px auto; /* Centre horizontalement */
-margin-top: 15px;
-padding: 10px 20px;
-background-color: var(--theme-color);
-color: white;
-border: none;
-border-radius: 5px;
-font-size: 1em;
-font-weight: bold;
-cursor: pointer;
-text-align: center;
-text-decoration: none;
-transition: background-color 0.3s ease;
-align-items: center;
-
-}
-
-#google-maps-button:hover {
-background-color: #0056b3;
-}
-#overlay {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
-z-index: 999; /* Derrière le popup mais devant la carte */
-display: none; /* Caché par défaut */
-}
-#popup, #popup-lieu-details, #popup-itinerary {
-display: none;
-position: fixed;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-width: 80%;
-max-width: 400px;
-background-color: white;
-border: 1px solid rgba(0, 0, 0, 0.15); /* Bordure fine et semi-transparente */
-border-radius: 10px;
-/* Ombre ajustée pour renforcer l'effet de relief */
-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-padding: 20px;
-text-align: left;
-z-index: 2000;
-}
-#search-container {
-position: fixed;
-top: 90px;
-right: 15px;
-display: flex;
-align-items: center;
-background: white;
-border-radius: 20px;
-padding: 5px 10px;
-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-transition: width 0.3s ease-in-out;
-width: 40px; /* Taille initiale */
-overflow: hidden;
-cursor: pointer;
-z-index: 2000; /* Augmente pour passer devant la carte */
-}
-
-#search-icon {
-font-size: 20px;
-cursor: pointer;
-color: black;
-}
-
-#search-bar {
-border: none;
-outline: none;
-font-size: 14px;
-padding: 5px;
-width: 0;
-transition: width 0.3s ease-in-out, opacity 0.3s ease-in-out;
-opacity: 0;
-}
-
-/* Lorsqu'on active la recherche */
-#search-container.active {
-width: 220px;
-}
-
-#search-container.active #search-bar {
-width: 170px;
-opacity: 1;
-}
-
-#back-button {
-position: fixed;
-top: 90px; /* Aligné avec le sélecteur */
-left: 15px; /* Toujours en haut à gauche */
-background-color: var(--theme-color);
-color: white;
-border: none;
-border-radius: 50%; /* Bouton rond */
-width: 40px; /* Taille ajustée */
-height: 40px;
-font-size: 18px;
-cursor: pointer;
-z-index: 1002;
-display: flex;
-align-items: center;
-justify-content: center;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Ombre pour effet de relief */
-transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-/* Effet de survol : légère élévation */
-#back-button:hover {
-background-color: #0056b3;
-box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4); /* Ombre plus marquée */
-}
-
-/* Effet de clic : bouton enfoncé */
-#back-button:active {
-transform: scale(0.9);
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.bubble {
-position: absolute;
-background: #f1f1f1;
-color: #333;
-padding: 8px 12px;
-border-radius: 10px;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-font-family: 'Shrikhand', cursive;
-font-size: 14px;
-z-index: 3000;
-white-space: nowrap;
-pointer-events: none;
-}
-
-
-.carousel-arrow {
-position: fixed;
-width: 50px;
-height: 50px;
-z-index: 3000;
-background: transparent; /* ⛔️ Enlève le fond */
-box-shadow: none;        /* ⛔️ Supprime l’ombre */
-border-radius: 0;        /* ⛔️ En option si tu veux éviter les coins arrondis */
-display: flex;
-align-items: center;
-justify-content: center;
-cursor: pointer;
-transition: bottom 0.3s ease;
-}
-
-.carousel-arrow img {
-height: 90px; /* ou une autre valeur plus grande */
-width: 60px;  /* garde les proportions */
-object-fit: fill !important;  /* étire l’image pour remplir l’espace */
-}
-
-.carousel-info {
-position: absolute;
-bottom: 10px;
-right: 10px;
-background: rgba(255, 255, 255, 0.8); /* Fond léger */
-padding: 5px 8px;
-border-radius: 8px;
-font-size: 0.5em;
-color: #333;
-text-align: right;
-line-height: 1.2em;
-max-width: 100px;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-}
-
-.overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 2000;
   }
   
-  .popup {
+  #popup-close:hover {
+    background-color: #0056b3;
+  }
+  
+  #popup-itinerary {
     display: none;
     position: fixed;
-    top: 10%;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    background: white;
-    border-radius: 12px;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 400px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     padding: 20px;
-    z-index: 3000;
-    max-width: 90vw;
-    max-height: 80vh;
-    overflow-y: auto;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    z-index: 1000;
+    text-align: center;
   }
-
-  #popup h2,
-#popup p,
-#popup a {
-  font-family: 'Shrikhand', cursive;
-}
-
-#popup h2 {
-    font-family: 'Shrikhand', cursive;
-    font-size: 1.3rem;
-    text-align: center; /* 👈 Centre le titre */
-    color: var(--theme-color);
+  
+  #popup-itinerary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
     margin-bottom: 10px;
   }
   
-
-#popup p {
-  font-size: 0.9rem;
-  color: #555;
-  text-align: center;
-}
-
-#popup a {
-  font-size: 0.85rem;
-  text-decoration: underline;
-  color: var(--theme-color);
-}
-
-.toggle-container {
+  #popup-itinerary-title {
+    margin: 0;
+    font-size: 1.5em;
+    color: black;
+    text-align: center;
+    width: 100%;
+  }
+  
+  #popup-itinerary ul {
+    text-align: left;
+    padding-left: 20px;
+    list-style-position: inside;
+  }
+  
+  #popup-itinerary-close {
+    font-size: 2.0em;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 0;
+  }
+  
+  #popup-itinerary-close:hover {
+    color: #555;
+  }
+  
+  #popup-itinerary ul li a {
+    text-decoration: underline !important;
+    color: black !important;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .popup-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 2.0em;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+  }
+  
+  .popup-close:hover {
+    color: #555;
+    transition: color 0.2s ease;
+  }
+  
+  #google-maps-button {
+    display: block;
+    margin: 15px auto;
+    padding: 10px 20px;
+    background-color: var(--theme-color, #007bff);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  #google-maps-button:hover {
+    background-color: #0056b3;
+  }
+  
+  #overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+  }
+  
+  #save-popup {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -20%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    z-index: 4000;
+    display: none;
+    width: 300px;
+  }
+  
+  #save-popup h2 {
+    margin-top: 0;
+    font-family: 'Shrikhand', cursive;
+    font-size: 1.3em;
+    color: var(--theme-color, #007bff);
+  }
+  
+  #save-popup-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    font-size: 1.4em;
+    color: #999;
+  }
+  
+  .toggle-container {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -531,92 +510,3 @@ text-overflow: ellipsis;
   .yes-label {
     color: green;
   }
-  
-
-  #save-button-wrapper {
-    position: fixed;
-    bottom: 120px; /* ✅ au-dessus du carousel */
-    right: 20px;
-    z-index: 5000;
-  }
-  
-  #save-button {
-    width: 45px;   /* ✅ plus petit */
-    height: 45px;
-    border-radius: 50%; /* ✅ rendu rond */
-    cursor: pointer;
-    background-color: white;
-    padding: 5px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-    object-fit: cover;
-  }
-  
-  #save-popup {
-    position: fixed;
-    top: 20%;
-    left: 50%;
-    transform: translate(-50%, -20%);
-    background-color: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-    z-index: 4000;
-    display: none;
-    width: 300px;
-  }
-
-  #save-popup h2 {
-  margin-top: 0;
-  font-family: 'Shrikhand', cursive;
-  font-size: 1.3em;
-  color: var(--theme-color);
-}
-  
-  #save-popup-content {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    width: 80%;
-    max-width: 400px;
-    font-family: Arial, sans-serif;
-    position: relative;
-  }
-  
-  #save-popup-close {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    cursor: pointer;
-    font-size: 1.4em;
-    color: #999;
-  }
-  
-  .hidden {
-    display: none;
-  }
-
-  #save-button-map {
-    position: absolute;
-    bottom: 210px; /* au-dessus du carrousel */
-    right: 10px;
-    z-index: 3000;
-  }
-  #save-tour-btn {
-    position: absolute;
-    bottom: 140px; /* au-dessus du carrousel */
-    right: 20px;
-    z-index: 3000;
-    background: transparent;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-  }
-  
-  #save-tour-btn img {
-    width: 50px;
-    height: auto;
-    border-radius: 0; /* pas d’arrondi */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  }
-  
-  
