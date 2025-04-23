@@ -534,19 +534,21 @@ text-overflow: ellipsis;
   
 
   #save-button-wrapper {
-    position: absolute;
-    bottom: 110px; /* juste au-dessus du carrousel */
+    position: fixed; /* ✅ pour qu’il soit au-dessus du contenu */
+    bottom: 140px;   /* ↑ un peu plus haut que le bas de l'écran */
     right: 20px;
-    z-index: 999;
+    z-index: 3000;   /* ✅ au-dessus du carousel */
   }
   
   #save-button {
     width: 60px;
     height: auto;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    background-color: white;
   }
+  
   
   #save-popup {
     position: fixed;
@@ -582,4 +584,6 @@ text-overflow: ellipsis;
   .hidden {
     display: none;
   }
+
+
   
