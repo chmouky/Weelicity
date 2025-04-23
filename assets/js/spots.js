@@ -941,6 +941,17 @@ function createCircularMarkerIcon(imageUrl, size = 50) {
   });
 }
 
+document.getElementById("save-button").addEventListener("click", () => {
+  document.getElementById("save-popup").classList.remove("hidden");
+
+  // TODO: appeler le Worker pour récupérer les sauvegardes de l'utilisateur
+  console.log("🔐 Affichage des sauvegardes à venir...");
+});
+
+document.getElementById("save-popup-close").addEventListener("click", () => {
+  document.getElementById("save-popup").classList.add("hidden");
+});
+
 
 
 document.getElementById("carousel-container").addEventListener("scroll", updateCarouselArrows);

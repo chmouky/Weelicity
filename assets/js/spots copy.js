@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+const markerIconCache = new Map(); // Clé = URL image brute, Valeur = dataURL circulaire
 
 
   // Sauvegarder l'état des boutons activés
@@ -316,10 +317,29 @@ function displayCarousel(data) {
       item.appendChild(image);
 
       // 📌 Bouton toggle (ON/OFF)
+      const toggleContainer = document.createElement("div");
+      toggleContainer.classList.add("toggle-container");
+
+      const noLabel = document.createElement("span");
+      noLabel.classList.add("toggle-label", "no-label");
+      noLabel.textContent = "NO";
+
+      const yesLabel = document.createElement("span");
+      yesLabel.classList.add("toggle-label", "yes-label");
+      yesLabel.textContent = "YES";
+
       const toggleBtn = document.createElement("div");
       toggleBtn.classList.add("toggle-btn");
       toggleBtn.addEventListener("click", () => toggleButton(toggleBtn, record));
-      item.appendChild(toggleBtn);
+
+      // Ajout dans le conteneur
+      toggleContainer.appendChild(noLabel);
+      toggleContainer.appendChild(toggleBtn);
+      toggleContainer.appendChild(yesLabel);
+
+      // Ajout au carrousel
+      item.appendChild(toggleContainer);
+
 
 // 🔽 Ajout du bloc Inout / Ticket
 const infoDiv = document.createElement("div");
@@ -327,9 +347,16 @@ infoDiv.classList.add("carousel-info");
 
 let inoutText = "";
 if (Array.isArray(record.inout) && record.inout.length > 0) {
-// Affiche directement IN ou OUT en majuscules
-inoutText = record.inout[0].toUpperCase();
+  const values = record.inout.map(v => v.trim().toUpperCase());
+  if (values.includes("IN") && values.includes("OUT")) {
+    inoutText = "Visit IN or OUT";
+  } else if (values.includes("IN")) {
+    inoutText = "Visit Inside";
+  } else if (values.includes("OUT")) {
+    inoutText = "Visit Outside";
+  }
 }
+
 
 const ticketText = (Array.isArray(record.ticket) &&
                   record.ticket.length > 0 &&
@@ -337,8 +364,46 @@ const ticketText = (Array.isArray(record.ticket) &&
                   ? "Need Ticket"
                   : "";
 
-infoDiv.innerHTML = `${inoutText}${(inoutText && ticketText) ? "<br>" : ""}${ticketText}`;
-item.appendChild(infoDiv);
+                  infoDiv.innerHTML = "";
+
+                  // 📌 Ajout texte In/Out cliquable
+                  if (inoutText) {
+                    const inoutSpan = document.createElement("span");
+                    inoutSpan.textContent = inoutText;
+                    inoutSpan.style.cursor = "pointer";
+                    inoutSpan.addEventListener("click", (e) => {
+                      let message = "";
+                      if (inoutText.startsWith("Visit IN or OUT")) {
+                        message = "IN/OUT: Worth visiting both inside and out";
+                      } else if (inoutText.startsWith("Visit Inside")) {
+                        message = "Inside: Visit mainly from the inside";
+                      } else if (inoutText.startsWith("Visit Outside")) {
+                        message = "Outside: Best viewed from the outside";
+                      }
+                      
+                      showBubble(e, message);
+                    });
+                    infoDiv.appendChild(inoutSpan);
+                  }
+                  
+                  // 📌 Saut de ligne si les deux sont présents
+                  if (inoutText && ticketText) {
+                    infoDiv.appendChild(document.createElement("br"));
+                  }
+                  
+                  // 📌 Ajout texte Ticket cliquable
+                  if (ticketText) {
+                    const ticketSpan = document.createElement("span");
+                    ticketSpan.textContent = ticketText;
+                    ticketSpan.style.cursor = "pointer";
+                    ticketSpan.addEventListener("click", (e) => {
+                      showBubble(e, "Need Ticket: Entrance ticket required");
+                    });
+                    infoDiv.appendChild(ticketSpan);
+                  }
+                  
+                  item.appendChild(infoDiv);
+                  
 
 
       carouselContainer.appendChild(item);
@@ -837,6 +902,10 @@ if (activeIndex >= items.length - 1) {
 
 
 function createCircularMarkerIcon(imageUrl, size = 50) {
+  if (markerIconCache.has(imageUrl)) {
+    return Promise.resolve(markerIconCache.get(imageUrl));
+  }
+
   const canvas = document.createElement("canvas");
   canvas.width = size;
   canvas.height = size;
@@ -855,21 +924,23 @@ function createCircularMarkerIcon(imageUrl, size = 50) {
 
       ctx.drawImage(img, 0, 0, size, size);
 
-      // Optionnel : contour blanc
       ctx.beginPath();
       ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2, true);
       ctx.lineWidth = 4;
       ctx.strokeStyle = "#fff";
       ctx.stroke();
 
-      resolve(canvas.toDataURL());
+      const iconDataUrl = canvas.toDataURL();
+      markerIconCache.set(imageUrl, iconDataUrl); // 💾 Mise en cache
+      resolve(iconDataUrl);
     };
 
     img.onerror = () => {
-      resolve("https://via.placeholder.com/50"); // Fallback
+      resolve("https://via.placeholder.com/50"); // Fallback si erreur
     };
   });
 }
+
 
 
 document.getElementById("carousel-container").addEventListener("scroll", updateCarouselArrows);
