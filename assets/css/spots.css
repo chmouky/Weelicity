@@ -597,7 +597,7 @@ text-overflow: ellipsis;
 
   #save-button-map {
     position: absolute;
-    bottom: 110px; /* au-dessus du carrousel */
+    bottom: 210px; /* au-dessus du carrousel */
     right: 10px;
     z-index: 3000;
   }
