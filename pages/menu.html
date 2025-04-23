@@ -2,24 +2,39 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Menu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Navigation</title>
 
-  <link rel="stylesheet" href="/assets/css/styles.css" />
-  <link rel="stylesheet" href="/assets/css/menu.css" />
+  <link rel="stylesheet" href="../assets/css/footer.css">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../assets/css/menu.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap">
 </head>
+
 <body class="menu-page">
+
   <div id="menu-wrapper">
-    <div class="menu-item">My Tours <span class="menu-icon">></span></div>
-    <div class="menu-item">My Explanations <span class="menu-icon">></span></div>
-    <div class="menu-item">Share the App <span class="menu-icon">></span></div>
-    <div class="menu-item">Setup <span class="menu-icon">></span></div>
+    <h1 class="shrikhand-text">Prepare your visit</h1>
+
+    <div class="menu-item">My Tours <span class="menu-icon">&gt;</span></div>
+    <div class="menu-item">My Explanations <span class="menu-icon">&gt;</span></div>
+    <div class="menu-item">Share the App <span class="menu-icon">&gt;</span></div>
+    <div class="menu-item">Setup <span class="menu-icon">&gt;</span></div>
   </div>
 
   <!-- Footer -->
   <div id="footer-placeholder" style="margin-top: 60px;"></div>
 
-  <!-- Menu -->
-  <script type="module" src="/assets/js/menu.js"></script>
+  <script>
+    fetch("/assets/components/footer.html")
+      .then(response => response.text())
+      .then(data => {
+        const footer = document.getElementById("footer-placeholder");
+        footer.innerHTML = data;
+        footer.classList.add("loaded");
+      });
+  </script>
+
+  <script src="../assets/js/visit.js"></script>
 </body>
 </html>

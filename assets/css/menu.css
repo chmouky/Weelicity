@@ -1,24 +1,9 @@
-body {
-  margin: 0;
-  font-family: 'Shrikhand', cursive;
-  background-color: #fff;
-  color: #333;
-  min-height: 100vh; /* Assure que le body couvre toute la hauteur */
-  display: flex;
-  flex-direction: column;
-}
-
-#menu-wrapper {
-  padding: 20px;
-  flex: 1; /* Permet au contenu principal de prendre l'espace disponible */
-}
-
 .menu-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px 0;
-  border-bottom: 1px solid var(--theme-color, #007bff); /* Fallback si --theme-color n'est pas défini */
+  border-bottom: 1px solid var(--theme-color);
   font-size: 1.2em;
   cursor: pointer;
 }
@@ -27,9 +12,9 @@ body {
   font-size: 1.4em;
 }
 
-#footer-placeholder {
-  display: block;
-  min-height: 50px;
-  background-color: #f0f0f0; /* Pour débogage */
-  margin-top: 60px;
+.shrikhand-text {
+  font-family: 'Shrikhand', cursive;
+  text-align: center;
+  font-size: 1.8em;
+  margin-top: 20px;
 }
