@@ -942,23 +942,19 @@ function createCircularMarkerIcon(imageUrl, size = 50) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const saveButton = document.getElementById("save-button");
-  const popup = document.getElementById("save-popup");
-  const closeBtn = document.getElementById("save-popup-close");
+  const saveBtn = document.getElementById("save-tour-btn");
+  const savePopup = document.getElementById("save-popup");
+  const closePopup = document.getElementById("save-popup-close");
 
-  saveButton.addEventListener("click", () => {
-    popup.style.display = "block"; // ✅ Affiche le popup
+  // Cacher le popup par défaut
+  savePopup.style.display = "none";
+
+  saveBtn.addEventListener("click", () => {
+    savePopup.style.display = "block";
   });
 
-  closeBtn.addEventListener("click", () => {
-    popup.style.display = "none"; // ✅ Ferme le popup
-  });
-
-  // Optionnel : Fermer si on clique en dehors
-  window.addEventListener("click", (event) => {
-    if (event.target === popup) {
-      popup.style.display = "none";
-    }
+  closePopup.addEventListener("click", () => {
+    savePopup.style.display = "none";
   });
 });
 
