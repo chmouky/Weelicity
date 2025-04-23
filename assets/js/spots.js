@@ -941,14 +941,26 @@ function createCircularMarkerIcon(imageUrl, size = 50) {
   });
 }
 
-document.getElementById("save-button").addEventListener("click", () => {
-  document.getElementById("save-popup").classList.remove("hidden");
-});
+document.addEventListener("DOMContentLoaded", () => {
+  const saveButton = document.getElementById("save-button");
+  const popup = document.getElementById("save-popup");
+  const closeBtn = document.getElementById("save-popup-close");
 
-document.getElementById("save-popup-close").addEventListener("click", () => {
-  document.getElementById("save-popup").classList.add("hidden");
-});
+  saveButton.addEventListener("click", () => {
+    popup.style.display = "block"; // ✅ Affiche le popup
+  });
 
+  closeBtn.addEventListener("click", () => {
+    popup.style.display = "none"; // ✅ Ferme le popup
+  });
+
+  // Optionnel : Fermer si on clique en dehors
+  window.addEventListener("click", (event) => {
+    if (event.target === popup) {
+      popup.style.display = "none";
+    }
+  });
+});
 
 
 

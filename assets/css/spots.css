@@ -534,34 +534,41 @@ text-overflow: ellipsis;
   
 
   #save-button-wrapper {
-    position: fixed; /* ✅ pour qu’il soit au-dessus du contenu */
-    bottom: 140px;   /* ↑ un peu plus haut que le bas de l'écran */
+    position: fixed;
+    bottom: 120px; /* ✅ au-dessus du carousel */
     right: 20px;
-    z-index: 3000;   /* ✅ au-dessus du carousel */
+    z-index: 5000;
   }
   
   #save-button {
     width: 60px;
-    height: auto;
+    height: 60px;
     cursor: pointer;
     border-radius: 50%;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     background-color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   }
-  
   
   #save-popup {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 3000;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    z-index: 6000;
+    display: none; /* ✅ caché par défaut */
+    width: 90%;
+    max-width: 400px;
   }
+  
+  #save-popup h2 {
+    margin-top: 0;
+    font-size: 1.5em;
+  }
+  
   
   #save-popup-content {
     background: white;
@@ -575,8 +582,8 @@ text-overflow: ellipsis;
   
   #save-popup-close {
     position: absolute;
-    top: 10px;
-    right: 16px;
+    top: 8px;
+    right: 14px;
     font-size: 24px;
     cursor: pointer;
   }
