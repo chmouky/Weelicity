@@ -51,7 +51,7 @@ html, body {
   /* Bouton de sauvegarde */
   #save-tour-btn {
     position: fixed; /* Relatif au viewport */
-    bottom: 360px; /* Positionné plus haut, au-dessus du carrousel (100px + 240px + marge) */
+    bottom: 390px; /* Positionné plus haut, au-dessus du carrousel (100px + 240px + marge) */
     right: 20px;
     z-index: 5000; /* Supérieur à .carousel-arrow (z-index: 3000) */
     background: transparent; /* Fond temporaire pour débogage */
@@ -61,7 +61,7 @@ html, body {
   }
   
   #save-tour-btn img {
-    width: 50px;
+    width: 35px;
     height: auto;
     border-radius: 0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
