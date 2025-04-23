@@ -33,7 +33,7 @@ body {
     user-select: none;
 }
 #map {
-position: fixed !important; /* Fixe la carte pour qu’elle prenne toute la fenêtre */
+position: relative !important; /* Fixe la carte pour qu’elle prenne toute la fenêtre */
     top: 0;
     left: 0;
     width: 100vw;
@@ -541,12 +541,14 @@ text-overflow: ellipsis;
   }
   
   #save-button {
-    width: 60px;
-    height: 60px;
+    width: 45px;   /* ✅ plus petit */
+    height: 45px;
+    border-radius: 50%; /* ✅ rendu rond */
     cursor: pointer;
-    border-radius: 50%;
     background-color: white;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    padding: 5px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    object-fit: cover;
   }
   
   #save-popup {
@@ -592,5 +594,10 @@ text-overflow: ellipsis;
     display: none;
   }
 
-
+  #save-button-map {
+    position: absolute;
+    bottom: 110px; /* au-dessus du carrousel */
+    right: 10px;
+    z-index: 3000;
+  }
   
