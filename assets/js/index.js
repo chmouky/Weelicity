@@ -1,5 +1,5 @@
 async function loadAirtableDataIfNeeded() {
-  const keys = ['tags', 'places', 'tour', 'themetour', 'quartiers', 'gastro', 'brands', 'around', 'street', 'parametre'];
+  const keys = ['tags', 'places', 'tour', 'themetour', 'quartiers', 'gastro', 'brands', 'around', 'street', 'parametre', 'ToursPerso'];
 
   const isReady = keys.every(key => {
     const item = sessionStorage.getItem(key);
@@ -27,6 +27,7 @@ async function loadAirtableDataIfNeeded() {
     sessionStorage.setItem('around', JSON.stringify(data.Around));
     sessionStorage.setItem('street', JSON.stringify(data.Street));
     sessionStorage.setItem('parametre', JSON.stringify(data.Parametre));
+    sessionStorage.setItem('parametre', JSON.stringify(data.ToursPerso));
 
     console.log("📦 Données Airtable chargées.");
   } catch (err) {
