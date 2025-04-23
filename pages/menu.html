@@ -33,6 +33,7 @@
         .then(res => res.text())
         .then(html => {
           document.getElementById("footer-placeholder").innerHTML = html;
+          console.log("✅ Footer chargé !");
         })
         .catch(err => console.error("Erreur chargement footer :", err));
     });
