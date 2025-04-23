@@ -5,7 +5,7 @@ html, body {
     height: 100%;
     width: 100%;
     overflow: hidden;
-    overflow-x: hidden; /* Empêche tout débordement horizontal */
+    overflow-x: hidden;
   }
   
   /* Désactiver le comportement de sélection */
@@ -15,7 +15,7 @@ html, body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    font-family: 'Shrikhand', cursive; /* Applique la police globalement */
+    font-family: 'Shrikhand', cursive;
   }
   
   /* Titre principal */
@@ -50,11 +50,11 @@ html, body {
   
   /* Bouton de sauvegarde */
   #save-tour-btn {
-    position: fixed; /* Changé de absolute à fixed pour être relatif au viewport */
-    bottom: 160px; /* Augmenté pour être clairement au-dessus du carrousel */
+    position: fixed; /* Relatif au viewport */
+    bottom: 360px; /* Positionné plus haut, au-dessus du carrousel (100px + 240px + marge) */
     right: 20px;
-    z-index: 5000; /* Supérieur à .carousel-arrow (z-index: 3000) et #carousel-container (z-index: 1) */
-    background: transparent;
+    z-index: 5000; /* Supérieur à .carousel-arrow (z-index: 3000) */
+    background: transparent; /* Fond temporaire pour débogage */
     border: none;
     padding: 0;
     cursor: pointer;
@@ -78,7 +78,7 @@ html, body {
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
     gap: 10px;
-    z-index: 1; /* Faible pour rester sous le bouton */
+    z-index: 1;
     padding: 10px 0;
   }
   
@@ -152,7 +152,7 @@ html, body {
     position: fixed;
     width: 50px;
     height: 50px;
-    z-index: 3000; /* Inférieur à #save-tour-btn */
+    z-index: 3000;
     background: transparent;
     box-shadow: none;
     border-radius: 0;
