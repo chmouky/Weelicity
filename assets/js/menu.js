@@ -54,7 +54,7 @@ async function main() {
   
     logoutBtn.addEventListener("click", () => {
       auth0.logout({
-        returnTo: window.location.origin + '/pages/menu.html'
+         redirect_uri: window.location.origin + '/pages/menu.html'
       });
     });
   
