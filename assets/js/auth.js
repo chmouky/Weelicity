@@ -1,16 +1,14 @@
 // 📁 assets/js/auth.js
-
 let auth0Client = null;
 let auth0Ready = false;
 let auth0InitPromise = null;
 
-// Initialise Auth0 et stocke l'état de readiness
 export async function initAuth() {
   if (!auth0InitPromise) {
     auth0InitPromise = createAuth0Client({
       domain: 'dev-1of24kih8koq07ek.us.auth0.com',
       clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
-      cacheLocation: 'sessionStorage'
+      cacheLocation: 'localstorage' // ✅ fix here
     })
     .then(client => {
       auth0Client = client;
@@ -23,12 +21,10 @@ export async function initAuth() {
   return auth0InitPromise;
 }
 
-// Vérifie si l'utilisateur est connecté via sessionStorage
 export function isUserLoggedIn() {
   return !!sessionStorage.getItem("user");
 }
 
-// Lance le login avec popup et stocke l'utilisateur
 export async function loginUserWithPopup() {
   if (!auth0Ready || !auth0Client) {
     throw new Error("Auth0 non prêt");
@@ -39,7 +35,6 @@ export async function loginUserWithPopup() {
   return user;
 }
 
-// Expose auth0Client si besoin direct
 export function getAuth0Client() {
   return auth0Client;
 }
