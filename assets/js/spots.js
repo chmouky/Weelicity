@@ -11,6 +11,12 @@ import { initAuth, getAuth0Client } from './auth.js';
 const auth0InitPromise = initAuth(); // lancement de l'initialisation dès le début
 
 
+import { loginUserWithRedirect } from "../auth.js";
+
+// Appelle cette fonction quand tu veux lancer la connexion :
+loginUserWithRedirect();
+
+
 
 // Nous conservons également la liste des lieux affichés dans le carousel pour y accéder depuis l’observateur
 window.carouselRecords = [];
@@ -954,9 +960,10 @@ document.addEventListener("DOMContentLoaded", () => {
       savePopup.style.display = "block";
     } else {
       try {
-        await auth0Client.loginWithPopup();
-        const user = await auth0Client.getUser();
-        sessionStorage.setItem("user", JSON.stringify(user));
+        await auth0Client.loginWithRedirect({
+          redirect_uri: window.location.origin + '/callback.html',
+          appState: { targetUrl: window.location.pathname + '#openSavePopup' }
+        });        
         savePopup.style.display = "block";
       } catch (e) {
         console.error("❌ Erreur Auth0 loginWithPopup :", e);

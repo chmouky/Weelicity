@@ -8,7 +8,7 @@ export async function initAuth() {
     auth0InitPromise = createAuth0Client({
       domain: 'dev-1of24kih8koq07ek.us.auth0.com',
       clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
-      cacheLocation: 'localstorage' // ✅ fix here
+      cacheLocation: 'localstorage' // ✅ cohérent partout
     })
     .then(client => {
       auth0Client = client;
@@ -21,20 +21,47 @@ export async function initAuth() {
   return auth0InitPromise;
 }
 
+export function getAuth0Client() {
+  return auth0Client;
+}
+
 export function isUserLoggedIn() {
   return !!sessionStorage.getItem("user");
 }
 
-export async function loginUserWithPopup() {
-  if (!auth0Ready || !auth0Client) {
-    throw new Error("Auth0 non prêt");
+export async function handleRedirectCallback() {
+  const client = await createAuth0Client({
+    domain: 'dev-1of24kih8koq07ek.us.auth0.com',
+    clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
+    cacheLocation: 'localstorage' // ✅ idem ici
+  });
+
+  try {
+    await client.handleRedirectCallback();
+    const user = await client.getUser();
+    sessionStorage.setItem("user", JSON.stringify(user));
+
+    const destination = sessionStorage.getItem("postLoginRedirect") || "/pages/menu.html";
+    window.location.href = destination;
+  } catch (e) {
+    console.error("❌ Erreur callback :", e);
+    document.body.innerHTML = "<p>Erreur de connexion. Veuillez réessayer.</p>";
   }
-  await auth0Client.loginWithPopup();
-  const user = await auth0Client.getUser();
-  sessionStorage.setItem("user", JSON.stringify(user));
-  return user;
 }
 
-export function getAuth0Client() {
-  return auth0Client;
+export async function loginUserWithRedirect() {
+  const client = await createAuth0Client({
+    domain: 'dev-1of24kih8koq07ek.us.auth0.com',
+    clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
+    cacheLocation: 'localstorage'
+  });
+
+  // Sauvegarde la page actuelle pour rediriger l'utilisateur après login
+  sessionStorage.setItem("postLoginRedirect", window.location.pathname);
+
+  await client.loginWithRedirect({
+    authorizationParams: {
+      redirect_uri: window.location.origin + "/callback.html"
+    }
+  });
 }
