@@ -3,42 +3,51 @@ let userMarker = null;
 
 let auth0Client;
 document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    auth0Client = await createAuth0Client({
-      domain: 'dev-1of24kih8koq07ek.us.auth0.com',
-      clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
-      authorizationParams: {
-        redirect_uri: window.location.origin + '/pages/spots.html'
-      }
-    });
+  const auth0 = await getAuth0Client();
 
-    // 🔁 Gérer le retour Auth0
-    if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
-      const result = await auth0Client.handleRedirectCallback();
-      const user = await auth0Client.getUser();
-      sessionStorage.setItem("user", JSON.stringify(user));
-    
-      const targetUrl = result.appState?.targetUrl || sessionStorage.getItem("redirectAfterLogin") || '/pages/spots.html';
-      sessionStorage.removeItem("redirectAfterLogin");
-      window.history.replaceState({}, document.title, targetUrl);
-      window.location.href = targetUrl;
+  if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
+    const result = await auth0.handleRedirectCallback();
+    const user = await auth0.getUser();
+    sessionStorage.setItem("user", JSON.stringify(user));
+
+    const targetUrl = result.appState?.targetUrl || sessionStorage.getItem("redirectAfterLogin") || '/pages/spots.html';
+    sessionStorage.removeItem("redirectAfterLogin");
+
+    window.history.replaceState({}, document.title, targetUrl);
+    window.location.href = targetUrl;
+    return;
+  }
+
+  const isAuthenticated = await auth0.isAuthenticated();
+  if (isAuthenticated) {
+    const user = await auth0.getUser();
+    sessionStorage.setItem("user", JSON.stringify(user));
+    console.log("✅ Utilisateur connecté :", user);
+  } else {
+    console.warn("⚠️ Utilisateur non connecté.");
+  }
+
+  // ✅ Ici : initialise ton bouton maintenant que Auth0 est prêt
+  document.getElementById("save-tour-btn").addEventListener("click", async () => {
+    const user = sessionStorage.getItem("user");
+    const savePopup = document.getElementById("save-popup");
+
+    if (!user) {
+      sessionStorage.setItem("redirectAfterLogin", window.location.href);
+      await auth0.loginWithRedirect({
+        appState: { targetUrl: window.location.pathname },
+        authorizationParams: {
+          redirect_uri: window.location.origin + '/pages/spots.html'
+        }
+      });
       return;
     }
-    
 
-    // 🔐 Stocker l'utilisateur s'il est connecté
-    const isAuthenticated = await auth0Client.isAuthenticated();
-    if (isAuthenticated) {
-      const user = await auth0Client.getUser();
-      sessionStorage.setItem("user", JSON.stringify(user));
-      console.log("✅ Utilisateur connecté :", user);
-    } else {
-      console.warn("⚠️ Utilisateur non connecté.");
-    }
-  } catch (e) {
-    console.error("❌ Erreur Auth0 :", e);
-  }
+    // ✅ Affiche le popup si connecté
+    savePopup.style.display = "block";
+  });
 });
+
 
 
 const markers = [];
@@ -984,31 +993,7 @@ function createCircularMarkerIcon(imageUrl, size = 50) {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const saveBtn = document.getElementById("save-tour-btn");
-  const savePopup = document.getElementById("save-popup");
-  const closePopup = document.getElementById("save-popup-close");
 
-  saveBtn.addEventListener("click", async () => {
-    const user = sessionStorage.getItem("user");
-  
-    if (!user) {
-      sessionStorage.setItem("redirectAfterLogin", window.location.href); // En cas de secours
-  
-      await auth0Client.loginWithRedirect({
-        appState: { targetUrl: window.location.pathname }, // ou window.location.href si besoin complet
-        authorizationParams: {
-          redirect_uri: window.location.origin + '/pages/spots.html'
-        }
-      });
-      return;
-    }
-  
-    savePopup.style.display = "block";
-  });
-  
-
-});
 
 
 const newBtn = document.getElementById("new-tour-btn");
@@ -1074,6 +1059,21 @@ confirmBtn.addEventListener("click", async () => {
     alert("Error while saving.");
   }
 });
+
+
+async function getAuth0Client() {
+  if (auth0Client) return auth0Client;
+
+  auth0Client = await createAuth0Client({
+    domain: 'dev-1of24kih8koq07ek.us.auth0.com',
+    clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
+    authorizationParams: {
+      redirect_uri: window.location.origin + '/pages/spots.html'
+    }
+  });
+
+  return auth0Client;
+}
 
 
 
