@@ -146,6 +146,8 @@ function loadGoogleMaps(url, callbackName) {
   document.head.appendChild(script);
 }
 
+window.onGoogleMapsLoaded = onGoogleMapsLoaded;
+
 /********************************************************
  * Fonction exécutée après le chargement de Google Maps
  ********************************************************/
@@ -980,8 +982,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 300); // petit délai pour laisser le DOM se poser
   }
 });
-
-
-
-
-d
