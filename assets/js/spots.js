@@ -56,6 +56,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+let auth0Client = null;
+
+document.addEventListener("DOMContentLoaded", async () => {
+  auth0Client = await createAuth0Client({
+    domain: 'dev-1of24kih8koq07ek.us.auth0.com',
+    clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
+    cacheLocation: "sessionStorage"
+  });
+});
 
 
 const markerIconCache = new Map(); // Clé = URL image brute, Valeur = dataURL circulaire
@@ -968,18 +977,28 @@ document.addEventListener("DOMContentLoaded", () => {
   savePopup.style.display = "none";
 
   // ✅ Gestion du clic sur le bouton save
-  saveBtn.addEventListener("click", () => {
+  saveBtn.addEventListener("click", async () => {
     const userRaw = sessionStorage.getItem("user");
-
+  
     if (userRaw) {
-      // ✅ Utilisateur connecté → ouvrir le popup
+      // ✅ Déjà connecté
       savePopup.style.display = "block";
     } else {
-      // 🔐 Utilisateur non connecté → stocker l’intention et rediriger
-      sessionStorage.setItem("redirectAfterLogin", window.location.href + "#openSavePopup");
-      window.location.href = "/pages/menu.html"; // redirection vers login via menu
+      // 🔐 Lance le login avec popup Auth0
+      try {
+        await auth0Client.loginWithPopup();
+        const user = await auth0Client.getUser();
+        sessionStorage.setItem("user", JSON.stringify(user));
+  
+        // ✅ Une fois connecté, afficher le popup de sauvegarde
+        savePopup.style.display = "block";
+      } catch (e) {
+        console.error("❌ Erreur Auth0 loginWithPopup :", e);
+        alert("Connexion annulée ou échouée.");
+      }
     }
   });
+  
 
   // ❌ Fermer le popup
   closePopup.addEventListener("click", () => {
