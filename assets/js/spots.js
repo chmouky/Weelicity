@@ -1,13 +1,42 @@
 let map;
 let userMarker = null;
 
-let auth0Client;
 // spots.js
+let auth0Client = null; // Global variable to store Auth0 client
+
+// Function to initialize Auth0 client
+async function getAuth0Client() {
+  if (auth0Client) {
+    console.log("🔄 Reusing existing Auth0 client");
+    return auth0Client;
+  }
+
+  try {
+    // Verify Auth0 library is loaded
+    if (!window.createAuth0Client) {
+      throw new Error("Auth0 SPA JS library not loaded");
+    }
+
+    auth0Client = await window.createAuth0Client({
+      domain: 'dev-1of24kih8koq07ek.us.auth0.com',
+      clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
+      authorizationParams: {
+        redirect_uri: window.location.origin + '/pages/spots.html'
+      }
+    });
+    console.log("✅ Auth0 client initialized successfully");
+    return auth0Client;
+  } catch (err) {
+    console.error("❌ Failed to initialize Auth0 client:", err.message);
+    throw err;
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   let auth0;
   try {
     auth0 = await getAuth0Client();
-    console.log("✅ Auth0 client initialized successfully");
+    console.log("✅ Auth0 client assigned to auth0 variable");
 
     // Handle Auth0 redirect callback
     if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
@@ -37,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.warn("⚠️ Utilisateur non connecté.");
     }
   } catch (err) {
-    console.error("❌ Error initializing Auth0:", err);
+    console.error("❌ Error during Auth0 setup:", err);
     // Continue to attach event listener even if Auth0 fails
   }
 
@@ -55,14 +84,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   saveBtn.addEventListener("click", async (event) => {
-    event.preventDefault(); // Prevent default button behavior
+    event.preventDefault();
     console.log("✅ save-tour-btn clicked");
 
     const user = sessionStorage.getItem("user");
     console.log("🔍 User in sessionStorage:", user);
 
     if (!user) {
-      console.log("⚠️ No user found, redirecting to Auth0 login");
+      console.log("⚠️ No user found, attempting Auth0 login redirect");
+      if (!auth0) {
+        console.error("❌ Auth0 client not initialized. Cannot redirect to login.");
+        alert("Authentication service unavailable. Please try again later.");
+        return;
+      }
       try {
         sessionStorage.setItem("redirectAfterLogin", window.location.href);
         await auth0.loginWithRedirect({
@@ -80,7 +114,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Show popup if user is authenticated
     console.log("✅ Showing save-popup");
-    savePopup.style.display = "block";
+    savePopup.style.display = "block"; // Revert to style.display for consistency
   });
 });
 
@@ -1120,20 +1154,6 @@ confirmBtn.addEventListener("click", async () => {
   }
 });
 
-
-async function getAuth0Client() {
-  if (auth0Client) return auth0Client;
-
-  auth0Client = await createAuth0Client({
-    domain: 'dev-1of24kih8koq07ek.us.auth0.com',
-    clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
-    authorizationParams: {
-      redirect_uri: window.location.origin + '/pages/spots.html'
-    }
-  });
-
-  return auth0Client;
-}
 
 
 
