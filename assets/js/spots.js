@@ -39,6 +39,24 @@ document.addEventListener("DOMContentLoaded", () => {
   updateGoButtonVisibility(); // Vérifie si le bouton "Go!" doit être affiché
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  const userDataRaw = sessionStorage.getItem("user");
+
+  if (userDataRaw) {
+    try {
+      const user = JSON.parse(userDataRaw);
+      console.log("✅ Utilisateur connecté :");
+      console.log("🆔 ID :", user.sub);
+      console.log("📧 Email :", user.email);
+    } catch (e) {
+      console.warn("⚠️ Impossible de parser les données utilisateur :", e);
+    }
+  } else {
+    console.log("🔓 Aucun utilisateur connecté.");
+  }
+});
+
+
 
 const markerIconCache = new Map(); // Clé = URL image brute, Valeur = dataURL circulaire
 
