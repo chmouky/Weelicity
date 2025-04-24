@@ -8,15 +8,21 @@ async function main() {
       }
     });
   
-    // 🔁 Gérer le retour après redirection Auth0
     if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
-      const result = await auth0.handleRedirectCallback();
-      const targetUrl = result.appState?.targetUrl || '/pages/menu.html';
-      window.history.replaceState({}, document.title, targetUrl);
-      window.location.href = targetUrl;
-      return; // ⛔ Stop ici pour éviter de continuer
-    }
-  
+        const result = await auth0.handleRedirectCallback();
+        const targetUrl = result.appState?.targetUrl || '/pages/menu.html';
+      
+        // ✅ 1. Récupérer l'utilisateur
+        const user = await auth0.getUser();
+        console.log("🔐 Utilisateur après callback :", user); // LOG pour debug
+        sessionStorage.setItem("user", JSON.stringify(user)); // ✅ POINT 2 ici
+      
+        // ✅ 2. Rediriger ensuite
+        window.history.replaceState({}, document.title, targetUrl);
+        window.location.href = targetUrl;
+        return; // ⛔ Stop ici pour éviter de continuer
+      }
+      
     // 🔘 Gérer les boutons
     const loginBtn = document.getElementById("login-button");
     const logoutBtn = document.getElementById("logout-button");

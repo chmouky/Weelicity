@@ -988,8 +988,11 @@ confirmBtn.addEventListener("click", async () => {
 
   // 🔐 Récupérer l'ID utilisateur via Auth0 (si déjà dispo)
   const user = sessionStorage.getItem("user");
+  console.log("🔍 User from sessionStorage:", user);
+
   if (!user) {
     alert("You must be connected to save.");
+    console.warn("⚠️ Aucun utilisateur trouvé dans sessionStorage.");
     return;
   }
 
