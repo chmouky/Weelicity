@@ -147,28 +147,7 @@ html, body {
     transform: translateX(25px);
   }
   
-  /* Flèches du carrousel */
-  .carousel-arrow {
-    position: fixed;
-    width: 50px;
-    height: 50px;
-    z-index: 3000;
-    background: transparent;
-    box-shadow: none;
-    border-radius: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: bottom 0.3s ease;
-  }
-  
-  .carousel-arrow img {
-    height: 90px;
-    width: 60px;
-    object-fit: fill !important;
-  }
-  
+    
   /* Autres styles (inchangés) */
   #carousel-container::-webkit-scrollbar {
     display: none;

@@ -443,8 +443,6 @@ const ticketText = (Array.isArray(record.ticket) &&
   carouselContainer.addEventListener("scroll", handleCarouselScroll);
   handleCarouselScroll();
 
-setTimeout(updateCarouselArrows, 100); // Laisse le DOM se stabiliser
-
 }
 
 
@@ -889,41 +887,6 @@ function updateGoButtonVisibility() {
   }
 }   
 
-function updateCarouselArrows() {
-const container = document.getElementById("carousel-container");
-const items = container.querySelectorAll('.carousel-item');
-
-let activeIndex = -1;
-if (items.length > 0) {
-  const containerRect = container.getBoundingClientRect();
-  const containerCenter = containerRect.left + containerRect.width / 2;
-  let minDistance = Infinity;
-  items.forEach(item => {
-    const itemRect = item.getBoundingClientRect();
-    const itemCenter = itemRect.left + itemRect.width / 2;
-    const distance = Math.abs(containerCenter - itemCenter);
-    if (distance < minDistance) {
-      minDistance = distance;
-      activeIndex = parseInt(item.getAttribute("data-index"));
-    }
-  });
-}
-
-// Masquer la flèche gauche si le premier élément est centré
-if (activeIndex <= 0) {
-  leftArrow.style.display = "none";
-} else {
-  leftArrow.style.display = "flex";
-}
-
-// Masquer la flèche droite si le dernier élément est centré
-if (activeIndex >= items.length - 1) {
-  rightArrow.style.display = "none";
-} else {
-  rightArrow.style.display = "flex";
-}
-}
-
 
 function createCircularMarkerIcon(imageUrl, size = 50) {
   if (markerIconCache.has(imageUrl)) {
@@ -1021,6 +984,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-document.getElementById("carousel-container").addEventListener("scroll", updateCarouselArrows);
-window.addEventListener("resize", updateCarouselArrows);
-window.addEventListener("load", updateCarouselArrows);
+d
