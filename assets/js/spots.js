@@ -3,11 +3,11 @@ let userMarker = null;
 
 let auth0Client;
 document.addEventListener("DOMContentLoaded", async () => {
-  const auth0 = await getAuth0Client();
+  auth0Client = await getAuth0Client(); // 🔁 stocke dans la variable globale
 
   if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
-    const result = await auth0.handleRedirectCallback();
-    const user = await auth0.getUser();
+    const result = await auth0Client.handleRedirectCallback();
+    const user = await auth0Client.getUser();
     sessionStorage.setItem("user", JSON.stringify(user));
 
     const targetUrl = result.appState?.targetUrl || sessionStorage.getItem("redirectAfterLogin") || '/pages/spots.html';
@@ -18,23 +18,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  const isAuthenticated = await auth0.isAuthenticated();
+  const isAuthenticated = await auth0Client.isAuthenticated();
   if (isAuthenticated) {
-    const user = await auth0.getUser();
+    const user = await auth0Client.getUser();
     sessionStorage.setItem("user", JSON.stringify(user));
     console.log("✅ Utilisateur connecté :", user);
   } else {
     console.warn("⚠️ Utilisateur non connecté.");
   }
 
-  // ✅ Ici : initialise ton bouton maintenant que Auth0 est prêt
+  // ✅ Utiliser auth0Client ici
   document.getElementById("save-tour-btn").addEventListener("click", async () => {
     const user = sessionStorage.getItem("user");
     const savePopup = document.getElementById("save-popup");
 
     if (!user) {
       sessionStorage.setItem("redirectAfterLogin", window.location.href);
-      await auth0.loginWithRedirect({
+      await auth0Client.loginWithRedirect({
         appState: { targetUrl: window.location.pathname },
         authorizationParams: {
           redirect_uri: window.location.origin + '/pages/spots.html'
@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     savePopup.style.display = "block";
   });
 });
+
 
 
 
