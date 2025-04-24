@@ -3,20 +3,22 @@ let auth0Client = null;
 let auth0Ready = false;
 let auth0InitPromise = null;
 
+const auth0Config = {
+  domain: 'dev-1of24kih8koq07ek.us.auth0.com',
+  clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
+  cacheLocation: 'localstorage'
+};
+
 export async function initAuth() {
   if (!auth0InitPromise) {
-    auth0InitPromise = createAuth0Client({
-      domain: 'dev-1of24kih8koq07ek.us.auth0.com',
-      clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
-      cacheLocation: 'localstorage' // ✅ cohérent partout
-    })
-    .then(client => {
-      auth0Client = client;
-      auth0Ready = true;
-    })
-    .catch(err => {
-      console.error("❌ Erreur init Auth0:", err);
-    });
+    auth0InitPromise = createAuth0Client(auth0Config)
+      .then(client => {
+        auth0Client = client;
+        auth0Ready = true;
+      })
+      .catch(err => {
+        console.error("❌ Erreur init Auth0:", err);
+      });
   }
   return auth0InitPromise;
 }
@@ -30,11 +32,7 @@ export function isUserLoggedIn() {
 }
 
 export async function handleRedirectCallback() {
-  const client = await createAuth0Client({
-    domain: 'dev-1of24kih8koq07ek.us.auth0.com',
-    clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
-    cacheLocation: 'localstorage' // ✅ idem ici
-  });
+  const client = await createAuth0Client(auth0Config);
 
   try {
     await client.handleRedirectCallback();
@@ -50,13 +48,8 @@ export async function handleRedirectCallback() {
 }
 
 export async function loginUserWithRedirect() {
-  const client = await createAuth0Client({
-    domain: 'dev-1of24kih8koq07ek.us.auth0.com',
-    clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
-    cacheLocation: 'localstorage'
-  });
+  const client = await createAuth0Client(auth0Config);
 
-  // Sauvegarde la page actuelle pour rediriger l'utilisateur après login
   sessionStorage.setItem("postLoginRedirect", window.location.pathname);
 
   await client.loginWithRedirect({
