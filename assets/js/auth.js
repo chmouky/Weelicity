@@ -55,7 +55,7 @@ export async function loginUserWithRedirect() {
 
   await client.loginWithRedirect({
     authorizationParams: {
-      redirect_uri: window.location.origin + "/callback.html"
+      redirect_uri: window.location.origin + "/pages/callback.html"
     }
   });
 }
