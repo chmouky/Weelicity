@@ -967,14 +967,34 @@ document.addEventListener("DOMContentLoaded", () => {
   // Cacher le popup par défaut
   savePopup.style.display = "none";
 
+  // ✅ Gestion du clic sur le bouton save
   saveBtn.addEventListener("click", () => {
-    savePopup.style.display = "block";
+    const userRaw = sessionStorage.getItem("user");
+
+    if (userRaw) {
+      // ✅ Utilisateur connecté → ouvrir le popup
+      savePopup.style.display = "block";
+    } else {
+      // 🔐 Utilisateur non connecté → stocker l’intention et rediriger
+      sessionStorage.setItem("redirectAfterLogin", window.location.href + "#openSavePopup");
+      window.location.href = "/pages/menu.html"; // redirection vers login via menu
+    }
   });
 
+  // ❌ Fermer le popup
   closePopup.addEventListener("click", () => {
     savePopup.style.display = "none";
   });
+
+  // ✅ Si on revient avec #openSavePopup → ouvrir le popup
+  if (window.location.hash === "#openSavePopup") {
+    window.location.hash = ""; // nettoyage de l’URL
+    setTimeout(() => {
+      savePopup.style.display = "block";
+    }, 300); // petit délai pour laisser le DOM se poser
+  }
 });
+
 
 
 

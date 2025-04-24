@@ -40,8 +40,15 @@ async function main() {
     loginBtn.addEventListener("click", async () => {
         try {
           await auth0.loginWithPopup();
-          const user = await auth0.getUser();
-          sessionStorage.setItem("user", JSON.stringify(user));
+          const redirectTarget = sessionStorage.getItem("redirectAfterLogin");
+            sessionStorage.removeItem("redirectAfterLogin");
+
+            if (redirectTarget) {
+            window.location.href = redirectTarget;
+            } else {
+            window.location.href = "/pages/menu.html";
+            }
+
           console.log("👤 Connecté via popup :", user);
       
           loginBtn.style.display = "none";
