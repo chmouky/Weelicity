@@ -941,6 +941,23 @@ function createCircularMarkerIcon(imageUrl, size = 50) {
   });
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  const saveBtn = document.getElementById("save-tour-btn");
+  const savePopup = document.getElementById("save-popup");
+  const closePopup = document.getElementById("save-popup-close");
+
+  // Cacher le popup par défaut
+  savePopup.style.display = "none";
+
+  saveBtn.addEventListener("click", () => {
+    savePopup.style.display = "block";
+  });
+
+  closePopup.addEventListener("click", () => {
+    savePopup.style.display = "none";
+  });
+});
+
 
 
 document.getElementById("carousel-container").addEventListener("scroll", updateCarouselArrows);
