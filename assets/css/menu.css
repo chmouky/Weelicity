@@ -19,7 +19,8 @@
   margin-top: 20px;
 }
 
-#login-button {
+/* ✅ Boutons Auth0 : login + logout */
+.auth-button {
   padding: 16px 32px;
   font-size: 1.1em;
   border: none;
@@ -29,12 +30,22 @@
   font-weight: bold;
   cursor: pointer;
 
-  /* Ombre + relief */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  margin: 10px auto;         /* centré si dans un bloc flex ou en colonne */
+  display: block;            /* affichage propre même sans JS */
+  max-width: 200px;          /* limite visuelle */
+  text-align: center;
 }
 
-#login-button:hover {
+.auth-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+}
+
+
+#auth-buttons {
+  text-align: center;
+  margin: 20px auto;
 }
