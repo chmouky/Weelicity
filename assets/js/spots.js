@@ -887,7 +887,7 @@ function updateGoButtonVisibility() {
   } else {
       goButton.style.display = "none"; // Cache le bouton
   }
-} 
+}  
 
 function updateCarouselArrows() {
 const container = document.getElementById("carousel-container");
