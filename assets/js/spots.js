@@ -988,11 +988,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ✅ Si on revient avec #openSavePopup → ouvrir le popup
   if (window.location.hash === "#openSavePopup") {
-    window.location.hash = ""; // nettoyage de l’URL
-    setTimeout(() => {
-      savePopup.style.display = "block";
-    }, 300); // petit délai pour laisser le DOM se poser
+    const userRaw = sessionStorage.getItem("user");
+  
+    if (userRaw) {
+      window.location.hash = ""; // nettoyage
+      setTimeout(() => {
+        document.getElementById("save-popup").style.display = "block";
+      }, 300);
+    } else {
+      console.warn("🔐 Tentative d'ouverture du popup de sauvegarde sans utilisateur connecté.");
+      window.location.hash = ""; // on nettoie quand même
+    }
   }
+  
 });
 
 
