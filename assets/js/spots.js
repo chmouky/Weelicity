@@ -5,6 +5,28 @@ const markers = [];
 let filteredPlacesWithCoords = []; // Stockage global des lieux filtrés
 // Variable globale pour stocker le marqueur de prévisualisation
 let previewMarker = null;
+
+
+let auth0Client = null;
+let auth0Ready = false;
+
+async function initAuth0() {
+  try {
+    auth0Client = await createAuth0Client({
+      domain: 'dev-1of24kih8koq07ek.us.auth0.com',
+      clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
+      cacheLocation: "sessionStorage"
+    });
+    auth0Ready = true;
+  } catch (e) {
+    console.error("❌ Erreur lors de l'initialisation Auth0 :", e);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", initAuth0);
+
+
+
 // Nous conservons également la liste des lieux affichés dans le carousel pour y accéder depuis l’observateur
 window.carouselRecords = [];
 
@@ -979,7 +1001,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ✅ Gestion du clic sur le bouton save
   saveBtn.addEventListener("click", async () => {
-    if (!auth0Client) {
+    if (!auth0Ready || !auth0Client) {
       alert("Auth0 n'est pas prêt. Réessaie dans quelques secondes.");
       return;
     }
@@ -1000,6 +1022,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
+  
   
   
 
