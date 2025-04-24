@@ -39,11 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
   updateGoButtonVisibility(); // Vérifie si le bouton "Go!" doit être affiché
 });
 
-if (!auth0Client) {
-  alert("Auth0 non initialisé. Réessaye dans quelques secondes.");
-  return;
-}
-
 
 document.addEventListener("DOMContentLoaded", () => {
   const userDataRaw = sessionStorage.getItem("user");
@@ -984,19 +979,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ✅ Gestion du clic sur le bouton save
   saveBtn.addEventListener("click", async () => {
+    if (!auth0Client) {
+      alert("Auth0 n'est pas prêt. Réessaie dans quelques secondes.");
+      return;
+    }
+  
     const userRaw = sessionStorage.getItem("user");
   
     if (userRaw) {
-      // ✅ Déjà connecté
       savePopup.style.display = "block";
     } else {
-      // 🔐 Lance le login avec popup Auth0
       try {
         await auth0Client.loginWithPopup();
         const user = await auth0Client.getUser();
         sessionStorage.setItem("user", JSON.stringify(user));
-  
-        // ✅ Une fois connecté, afficher le popup de sauvegarde
         savePopup.style.display = "block";
       } catch (e) {
         console.error("❌ Erreur Auth0 loginWithPopup :", e);
@@ -1004,6 +1000,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
+  
   
 
   // ❌ Fermer le popup
