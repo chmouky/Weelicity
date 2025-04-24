@@ -2,52 +2,87 @@ let map;
 let userMarker = null;
 
 let auth0Client;
+// spots.js
 document.addEventListener("DOMContentLoaded", async () => {
-  auth0Client = await getAuth0Client(); // 🔁 stocke dans la variable globale
+  let auth0;
+  try {
+    auth0 = await getAuth0Client();
+    console.log("✅ Auth0 client initialized successfully");
 
-  if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
-    const result = await auth0Client.handleRedirectCallback();
-    const user = await auth0Client.getUser();
-    sessionStorage.setItem("user", JSON.stringify(user));
+    // Handle Auth0 redirect callback
+    if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
+      try {
+        const result = await auth0.handleRedirectCallback();
+        const user = await auth0.getUser();
+        sessionStorage.setItem("user", JSON.stringify(user));
+        console.log("✅ User authenticated after redirect:", user);
 
-    const targetUrl = result.appState?.targetUrl || sessionStorage.getItem("redirectAfterLogin") || '/pages/spots.html';
-    sessionStorage.removeItem("redirectAfterLogin");
+        const targetUrl = result.appState?.targetUrl || sessionStorage.getItem("redirectAfterLogin") || '/pages/spots.html';
+        sessionStorage.removeItem("redirectAfterLogin");
+        window.history.replaceState({}, document.title, targetUrl);
+        window.location.href = targetUrl;
+        return;
+      } catch (err) {
+        console.error("❌ Error handling Auth0 redirect:", err);
+      }
+    }
 
-    window.history.replaceState({}, document.title, targetUrl);
-    window.location.href = targetUrl;
+    // Check authentication status
+    const isAuthenticated = await auth0.isAuthenticated();
+    if (isAuthenticated) {
+      const user = await auth0.getUser();
+      sessionStorage.setItem("user", JSON.stringify(user));
+      console.log("✅ Utilisateur connecté :", user);
+    } else {
+      console.warn("⚠️ Utilisateur non connecté.");
+    }
+  } catch (err) {
+    console.error("❌ Error initializing Auth0:", err);
+    // Continue to attach event listener even if Auth0 fails
+  }
+
+  // Attach save-tour-btn event listener
+  const saveBtn = document.getElementById("save-tour-btn");
+  const savePopup = document.getElementById("save-popup");
+
+  if (!saveBtn) {
+    console.error("❌ save-tour-btn not found in DOM");
+    return;
+  }
+  if (!savePopup) {
+    console.error("❌ save-popup not found in DOM");
     return;
   }
 
-  const isAuthenticated = await auth0Client.isAuthenticated();
-  if (isAuthenticated) {
-    const user = await auth0Client.getUser();
-    sessionStorage.setItem("user", JSON.stringify(user));
-    console.log("✅ Utilisateur connecté :", user);
-  } else {
-    console.warn("⚠️ Utilisateur non connecté.");
-  }
+  saveBtn.addEventListener("click", async (event) => {
+    event.preventDefault(); // Prevent default button behavior
+    console.log("✅ save-tour-btn clicked");
 
-  // ✅ Utiliser auth0Client ici
-  document.getElementById("save-tour-btn").addEventListener("click", async () => {
     const user = sessionStorage.getItem("user");
-    const savePopup = document.getElementById("save-popup");
+    console.log("🔍 User in sessionStorage:", user);
 
     if (!user) {
-      sessionStorage.setItem("redirectAfterLogin", window.location.href);
-      await auth0Client.loginWithRedirect({
-        appState: { targetUrl: window.location.pathname },
-        authorizationParams: {
-          redirect_uri: window.location.origin + '/pages/spots.html'
-        }
-      });
+      console.log("⚠️ No user found, redirecting to Auth0 login");
+      try {
+        sessionStorage.setItem("redirectAfterLogin", window.location.href);
+        await auth0.loginWithRedirect({
+          appState: { targetUrl: window.location.pathname },
+          authorizationParams: {
+            redirect_uri: window.location.origin + '/pages/spots.html'
+          }
+        });
+      } catch (err) {
+        console.error("❌ Error redirecting to Auth0:", err);
+        alert("Failed to redirect to login. Please try again.");
+      }
       return;
     }
 
-    // ✅ Affiche le popup si connecté
+    // Show popup if user is authenticated
+    console.log("✅ Showing save-popup");
     savePopup.style.display = "block";
   });
 });
-
 
 
 
@@ -994,7 +1029,31 @@ function createCircularMarkerIcon(imageUrl, size = 50) {
   });
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  const saveBtn = document.getElementById("save-tour-btn");
+  const savePopup = document.getElementById("save-popup");
+  const closePopup = document.getElementById("save-popup-close");
 
+  saveBtn.addEventListener("click", async () => {
+    const user = sessionStorage.getItem("user");
+  
+    if (!user) {
+      sessionStorage.setItem("redirectAfterLogin", window.location.href); // En cas de secours
+  
+      await auth0Client.loginWithRedirect({
+        appState: { targetUrl: window.location.pathname }, // ou window.location.href si besoin complet
+        authorizationParams: {
+          redirect_uri: window.location.origin + '/pages/spots.html'
+        }
+      });
+      return;
+    }
+  
+    savePopup.style.display = "block";
+  });
+  
+
+});
 
 
 const newBtn = document.getElementById("new-tour-btn");
