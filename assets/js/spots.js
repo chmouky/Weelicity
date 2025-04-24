@@ -11,9 +11,6 @@ import { initAuth, getAuth0Client } from './auth.js';
 const auth0InitPromise = initAuth(); // lancement de l'initialisation dès le début
 
 
-document.addEventListener("DOMContentLoaded", initAuth0);
-
-
 
 // Nous conservons également la liste des lieux affichés dans le carousel pour y accéder depuis l’observateur
 window.carouselRecords = [];
