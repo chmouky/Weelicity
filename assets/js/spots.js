@@ -987,8 +987,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ✅ Si on revient avec #openSavePopup → ouvrir le popup
-  
-    window.lif (window.location.hash === "#openSavePopup") {ocation.hash = ""; // nettoyage de l’URL
+  if (window.location.hash === "#openSavePopup") {
+    window.location.hash = ""; // nettoyage de l’URL
     setTimeout(() => {
       savePopup.style.display = "block";
     }, 300); // petit délai pour laisser le DOM se poser
