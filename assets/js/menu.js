@@ -8,20 +8,20 @@ async function main() {
       }
     });
   
-   if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
-  const result = await auth0.handleRedirectCallback();
-  const targetUrl = result.appState?.targetUrl || '/pages/menu.html';
+//    if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
+//   const result = await auth0.handleRedirectCallback();
+//   const targetUrl = result.appState?.targetUrl || '/pages/menu.html';
 
-  // ✅ 1. Récupérer l'utilisateur
-  const user = await auth0.getUser();
-  console.log("🔐 Utilisateur après callback :", user); // LOG pour debug
-  sessionStorage.setItem("user", JSON.stringify(user)); // ✅ POINT 2 ici
+//   // ✅ 1. Récupérer l'utilisateur
+//   const user = await auth0.getUser();
+//   console.log("🔐 Utilisateur après callback :", user); // LOG pour debug
+//   sessionStorage.setItem("user", JSON.stringify(user)); // ✅ POINT 2 ici
 
-  // ✅ 2. Rediriger ensuite
-  window.history.replaceState({}, document.title, targetUrl);
-  window.location.href = targetUrl;
-  return; // ⛔ Stop ici pour éviter de continuer
-}
+//   // ✅ 2. Rediriger ensuite
+//   window.history.replaceState({}, document.title, targetUrl);
+//   window.location.href = targetUrl;
+//   return; // ⛔ Stop ici pour éviter de continuer
+// }
 
     // 🔘 Gérer les boutons
     const loginBtn = document.getElementById("login-button");
@@ -37,11 +37,20 @@ async function main() {
       logoutBtn.style.display = "none";
     }
   
-    loginBtn.addEventListener("click", () => {
-      auth0.loginWithRedirect({
-        appState: { targetUrl: '/pages/menu.html' }
+    loginBtn.addEventListener("click", async () => {
+        try {
+          await auth0.loginWithPopup();
+          const user = await auth0.getUser();
+          sessionStorage.setItem("user", JSON.stringify(user));
+          console.log("👤 Connecté via popup :", user);
+      
+          loginBtn.style.display = "none";
+          logoutBtn.style.display = "inline-block";
+        } catch (err) {
+          console.error("❌ Erreur lors du login via popup :", err);
+        }
       });
-    });
+      
   
     logoutBtn.addEventListener("click", () => {
       auth0.logout({
