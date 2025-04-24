@@ -891,8 +891,6 @@ function updateGoButtonVisibility() {
 
 function updateCarouselArrows() {
 const container = document.getElementById("carousel-container");
-const leftArrow = document.getElementById("carousel-left-arrow");
-const rightArrow = document.getElementById("carousel-right-arrow");
 const items = container.querySelectorAll('.carousel-item');
 
 let activeIndex = -1;
