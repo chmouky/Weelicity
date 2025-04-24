@@ -1,4 +1,6 @@
 // 📁 assets/js/auth.js
+import createAuth0Client from 'https://cdn.auth0.com/js/auth0-spa-js/1.20/auth0-spa-js.production.js';
+
 let auth0Client = null;
 let auth0Ready = false;
 let auth0InitPromise = null;
