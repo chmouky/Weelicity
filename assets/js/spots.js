@@ -5,8 +5,9 @@ const markers = [];
 let filteredPlacesWithCoords = []; // Stockage global des lieux filtrés
 // Variable globale pour stocker le marqueur de prévisualisation
 let previewMarker = null;
+*
 
-import { initAuth, getAuth0Client } from './auth.js';
+import { initAuth, getAuth0Client } from '../auth.js';
 
 const auth0InitPromise = initAuth(); // lancement de l'initialisation dès le début
 
