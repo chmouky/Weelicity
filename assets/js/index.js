@@ -1,5 +1,9 @@
 async function loadAirtableDataIfNeeded() {
-  const keys = ['tags', 'places', 'tour', 'themetour', 'quartiers', 'gastro', 'brands', 'around', 'street', 'parametre', 'ToursPerso'];
+  const keys = [
+    'tags', 'places', 'tour', 'themetour',
+    'quartiers', 'gastro', 'brands', 'around',
+    'street', 'parametre', 'ToursPerso'
+  ];
 
   const isReady = keys.every(key => {
     const item = sessionStorage.getItem(key);
@@ -7,7 +11,7 @@ async function loadAirtableDataIfNeeded() {
   });
 
   if (isReady) {
-    console.log("✅ Données déjà présentes.");
+    console.log("✅ Données déjà présentes dans sessionStorage.");
     document.getElementById('loadingOverlay')?.remove();
     document.body.style.pointerEvents = 'auto';
     return;
@@ -27,7 +31,7 @@ async function loadAirtableDataIfNeeded() {
     sessionStorage.setItem('around', JSON.stringify(data.Around));
     sessionStorage.setItem('street', JSON.stringify(data.Street));
     sessionStorage.setItem('parametre', JSON.stringify(data.Parametre));
-    sessionStorage.setItem('parametre', JSON.stringify(data.ToursPerso));
+    sessionStorage.setItem('ToursPerso', JSON.stringify(data.ToursPerso)); // ✅ fix ici
 
     console.log("📦 Données Airtable chargées.");
   } catch (err) {
@@ -38,4 +42,6 @@ async function loadAirtableDataIfNeeded() {
   document.body.style.pointerEvents = 'auto';
 }
 
-loadAirtableDataIfNeeded().catch(err => console.error('❌ Erreur dans le chargement initial :', err));
+loadAirtableDataIfNeeded().catch(err =>
+  console.error('❌ Erreur dans le chargement initial :', err)
+);
