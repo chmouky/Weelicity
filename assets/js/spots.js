@@ -39,6 +39,18 @@ document.addEventListener("DOMContentLoaded", () => {
   updateGoButtonVisibility(); // Vérifie si le bouton "Go!" doit être affiché
 });
 
+let auth0Client = null;
+
+document.addEventListener("DOMContentLoaded", async () => {
+  auth0Client = await createAuth0Client({
+    domain: "XXX",
+    client_id: "XXX",
+    cacheLocation: "sessionStorage"
+  });
+});
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
   const userDataRaw = sessionStorage.getItem("user");
 
@@ -1020,11 +1032,3 @@ document.addEventListener("DOMContentLoaded", () => {
 document.getElementById("carousel-container").addEventListener("scroll", updateCarouselArrows);
 window.addEventListener("resize", updateCarouselArrows);
 window.addEventListener("load", updateCarouselArrows);
-
-document.getElementById("carousel-left-arrow").addEventListener("click", () => {
-document.getElementById("carousel-container").scrollBy({ left: -200, behavior: "smooth" });
-});
-
-document.getElementById("carousel-right-arrow").addEventListener("click", () => {
-document.getElementById("carousel-container").scrollBy({ left: 200, behavior: "smooth" });
-});
