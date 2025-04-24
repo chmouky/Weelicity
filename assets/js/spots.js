@@ -17,11 +17,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       const result = await auth0Client.handleRedirectCallback();
       const user = await auth0Client.getUser();
       sessionStorage.setItem("user", JSON.stringify(user));
-      const targetUrl = result.appState?.targetUrl || '/pages/spots.html';
+    
+      const targetUrl = result.appState?.targetUrl || sessionStorage.getItem("redirectAfterLogin") || '/pages/spots.html';
+      sessionStorage.removeItem("redirectAfterLogin");
       window.history.replaceState({}, document.title, targetUrl);
       window.location.href = targetUrl;
       return;
     }
+    
 
     // 🔐 Stocker l'utilisateur s'il est connecté
     const isAuthenticated = await auth0Client.isAuthenticated();
@@ -986,25 +989,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const savePopup = document.getElementById("save-popup");
   const closePopup = document.getElementById("save-popup-close");
 
-  saveBtn.addEventListener("click", () => {
+  saveBtn.addEventListener("click", async () => {
     const user = sessionStorage.getItem("user");
-
+  
     if (!user) {
-      // 🧠 Sauvegarder l’URL pour redirection après login
-      sessionStorage.setItem("redirectAfterLogin", window.location.href);
-
-      // 🛑 Redirection vers Auth0
-      window.location.href = `https://dev-1of24kih8koq07ek.us.auth0.com/authorize?` +
-        `client_id=OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL&` +
-        `response_type=code&` +
-        `scope=openid%20profile%20email&` +
-        `redirect_uri=${encodeURIComponent(window.location.origin + '/pages/menu.html')}`;
+      sessionStorage.setItem("redirectAfterLogin", window.location.href); // En cas de secours
+  
+      await auth0Client.loginWithRedirect({
+        appState: { targetUrl: window.location.pathname }, // ou window.location.href si besoin complet
+        authorizationParams: {
+          redirect_uri: window.location.origin + '/pages/spots.html'
+        }
+      });
       return;
     }
-
-    // ✅ Si connecté → ouvrir le popup de sauvegarde
+  
     savePopup.style.display = "block";
   });
+  
 
 });
 
