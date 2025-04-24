@@ -8,61 +8,72 @@ async function main() {
       }
     });
   
-    // 🔁 Si on revient d'une redirection Auth0
-    if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
-        const result = await auth0.handleRedirectCallback();
-      
-        const user = await auth0.getUser();
-        console.log("🔐 Utilisateur après callback :", user);
-        sessionStorage.setItem("user", JSON.stringify(user));
-      
-        // 🔁 Récupère l'URL de retour si elle avait été stockée
-        const savedTarget = sessionStorage.getItem("redirectAfterLogin");
-        const targetUrl = savedTarget || result.appState?.targetUrl || '/pages/menu.html';
-      
-        sessionStorage.removeItem("redirectAfterLogin"); // Nettoyage
-        window.history.replaceState({}, document.title, targetUrl);
-        window.location.href = targetUrl;
-        return;
-      }
-      
-  
-    // 🔘 Gestion des boutons
+   if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
+  const result = await auth0.handleRedirectCallback();
+  const targetUrl = result.appState?.targetUrl || '/pages/menu.html';
+
+  // ✅ 1. Récupérer l'utilisateur
+  const user = await auth0.getUser();
+  console.log("🔐 Utilisateur après callback :", user); // LOG pour debug
+  sessionStorage.setItem("user", JSON.stringify(user)); // ✅ POINT 2 ici
+
+  // ✅ 2. Rediriger ensuite
+  window.history.replaceState({}, document.title, targetUrl);
+  window.location.href = targetUrl;
+  return; // ⛔ Stop ici pour éviter de continuer
+}
+
+    // 🔘 Gérer les boutons
     const loginBtn = document.getElementById("login-button");
     const logoutBtn = document.getElementById("logout-button");
   
-    try {
-      const isAuthenticated = await auth0.isAuthenticated();
+    const isAuthenticated = await auth0.isAuthenticated();
   
-      if (isAuthenticated) {
-        const user = await auth0.getUser();
-        console.log("👤 Utilisateur connecté :", user);
-        sessionStorage.setItem("user", JSON.stringify(user)); // ✅ Important pour spots.js
-  
-        loginBtn.style.display = "none";
-        logoutBtn.style.display = "inline-block";
-      } else {
-        loginBtn.style.display = "inline-block";
-        logoutBtn.style.display = "none";
-      }
-  
-      loginBtn.addEventListener("click", () => {
-        auth0.loginWithRedirect({
-          appState: { targetUrl: '/pages/menu.html' }
-        });
-      });
-  
-      logoutBtn.addEventListener("click", () => {
-        auth0.logout({
-          returnTo: window.location.origin + '/pages/menu.html'
-        });
-      });
-  
-    } catch (err) {
-      console.error("❌ Erreur lors de la vérification Auth0 :", err);
+    if (isAuthenticated) {
+      loginBtn.style.display = "none";
+      logoutBtn.style.display = "inline-block";
+    } else {
+      loginBtn.style.display = "inline-block";
+      logoutBtn.style.display = "none";
     }
+  
+    loginBtn.addEventListener("click", () => {
+      auth0.loginWithRedirect({
+        appState: { targetUrl: '/pages/menu.html' }
+      });
+    });
+  
+    logoutBtn.addEventListener("click", () => {
+      auth0.logout({
+        returnTo: window.location.origin + '/pages/menu.html'
+      });
+    });
   
     // ✅ Charger le footer une fois tout prêt
     await loadFooter();
   }
+  
+  async function loadFooter() {
+    try {
+      const res = await fetch('/assets/components/footer.html');
+      if (!res.ok) {
+        throw new Error(`Erreur HTTP : ${res.status} ${res.statusText}`);
+      }
+      const html = await res.text();
+      const placeholder = document.getElementById('footer-placeholder');
+      if (placeholder) {
+        placeholder.innerHTML = html;
+        console.log('✅ Footer chargé !');
+      } else {
+        console.warn('⚠️ Élément #footer-placeholder non trouvé');
+      }
+    } catch (err) {
+      console.error('❌ Erreur lors du chargement du footer :', err);
+    }
+  }
+  
+  main().catch(err => {
+    console.error('❌ Erreur dans main() :', err);
+    loadFooter(); // Charger quand même le footer en cas d'erreur
+  });
   
