@@ -79,7 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-let auth0Client = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
   auth0Client = await createAuth0Client({
