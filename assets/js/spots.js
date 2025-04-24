@@ -1,128 +1,6 @@
 let map;
 let userMarker = null;
 
-// spots.js
-let auth0Client = null;
-
-// Function to initialize Auth0 client
-async function getAuth0Client() {
-  if (auth0Client) {
-    console.log("🔄 Reusing existing Auth0 client");
-    return auth0Client;
-  }
-
-  try {
-    // Load Auth0 script dynamically
-    await loadAuth0Script(); // Defined in HTML
-
-    // Verify Auth0 library is loaded
-    if (!window.createAuth0Client) {
-      throw new Error("Auth0 SPA JS library not loaded");
-    }
-
-    auth0Client = await window.createAuth0Client({
-      domain: 'dev-1of24kih8koq07ek.us.auth0.com',
-      clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
-      authorizationParams: {
-        redirect_uri: window.location.origin + '/pages/spots.html'
-      }
-    });
-    console.log("✅ Auth0 client initialized successfully");
-    return auth0Client;
-  } catch (err) {
-    console.error("❌ Failed to initialize Auth0 client:", err.message);
-    throw err;
-  }
-}
-
-document.addEventListener("DOMContentLoaded", async () => {
-  let auth0;
-  try {
-    auth0 = await getAuth0Client();
-    console.log("✅ Auth0 client assigned to auth0 variable");
-
-    // Handle Auth0 redirect callback
-    if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
-      try {
-        const result = await auth0.handleRedirectCallback();
-        const user = await auth0.getUser();
-        sessionStorage.setItem("user", JSON.stringify(user));
-        console.log("✅ User authenticated after redirect:", user);
-
-        const targetUrl = result.appState?.targetUrl || sessionStorage.getItem("redirectAfterLogin") || '/pages/spots.html';
-        sessionStorage.removeItem("redirectAfterLogin");
-        window.history.replaceState({}, document.title, targetUrl);
-        window.location.href = targetUrl;
-        return;
-      } catch (err) {
-        console.error("❌ Error handling Auth0 redirect:", err);
-      }
-    }
-
-    // Check authentication status
-    const isAuthenticated = await auth0.isAuthenticated();
-    if (isAuthenticated) {
-      const user = await auth0.getUser();
-      sessionStorage.setItem("user", JSON.stringify(user));
-      console.log("✅ Utilisateur connecté :", user);
-    } else {
-      console.warn("⚠️ Utilisateur non connecté.");
-    }
-  } catch (err) {
-    console.error("❌ Error during Auth0 setup:", err);
-    // Continue to attach event listener even if Auth0 fails
-  }
-
-  // Attach save-tour-btn event listener
-  const saveBtn = document.getElementById("save-tour-btn");
-  const savePopup = document.getElementById("save-popup");
-
-  if (!saveBtn) {
-    console.error("❌ save-tour-btn not found in DOM");
-    return;
-  }
-  if (!savePopup) {
-    console.error("❌ save-popup not found in DOM");
-    return;
-  }
-
-  saveBtn.addEventListener("click", async (event) => {
-    event.preventDefault();
-    console.log("✅ save-tour-btn clicked");
-
-    const user = sessionStorage.getItem("user");
-    console.log("🔍 User in sessionStorage:", user);
-
-    if (!user) {
-      console.log("⚠️ No user found, attempting Auth0 login redirect");
-      if (!auth0) {
-        console.error("❌ Auth0 client not initialized. Cannot redirect to login.");
-        alert("Authentication service unavailable. Please try again later.");
-        return;
-      }
-      try {
-        sessionStorage.setItem("redirectAfterLogin", window.location.href);
-        await auth0.loginWithRedirect({
-          appState: { targetUrl: window.location.pathname },
-          authorizationParams: {
-            redirect_uri: window.location.origin + '/pages/spots.html'
-          }
-        });
-      } catch (err) {
-        console.error("❌ Error redirecting to Auth0:", err);
-        alert("Failed to redirect to login. Please try again.");
-      }
-      return;
-    }
-
-    // Show popup if user is authenticated
-    console.log("✅ Showing save-popup");
-    savePopup.style.display = "block";
-  });
-});
-
-// Rest of your existing spots.js code remains unchanged
-
 const markers = [];
 let filteredPlacesWithCoords = []; // Stockage global des lieux filtrés
 // Variable globale pour stocker le marqueur de prévisualisation
@@ -986,13 +864,10 @@ function updateGoButtonVisibility() {
 }
 
 function updateCarouselArrows() {
-  const container = document.getElementById("carousel-container");
-  const leftArrow = document.getElementById("carousel-left-arrow");
-  const rightArrow = document.getElementById("carousel-right-arrow");
-
-  if (!leftArrow || !rightArrow) return;
-
-  const items = container.querySelectorAll('.carousel-item')
+const container = document.getElementById("carousel-container");
+const leftArrow = document.getElementById("carousel-left-arrow");
+const rightArrow = document.getElementById("carousel-right-arrow");
+const items = container.querySelectorAll('.carousel-item');
 
 let activeIndex = -1;
 if (items.length > 0) {
@@ -1065,98 +940,6 @@ function createCircularMarkerIcon(imageUrl, size = 50) {
     };
   });
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  const saveBtn = document.getElementById("save-tour-btn");
-  const savePopup = document.getElementById("save-popup");
-  const closePopup = document.getElementById("save-popup-close");
-
-  saveBtn.addEventListener("click", async () => {
-    const user = sessionStorage.getItem("user");
-  
-    if (!user) {
-      sessionStorage.setItem("redirectAfterLogin", window.location.href); // En cas de secours
-  
-      await auth0Client.loginWithRedirect({
-        appState: { targetUrl: window.location.pathname }, // ou window.location.href si besoin complet
-        authorizationParams: {
-          redirect_uri: window.location.origin + '/pages/spots.html'
-        }
-      });
-      return;
-    }
-  
-    savePopup.style.display = "block";
-  });
-  
-
-});
-
-
-const newBtn = document.getElementById("new-tour-btn");
-const newForm = document.getElementById("new-tour-form");
-const newTourName = document.getElementById("new-tour-name");
-const confirmBtn = document.getElementById("confirm-new-tour");
-
-newBtn.addEventListener("click", () => {
-  newForm.style.display = "block";
-  newTourName.focus();
-});
-
-confirmBtn.addEventListener("click", async () => {
-  const tourName = newTourName.value.trim();
-  if (!tourName) {
-    alert("Please enter a name for your tour.");
-    return;
-  }
-
-  // 🔄 Récupère les lieux sélectionnés
-  const selectedPlaceIDs = markers
-    .filter(marker => marker.fullRecord)
-    .map(marker => marker.fullRecord.name); // ou `.id` si disponible
-
-  if (selectedPlaceIDs.length === 0) {
-    alert("You must select at least one spot.");
-    return;
-  }
-
-  // 🔐 Récupérer l'ID utilisateur via Auth0 (si déjà dispo)
-  const user = sessionStorage.getItem("user");
-  console.log("🔍 User from sessionStorage:", user);
-
-  if (!user) {
-    alert("You must be connected to save.");
-    console.warn("⚠️ Aucun utilisateur trouvé dans sessionStorage.");
-    return;
-  }
-
-  const userID = JSON.parse(user).sub;
-
-  // ✉️ Envoie au Worker
-  try {
-    const response = await fetch("https://airtable-create.samueltoledano94.workers.dev", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        Nom: tourName,
-        UserID: userID,
-        LieuIDs: selectedPlaceIDs,
-        Date: new Date().toISOString()
-      })
-    });
-
-    if (!response.ok) throw new Error("Erreur API");
-
-    alert("Tour saved!");
-    savePopup.style.display = "none";
-    newForm.style.display = "none";
-    newTourName.value = "";
-  } catch (err) {
-    console.error("Erreur lors de la sauvegarde :", err);
-    alert("Error while saving.");
-  }
-});
-
 
 
 

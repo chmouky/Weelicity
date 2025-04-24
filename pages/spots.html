@@ -18,41 +18,13 @@
   <button id="back-button">←</button>
   <h1 class="shrikhand-text">Choose your spots</h1>
   <div id="map"></div>
-
-  <!-- Bouton de sauvegarde -->
-  <button id="save-tour-btn">
-    <img src="/assets/img/pages/save.png" alt="Save" />
-  </button>
-
-  <!-- Carrousel + flèches -->
   <div id="carousel-container"></div>
 
-  <!-- Ajout flèches du carrousel (invisibles par défaut) -->
-  <div id="carousel-left-arrow" class="carousel-arrow" style="left: 5px; bottom: 220px; display: none;">
-    <img src="/assets/img/pages/arrow-left.png" alt="←" />
-  </div>
-  <div id="carousel-right-arrow" class="carousel-arrow" style="right: 5px; bottom: 220px; display: none;">
-    <img src="/assets/img/pages/arrow-right.png" alt="→" />
-  </div>
 
   <button id="go-button">Go!</button>
 
-  <!-- Popup de sauvegarde -->
-  <div id="save-popup">
-    <span id="save-popup-close">×</span>
-    <h2>My Saved Tours</h2>
-    <ul id="saved-tours-list">
-      <li>Aucune sauvegarde pour l'instant</li>
-    </ul>
-    <button id="new-tour-btn">New</button>
-    <div id="new-tour-form" style="margin-top: 10px; display: none;">
-      <input type="text" id="new-tour-name" placeholder="Enter a name..." />
-      <button id="confirm-new-tour">Save</button>
-    </div>
-  </div>
-
   <!-- Popups et overlay -->
-  <div id="popup" class="popup">
+<div id="popup" class="popup">
     <div class="popup-content">
       <span class="popup-close">×</span>
       <h2 id="popup-title"></h2>
@@ -62,7 +34,7 @@
       <div id="popup-link"></div>
     </div>
   </div>
-
+  
   <div id="popup-itinerary" class="popup">
     <div id="popup-itinerary-header">
       <h2 id="popup-itinerary-title"></h2>
@@ -71,8 +43,8 @@
     <div id="popup-itinerary-description"></div>
     <div id="popup-itinerary-link"></div>
   </div>
-
-  <div id="overlay" class="overlay"></div>
+    <div id="overlay" class="overlay"></div>
+  
 
   <!-- Pied de page dynamique -->
   <div id="footer-placeholder"></div>
@@ -82,51 +54,15 @@
       .then(data => {
         const footer = document.getElementById("footer-placeholder");
         footer.innerHTML = data;
-        footer.classList.add("loaded");
+        footer.classList.add("loaded"); // ← ajoute l'opacité / transition
       });
   </script>
+  
 
-<script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
-<!-- Auth0 script with fallback -->
-<script>
-  // Load Auth0 library with fallback
-  function loadAuth0Script() {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement("script");
-      script.src = "https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js";
-      script.async = true;
-      script.onload = () => {
-        console.log("✅ Auth0 SPA JS library loaded from CDN");
-        resolve();
-      };
-      script.onerror = () => {
-        console.warn("⚠️ Failed to load Auth0 SPA JS from CDN, trying local fallback");
-        // Try local fallback
-        const fallbackScript = document.createElement("script");
-        fallbackScript.src = "/assets/js/auth0-spa-js.min.js";
-        fallbackScript.async = true;
-        fallbackScript.onload = () => {
-          console.log("✅ Auth0 SPA JS library loaded from local fallback");
-          resolve();
-        };
-        fallbackScript.onerror = () => {
-          console.error("❌ Failed to load Auth0 SPA JS from both CDN and local fallback");
-          reject(new Error("Auth0 SPA JS library not loaded"));
-        };
-        document.head.appendChild(fallbackScript);
-      };
-      document.head.appendChild(script);
-
-      // Timeout after 5 seconds
-      setTimeout(() => {
-        if (!window.createAuth0Client) {
-          reject(new Error("Auth0 SPA JS library failed to load within 5 seconds"));
-        }
-      }, 5000);
-    });
-  }
-</script>
   <script src="../assets/js/utils.js"></script>
   <script src="../assets/js/spots.js"></script>
+  
+  
+
 </body>
 </html>
