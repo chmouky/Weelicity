@@ -969,15 +969,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ✅ Gestion du clic sur le bouton save
   saveBtn.addEventListener("click", () => {
-    const userRaw = sessionStorage.getItem("user");
+    try {
+      const userRaw = sessionStorage.getItem("user");
 
-    if (userRaw) {
-      // ✅ Utilisateur connecté → ouvrir le popup
-      savePopup.style.display = "block";
-    } else {
-      // 🔐 Utilisateur non connecté → stocker l’intention et rediriger
+      // ⚠️ Vérifie si userRaw est bien un JSON parsable
+      if (userRaw) {
+        const user = JSON.parse(userRaw);
+        if (user && user.sub && user.email) {
+          // ✅ Utilisateur connecté → ouvrir le popup
+          savePopup.style.display = "block";
+          return;
+        }
+      }
+
+      // 🔐 Sinon → rediriger vers Auth0
       sessionStorage.setItem("redirectAfterLogin", window.location.href + "#openSavePopup");
-      window.location.href = "/pages/menu.html"; // redirection vers login via menu
+      window.location.href = "/pages/menu.html";
+
+    } catch (e) {
+      console.warn("⚠️ Erreur de parsing user session :", e);
+      sessionStorage.setItem("redirectAfterLogin", window.location.href + "#openSavePopup");
+      window.location.href = "/pages/menu.html";
     }
   });
 
@@ -986,23 +998,23 @@ document.addEventListener("DOMContentLoaded", () => {
     savePopup.style.display = "none";
   });
 
-  // ✅ Si on revient avec #openSavePopup → ouvrir le popup
+  // ✅ Si on revient avec #openSavePopup → ouvrir le popup (seulement si connecté)
   if (window.location.hash === "#openSavePopup") {
-    const userRaw = sessionStorage.getItem("user");
-  
-    if (userRaw) {
-      window.location.hash = ""; // nettoyage
-      setTimeout(() => {
-        document.getElementById("save-popup").style.display = "block";
-      }, 300);
-    } else {
-      console.warn("🔐 Tentative d'ouverture du popup de sauvegarde sans utilisateur connecté.");
-      window.location.hash = ""; // on nettoie quand même
+    try {
+      const userRaw = sessionStorage.getItem("user");
+      const user = JSON.parse(userRaw);
+      if (user && user.sub && user.email) {
+        window.location.hash = "";
+        setTimeout(() => {
+          savePopup.style.display = "block";
+        }, 300);
+      }
+    } catch (e) {
+      console.warn("❌ Impossible d’ouvrir le popup auto, utilisateur invalide");
+      window.location.hash = "";
     }
   }
-  
 });
-
 
 
 
