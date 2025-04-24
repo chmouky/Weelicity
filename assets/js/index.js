@@ -1,9 +1,32 @@
+// 📁 /assets/js/index.js
+
+import { initAuth, getAuth0Client } from './auth.js';
+
+(async () => {
+  // 🔐 Étape 1 : Initialise Auth0
+  await initAuth();
+  const auth0Client = getAuth0Client();
+
+  // 🔍 Étape 2 : Vérifie si un utilisateur est déjà connecté
+  const userRaw = sessionStorage.getItem("user");
+
+  if (!userRaw) {
+    // 🚪 Non connecté → redirection vers Auth0
+    sessionStorage.setItem("postLoginRedirect", window.location.pathname);
+    await auth0Client.loginWithRedirect({
+      authorizationParams: {
+        redirect_uri: window.location.origin + "/callback.html"
+      }
+    });
+    return; // Arrêt ici, car la redirection va interrompre le script
+  }
+
+  // 📦 Étape 3 : L'utilisateur est connecté → on charge Airtable si besoin
+  await loadAirtableDataIfNeeded();
+})();
+
 async function loadAirtableDataIfNeeded() {
-  const keys = [
-    'tags', 'places', 'tour', 'themetour',
-    'quartiers', 'gastro', 'brands', 'around',
-    'street', 'parametre', 'ToursPerso'
-  ];
+  const keys = ['tags', 'places', 'tour', 'themetour', 'quartiers', 'gastro', 'brands', 'around', 'street', 'parametre', 'ToursPerso'];
 
   const isReady = keys.every(key => {
     const item = sessionStorage.getItem(key);
@@ -11,7 +34,7 @@ async function loadAirtableDataIfNeeded() {
   });
 
   if (isReady) {
-    console.log("✅ Données déjà présentes dans sessionStorage.");
+    console.log("✅ Données déjà présentes.");
     document.getElementById('loadingOverlay')?.remove();
     document.body.style.pointerEvents = 'auto';
     return;
@@ -31,7 +54,7 @@ async function loadAirtableDataIfNeeded() {
     sessionStorage.setItem('around', JSON.stringify(data.Around));
     sessionStorage.setItem('street', JSON.stringify(data.Street));
     sessionStorage.setItem('parametre', JSON.stringify(data.Parametre));
-    sessionStorage.setItem('ToursPerso', JSON.stringify(data.ToursPerso)); // ✅ fix ici
+    sessionStorage.setItem('ToursPerso', JSON.stringify(data.ToursPerso));
 
     console.log("📦 Données Airtable chargées.");
   } catch (err) {
@@ -41,7 +64,3 @@ async function loadAirtableDataIfNeeded() {
   document.getElementById('loadingOverlay')?.remove();
   document.body.style.pointerEvents = 'auto';
 }
-
-loadAirtableDataIfNeeded().catch(err =>
-  console.error('❌ Erreur dans le chargement initial :', err)
-);
