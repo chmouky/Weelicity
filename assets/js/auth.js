@@ -5,7 +5,7 @@ let auth0Ready = false;
 let auth0InitPromise = null;
 
 // Initialise Auth0 et stocke l'état de readiness
-export async function initAuth0() {
+export async function initAuth() {
   if (!auth0InitPromise) {
     auth0InitPromise = createAuth0Client({
       domain: 'dev-1of24kih8koq07ek.us.auth0.com',
