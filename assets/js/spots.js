@@ -39,16 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
   updateGoButtonVisibility(); // Vérifie si le bouton "Go!" doit être affiché
 });
 
-let auth0Client = null;
-
-document.addEventListener("DOMContentLoaded", async () => {
-  auth0Client = await createAuth0Client({
-    domain: "XXX",
-    client_id: "XXX",
-    cacheLocation: "sessionStorage"
-  });
-});
-
+if (!auth0Client) {
+  alert("Auth0 non initialisé. Réessaye dans quelques secondes.");
+  return;
+}
 
 
 document.addEventListener("DOMContentLoaded", () => {
