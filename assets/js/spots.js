@@ -6,22 +6,10 @@ let filteredPlacesWithCoords = []; // Stockage global des lieux filtrés
 // Variable globale pour stocker le marqueur de prévisualisation
 let previewMarker = null;
 
+import { initAuth, getAuth0Client } from './auth.js';
 
-let auth0Client = null;
-let auth0Ready = false;
+const auth0InitPromise = initAuth(); // lancement de l'initialisation dès le début
 
-async function initAuth0() {
-  try {
-    auth0Client = await createAuth0Client({
-      domain: 'dev-1of24kih8koq07ek.us.auth0.com',
-      clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
-      cacheLocation: "sessionStorage"
-    });
-    auth0Ready = true;
-  } catch (e) {
-    console.error("❌ Erreur lors de l'initialisation Auth0 :", e);
-  }
-}
 
 document.addEventListener("DOMContentLoaded", initAuth0);
 
@@ -79,14 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-
-document.addEventListener("DOMContentLoaded", async () => {
-  auth0Client = await createAuth0Client({
-    domain: 'dev-1of24kih8koq07ek.us.auth0.com',
-    clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
-    cacheLocation: "sessionStorage"
-  });
-});
 
 
 const markerIconCache = new Map(); // Clé = URL image brute, Valeur = dataURL circulaire
@@ -1000,11 +980,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ✅ Gestion du clic sur le bouton save
   saveBtn.addEventListener("click", async () => {
-    if (!auth0Ready || !auth0Client) {
+    await auth0InitPromise;
+  
+    const auth0Client = getAuth0Client();
+    if (!auth0Client) {
       alert("Auth0 n'est pas prêt. Réessaie dans quelques secondes.");
       return;
     }
-  
+
     const userRaw = sessionStorage.getItem("user");
   
     if (userRaw) {
@@ -1021,6 +1004,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
+  
   
   
   

@@ -1,47 +1,45 @@
-let auth0 = null;
+// 📁 assets/js/auth.js
 
-async function initAuth0() {
-  auth0 = await createAuth0Client({
-    domain: "TON_DOMAINE.auth0.com",
-    client_id: "TA_CLIENT_ID",
-    cacheLocation: "localstorage" // pour rester connecté entre reloads
-  });
-  
-  // Redirection après login
-  if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
-    await auth0.handleRedirectCallback();
-    window.history.replaceState({}, document.title, "/");
-  }
+let auth0Client = null;
+let auth0Ready = false;
+let auth0InitPromise = null;
 
-  const isAuthenticated = await auth0.isAuthenticated();
-  if (isAuthenticated) {
-    const user = await auth0.getUser();
-    console.log("✅ Connecté :", user);
-    document.getElementById("login-button").style.display = "none";
-    document.getElementById("logout-button").style.display = "inline-block";
-    // Tu peux afficher user.name, user.email, etc.
-  } else {
-    document.getElementById("login-button").style.display = "inline-block";
-    document.getElementById("logout-button").style.display = "none";
+// Initialise Auth0 et stocke l'état de readiness
+export async function initAuth0() {
+  if (!auth0InitPromise) {
+    auth0InitPromise = createAuth0Client({
+      domain: 'dev-1of24kih8koq07ek.us.auth0.com',
+      clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
+      cacheLocation: 'sessionStorage'
+    })
+    .then(client => {
+      auth0Client = client;
+      auth0Ready = true;
+    })
+    .catch(err => {
+      console.error("❌ Erreur init Auth0:", err);
+    });
   }
+  return auth0InitPromise;
 }
 
-// Boutons
-document.getElementById("login-button").addEventListener("click", () => {
-  auth0.loginWithRedirect({
-    authorizationParams: {
-      redirect_uri: window.location.origin
-    }
-  });
-});
+// Vérifie si l'utilisateur est connecté via sessionStorage
+export function isUserLoggedIn() {
+  return !!sessionStorage.getItem("user");
+}
 
-document.getElementById("logout-button").addEventListener("click", () => {
-  auth0.logout({
-    logoutParams: {
-      returnTo: window.location.origin
-    }
-  });
-});
+// Lance le login avec popup et stocke l'utilisateur
+export async function loginUserWithPopup() {
+  if (!auth0Ready || !auth0Client) {
+    throw new Error("Auth0 non prêt");
+  }
+  await auth0Client.loginWithPopup();
+  const user = await auth0Client.getUser();
+  sessionStorage.setItem("user", JSON.stringify(user));
+  return user;
+}
 
-// Lancement
-initAuth0();
+// Expose auth0Client si besoin direct
+export function getAuth0Client() {
+  return auth0Client;
+}
