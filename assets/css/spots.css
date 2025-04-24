@@ -510,3 +510,24 @@ html, body {
   .yes-label {
     color: green;
   }
+
+  #new-tour-btn,
+#confirm-new-tour {
+  background-color: var(--theme-color, #007bff);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  margin-top: 10px;
+  font-family: 'Shrikhand', cursive;
+  cursor: pointer;
+}
+
+#new-tour-name {
+  width: 100%;
+  padding: 6px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: 'Shrikhand', cursive;
+}

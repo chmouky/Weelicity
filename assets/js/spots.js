@@ -959,6 +959,68 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+const newBtn = document.getElementById("new-tour-btn");
+const newForm = document.getElementById("new-tour-form");
+const newTourName = document.getElementById("new-tour-name");
+const confirmBtn = document.getElementById("confirm-new-tour");
+
+newBtn.addEventListener("click", () => {
+  newForm.style.display = "block";
+  newTourName.focus();
+});
+
+confirmBtn.addEventListener("click", async () => {
+  const tourName = newTourName.value.trim();
+  if (!tourName) {
+    alert("Please enter a name for your tour.");
+    return;
+  }
+
+  // 🔄 Récupère les lieux sélectionnés
+  const selectedPlaceIDs = markers
+    .filter(marker => marker.fullRecord)
+    .map(marker => marker.fullRecord.name); // ou `.id` si disponible
+
+  if (selectedPlaceIDs.length === 0) {
+    alert("You must select at least one spot.");
+    return;
+  }
+
+  // 🔐 Récupérer l'ID utilisateur via Auth0 (si déjà dispo)
+  const user = sessionStorage.getItem("user");
+  if (!user) {
+    alert("You must be connected to save.");
+    return;
+  }
+
+  const userID = JSON.parse(user).sub;
+
+  // ✉️ Envoie au Worker
+  try {
+    const response = await fetch("https://airtable-create.samueltoledano94.workers.dev", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        Nom: tourName,
+        UserID: userID,
+        LieuIDs: selectedPlaceIDs,
+        Date: new Date().toISOString()
+      })
+    });
+
+    if (!response.ok) throw new Error("Erreur API");
+
+    alert("Tour saved!");
+    savePopup.style.display = "none";
+    newForm.style.display = "none";
+    newTourName.value = "";
+  } catch (err) {
+    console.error("Erreur lors de la sauvegarde :", err);
+    alert("Error while saving.");
+  }
+});
+
+
 
 document.getElementById("carousel-container").addEventListener("scroll", updateCarouselArrows);
 window.addEventListener("resize", updateCarouselArrows);
