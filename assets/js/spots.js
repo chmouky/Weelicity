@@ -11,7 +11,7 @@ import { initAuth, getAuth0Client } from './auth.js';
 const auth0InitPromise = initAuth(); // lancement de l'initialisation dès le début
 
 
-import { loginUserWithRedirect } from "../auth.js";
+import { loginUserWithRedirect } from "./auth.js";
 
 // Appelle cette fonction quand tu veux lancer la connexion :
 loginUserWithRedirect();
