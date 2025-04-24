@@ -87,7 +87,45 @@
   </script>
 
 <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
+<!-- Auth0 script with fallback -->
+<script>
+  // Load Auth0 library with fallback
+  function loadAuth0Script() {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js";
+      script.async = true;
+      script.onload = () => {
+        console.log("✅ Auth0 SPA JS library loaded from CDN");
+        resolve();
+      };
+      script.onerror = () => {
+        console.warn("⚠️ Failed to load Auth0 SPA JS from CDN, trying local fallback");
+        // Try local fallback
+        const fallbackScript = document.createElement("script");
+        fallbackScript.src = "/assets/js/auth0-spa-js.min.js";
+        fallbackScript.async = true;
+        fallbackScript.onload = () => {
+          console.log("✅ Auth0 SPA JS library loaded from local fallback");
+          resolve();
+        };
+        fallbackScript.onerror = () => {
+          console.error("❌ Failed to load Auth0 SPA JS from both CDN and local fallback");
+          reject(new Error("Auth0 SPA JS library not loaded"));
+        };
+        document.head.appendChild(fallbackScript);
+      };
+      document.head.appendChild(script);
 
+      // Timeout after 5 seconds
+      setTimeout(() => {
+        if (!window.createAuth0Client) {
+          reject(new Error("Auth0 SPA JS library failed to load within 5 seconds"));
+        }
+      }, 5000);
+    });
+  }
+</script>
   <script src="../assets/js/utils.js"></script>
   <script src="../assets/js/spots.js"></script>
 </body>

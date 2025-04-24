@@ -2,7 +2,7 @@ let map;
 let userMarker = null;
 
 // spots.js
-let auth0Client = null; // Global variable to store Auth0 client
+let auth0Client = null;
 
 // Function to initialize Auth0 client
 async function getAuth0Client() {
@@ -12,6 +12,9 @@ async function getAuth0Client() {
   }
 
   try {
+    // Load Auth0 script dynamically
+    await loadAuth0Script(); // Defined in HTML
+
     // Verify Auth0 library is loaded
     if (!window.createAuth0Client) {
       throw new Error("Auth0 SPA JS library not loaded");
@@ -114,11 +117,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Show popup if user is authenticated
     console.log("✅ Showing save-popup");
-    savePopup.style.display = "block"; // Revert to style.display for consistency
+    savePopup.style.display = "block";
   });
 });
 
-
+// Rest of your existing spots.js code remains unchanged
 
 const markers = [];
 let filteredPlacesWithCoords = []; // Stockage global des lieux filtrés
