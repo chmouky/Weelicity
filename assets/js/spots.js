@@ -1,6 +1,43 @@
 let map;
 let userMarker = null;
 
+let auth0Client;
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    auth0Client = await createAuth0Client({
+      domain: 'dev-1of24kih8koq07ek.us.auth0.com',
+      clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
+      authorizationParams: {
+        redirect_uri: window.location.origin + '/pages/spots.html'
+      }
+    });
+
+    // 🔁 Gérer le retour Auth0
+    if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
+      const result = await auth0Client.handleRedirectCallback();
+      const user = await auth0Client.getUser();
+      sessionStorage.setItem("user", JSON.stringify(user));
+      const targetUrl = result.appState?.targetUrl || '/pages/spots.html';
+      window.history.replaceState({}, document.title, targetUrl);
+      window.location.href = targetUrl;
+      return;
+    }
+
+    // 🔐 Stocker l'utilisateur s'il est connecté
+    const isAuthenticated = await auth0Client.isAuthenticated();
+    if (isAuthenticated) {
+      const user = await auth0Client.getUser();
+      sessionStorage.setItem("user", JSON.stringify(user));
+      console.log("✅ Utilisateur connecté :", user);
+    } else {
+      console.warn("⚠️ Utilisateur non connecté.");
+    }
+  } catch (e) {
+    console.error("❌ Erreur Auth0 :", e);
+  }
+});
+
+
 const markers = [];
 let filteredPlacesWithCoords = []; // Stockage global des lieux filtrés
 // Variable globale pour stocker le marqueur de prévisualisation
@@ -864,10 +901,13 @@ function updateGoButtonVisibility() {
 }
 
 function updateCarouselArrows() {
-const container = document.getElementById("carousel-container");
-const leftArrow = document.getElementById("carousel-left-arrow");
-const rightArrow = document.getElementById("carousel-right-arrow");
-const items = container.querySelectorAll('.carousel-item');
+  const container = document.getElementById("carousel-container");
+  const leftArrow = document.getElementById("carousel-left-arrow");
+  const rightArrow = document.getElementById("carousel-right-arrow");
+
+  if (!leftArrow || !rightArrow) return;
+
+  const items = container.querySelectorAll('.carousel-item')
 
 let activeIndex = -1;
 if (items.length > 0) {
@@ -946,16 +986,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const savePopup = document.getElementById("save-popup");
   const closePopup = document.getElementById("save-popup-close");
 
-  // Cacher le popup par défaut
-  savePopup.style.display = "none";
-
   saveBtn.addEventListener("click", () => {
+    const user = sessionStorage.getItem("user");
+
+    if (!user) {
+      // 🧠 Sauvegarder l’URL pour redirection après login
+      sessionStorage.setItem("redirectAfterLogin", window.location.href);
+
+      // 🛑 Redirection vers Auth0
+      window.location.href = `https://dev-1of24kih8koq07ek.us.auth0.com/authorize?` +
+        `client_id=OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL&` +
+        `response_type=code&` +
+        `scope=openid%20profile%20email&` +
+        `redirect_uri=${encodeURIComponent(window.location.origin + '/pages/menu.html')}`;
+      return;
+    }
+
+    // ✅ Si connecté → ouvrir le popup de sauvegarde
     savePopup.style.display = "block";
   });
 
-  closePopup.addEventListener("click", () => {
-    savePopup.style.display = "none";
-  });
 });
 
 

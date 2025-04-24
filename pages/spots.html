@@ -18,12 +18,23 @@
   <button id="back-button">←</button>
   <h1 class="shrikhand-text">Choose your spots</h1>
   <div id="map"></div>
+
   <!-- Bouton de sauvegarde -->
   <button id="save-tour-btn">
     <img src="/assets/img/pages/save.png" alt="Save" />
   </button>
 
+  <!-- Carrousel + flèches -->
   <div id="carousel-container"></div>
+
+  <!-- Ajout flèches du carrousel (invisibles par défaut) -->
+  <div id="carousel-left-arrow" class="carousel-arrow" style="left: 5px; bottom: 220px; display: none;">
+    <img src="/assets/img/pages/arrow-left.png" alt="←" />
+  </div>
+  <div id="carousel-right-arrow" class="carousel-arrow" style="right: 5px; bottom: 220px; display: none;">
+    <img src="/assets/img/pages/arrow-right.png" alt="→" />
+  </div>
+
   <button id="go-button">Go!</button>
 
   <!-- Popup de sauvegarde -->
@@ -34,14 +45,11 @@
       <li>Aucune sauvegarde pour l'instant</li>
     </ul>
     <button id="new-tour-btn">New</button>
-
     <div id="new-tour-form" style="margin-top: 10px; display: none;">
       <input type="text" id="new-tour-name" placeholder="Enter a name..." />
       <button id="confirm-new-tour">Save</button>
     </div>
   </div>
-
- 
 
   <!-- Popups et overlay -->
   <div id="popup" class="popup">
@@ -54,7 +62,7 @@
       <div id="popup-link"></div>
     </div>
   </div>
-  
+
   <div id="popup-itinerary" class="popup">
     <div id="popup-itinerary-header">
       <h2 id="popup-itinerary-title"></h2>
@@ -63,6 +71,7 @@
     <div id="popup-itinerary-description"></div>
     <div id="popup-itinerary-link"></div>
   </div>
+
   <div id="overlay" class="overlay"></div>
 
   <!-- Pied de page dynamique -->
@@ -76,6 +85,8 @@
         footer.classList.add("loaded");
       });
   </script>
+
+<script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
 
   <script src="../assets/js/utils.js"></script>
   <script src="../assets/js/spots.js"></script>
