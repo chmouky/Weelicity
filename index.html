@@ -7,8 +7,8 @@
   <title>Weelicity</title>
 
   <link rel="manifest" href="assets/manifest.json">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="mobile-web-app-status-bar-style" content="default">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Weelicity">
   <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
 
@@ -45,14 +45,13 @@
         </div>
       </section>
     </main>
-
   </div>
 
   <div id="footer-placeholder"></div>
 
   <!-- Scripts -->
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/1.20.2/auth0-spa-js.production.js"></script>
   <script src="/assets/js/utils.js"></script>
-  <!-- <script src="https://cdn.auth0.com/js/auth0-spa-js/1.20/auth0-spa-js.production.js"></script> -->
   <script type="module" src="/assets/js/index.js"></script>
   <script>
     fetch("/assets/components/footer.html")
@@ -63,6 +62,5 @@
         footer.classList.add("loaded");
       });
   </script>
-
 </body>
 </html>

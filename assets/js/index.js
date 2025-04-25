@@ -3,26 +3,36 @@
 import { initAuth, getAuth0Client } from './auth.js';
 
 (async () => {
-  // 🔐 Étape 1 : Initialise Auth0
-  await initAuth();
-  const auth0Client = getAuth0Client();
+  try {
+    // 🔐 Étape 1 : Initialise Auth0
+    await initAuth();
+    const auth0Client = getAuth0Client();
+    console.log("✅ Auth0 client retrieved successfully");
 
-  // 🔍 Étape 2 : Vérifie si un utilisateur est déjà connecté
-  const userRaw = sessionStorage.getItem("user");
+    // 🔍 Étape 2 : Vérifie si un utilisateur est déjà connecté
+    const userRaw = sessionStorage.getItem("user");
 
-  if (!userRaw) {
-    // 🚪 Non connecté → redirection vers Auth0
-    sessionStorage.setItem("postLoginRedirect", window.location.pathname);
-    await auth0Client.loginWithRedirect({
-      authorizationParams: {
-        redirect_uri: window.location.origin + "/callback.html"
-      }
-    });
-    return; // Arrêt ici, car la redirection va interrompre le script
+    if (!userRaw) {
+      // 🚪 Non connecté → redirection vers Auth0
+      console.log("⚠️ No user found, redirecting to Auth0");
+      sessionStorage.setItem("postLoginRedirect", window.location.pathname);
+      await auth0Client.loginWithRedirect({
+        authorizationParams: {
+          redirect_uri: window.location.origin + "/callback.html"
+        }
+      });
+      return; // Arrêt ici, car la redirection va interrompre le script
+    }
+
+    // 📦 Étape 3 : L'utilisateur est connecté → on charge Airtable si besoin
+    await loadAirtableDataIfNeeded();
+  } catch (err) {
+    console.error("❌ Error in index.js:", err);
+    alert("Failed to initialize authentication. Please try again.");
+    // Remove loading overlay in case of error
+    document.getElementById('loadingOverlay')?.remove();
+    document.body.style.pointerEvents = 'auto';
   }
-
-  // 📦 Étape 3 : L'utilisateur est connecté → on charge Airtable si besoin
-  await loadAirtableDataIfNeeded();
 })();
 
 async function loadAirtableDataIfNeeded() {

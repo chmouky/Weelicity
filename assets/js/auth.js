@@ -1,7 +1,5 @@
 // 📁 assets/js/auth.js
 
-import createAuth0Client from 'https://cdn.jsdelivr.net/npm/@auth0/auth0-spa-js@1.20.2/dist/auth0-spa-js.production.esm.min.js';
-
 let auth0Client = null;
 let auth0Ready = false;
 let auth0InitPromise = null;
@@ -14,19 +12,27 @@ const auth0Config = {
 
 export async function initAuth() {
   if (!auth0InitPromise) {
-    auth0InitPromise = createAuth0Client(auth0Config)
-      .then(client => {
-        auth0Client = client;
+    auth0InitPromise = (async () => {
+      try {
+        if (!window.createAuth0Client) {
+          throw new Error("Auth0 SPA JS library not loaded");
+        }
+        auth0Client = await window.createAuth0Client(auth0Config);
         auth0Ready = true;
-      })
-      .catch(err => {
+        console.log("✅ Auth0 client initialized successfully");
+      } catch (err) {
         console.error("❌ Erreur init Auth0:", err);
-      });
+        throw err;
+      }
+    })();
   }
   return auth0InitPromise;
 }
 
 export function getAuth0Client() {
+  if (!auth0Ready || !auth0Client) {
+    throw new Error("Auth0 client not initialized");
+  }
   return auth0Client;
 }
 
@@ -35,14 +41,18 @@ export function isUserLoggedIn() {
 }
 
 export async function handleRedirectCallback() {
-  const client = await createAuth0Client(auth0Config);
-
   try {
+    if (!window.createAuth0Client) {
+      throw new Error("Auth0 SPA JS library not loaded");
+    }
+    const client = await window.createAuth0Client(auth0Config);
     await client.handleRedirectCallback();
     const user = await client.getUser();
     sessionStorage.setItem("user", JSON.stringify(user));
+    console.log("✅ User authenticated:", user);
 
     const destination = sessionStorage.getItem("postLoginRedirect") || "/pages/menu.html";
+    sessionStorage.removeItem("postLoginRedirect");
     window.location.href = destination;
   } catch (e) {
     console.error("❌ Erreur callback :", e);
@@ -51,13 +61,19 @@ export async function handleRedirectCallback() {
 }
 
 export async function loginUserWithRedirect() {
-  const client = await createAuth0Client(auth0Config);
-
-  sessionStorage.setItem("postLoginRedirect", window.location.pathname);
-
-  await client.loginWithRedirect({
-    authorizationParams: {
-      redirect_uri: window.location.origin + "/assets/pages/callback.html"
+  try {
+    if (!window.createAuth0Client) {
+      throw new Error("Auth0 SPA JS library not loaded");
     }
-  });
+    const client = await window.createAuth0Client(auth0Config);
+    sessionStorage.setItem("postLoginRedirect", window.location.pathname);
+    await client.loginWithRedirect({
+      authorizationParams: {
+        redirect_uri: window.location.origin + "/callback.html"
+      }
+    });
+  } catch (err) {
+    console.error("❌ Error during login redirect:", err);
+    alert("Failed to redirect to login. Please try again.");
+  }
 }
