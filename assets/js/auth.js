@@ -11,7 +11,6 @@ const auth0Config = {
 // Initialisation Auth0 (appelé manuellement ailleurs si besoin)
 window.initAuth = async function () {
   try {
-    await window.loadAuth0Script(); // assure-toi que ce script est chargé avant
     if (!window.createAuth0Client) {
       throw new Error("Auth0 SPA JS library not chargée");
     }
