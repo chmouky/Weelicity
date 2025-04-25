@@ -1,5 +1,12 @@
 (async () => {
-  await loadAirtableDataIfNeeded();
+  const shouldLoad = confirm("Le chargement des données va commencer. Cliquez sur OK pour continuer.");
+  if (shouldLoad) {
+    await loadAirtableDataIfNeeded();
+  } else {
+    console.log("⏹️ Chargement annulé par l'utilisateur.");
+    document.getElementById('loadingOverlay')?.remove();
+    document.body.style.pointerEvents = 'auto';
+  }
 })();
 
 async function loadAirtableDataIfNeeded() {
@@ -41,3 +48,8 @@ async function loadAirtableDataIfNeeded() {
   document.getElementById('loadingOverlay')?.remove();
   document.body.style.pointerEvents = 'auto';
 }
+
+// Gestion du bouton Login
+document.getElementById("loginBtn").addEventListener("click", () => {
+  loginUserWithRedirect(); // défini dans auth.js
+});
