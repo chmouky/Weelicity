@@ -1,4 +1,5 @@
 // 📁 assets/js/auth.js
+import createAuth0Client from 'https://cdn.jsdelivr.net/npm/@auth0/auth0-spa-js@1.20.2/dist/auth0-spa-js.production.esm.js';
 
 let auth0Client = null;
 let auth0Ready = false;
@@ -12,7 +13,8 @@ const auth0Config = {
 
 export async function initAuth() {
   if (!auth0InitPromise) {
-    auth0InitPromise = window.createAuth0Client(auth0Config) // ✅ ici window.
+    auth0InitPromise = createAuth0Client(auth0Config)
+ // ✅ ici window.
       .then(client => {
         auth0Client = client;
         auth0Ready = true;
@@ -33,7 +35,7 @@ export function isUserLoggedIn() {
 }
 
 export async function handleRedirectCallback() {
-  const client = await window.createAuth0Client(auth0Config); // ✅ idem ici
+  const client = await createAuth0Client(auth0Config); // ✅ idem ici
 
   try {
     await client.handleRedirectCallback();
