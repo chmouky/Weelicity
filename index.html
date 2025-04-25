@@ -10,7 +10,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Weelicity">
-  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
 
   <!-- CSS -->
   <link rel="stylesheet" href="assets/css/index.css">
@@ -52,18 +52,19 @@
     </main>
   </div>
 
-  <!-- Footer (sera ignoré dynamiquement) -->
+  <!-- Footer (chargé dynamiquement sauf sur index) -->
   <div id="footer-placeholder"></div>
 
-  <!-- Scripts -->
+  <!-- Scripts (dans le bon ordre) -->
   <script src="auth.js" defer></script>
-  <script src="/assets/js/utils.js"></script>
-  <script type="module" src="/assets/js/index.js"></script>
+  <script src="assets/js/utils.js" defer></script>
+  <script type="module" src="assets/js/index.js"></script>
+
   <script>
-    // Injection conditionnelle du footer : pas sur index.html
-    const isIndex = window.location.pathname.endsWith("index.html") || window.location.pathname === "/";
-    if (!isIndex) {
-      fetch("/assets/components/footer.html")
+    // Ne charge pas le footer si on est sur index.html
+    const isIndexPage = location.pathname.endsWith("index.html") || location.pathname === "/";
+    if (!isIndexPage) {
+      fetch("assets/components/footer.html")
         .then(response => response.text())
         .then(data => {
           const footer = document.getElementById("footer-placeholder");

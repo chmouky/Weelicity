@@ -80,3 +80,6 @@ export async function loginUserWithRedirect() {
     alert("Failed to redirect to login. Please try again.");
   }
 }
+
+// Pour rendre accessible loginUserWithRedirect globalement
+window.loginUserWithRedirect = loginUserWithRedirect;
