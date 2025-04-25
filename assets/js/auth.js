@@ -5,12 +5,15 @@ let auth0Client = null;
 const auth0Config = {
   domain: 'dev-1of24kih8koq07ek.us.auth0.com',
   clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
-  cacheLocation: 'localstorage'
+  cacheLocation: 'localstorage',
+  useRefreshTokens: true,
+  useRefreshTokensFallback: true
 };
 
-// Initialisation Auth0 (appelé manuellement ailleurs si besoin)
+// Initialisation Auth0
 window.initAuth = async function () {
   try {
+    await window.loadAuth0Script(); // Ensure the script is loaded
     if (!window.createAuth0Client) {
       throw new Error("Auth0 SPA JS library not chargée");
     }
@@ -18,6 +21,7 @@ window.initAuth = async function () {
     console.log("✅ Auth0 client initialisé");
   } catch (err) {
     console.error("❌ Erreur init Auth0:", err);
+    throw err; // Propagate the error to handle it in the calling function
   }
 };
 
@@ -25,6 +29,9 @@ window.loginUserWithRedirect = async function () {
   try {
     if (!auth0Client) {
       await window.initAuth();
+    }
+    if (!auth0Client) {
+      throw new Error("Auth0 client failed to initialize");
     }
     sessionStorage.setItem("postLoginRedirect", window.location.pathname);
     await auth0Client.loginWithRedirect({
@@ -34,7 +41,7 @@ window.loginUserWithRedirect = async function () {
     });
   } catch (err) {
     console.error("❌ Erreur redirection login :", err);
-    alert("Erreur de connexion. Veuillez réessayer.");
+    alert("Erreur de connexion. Veuillez réessayer plus tard ou vérifier votre connexion réseau.");
   }
 };
 
@@ -42,6 +49,9 @@ window.handleRedirectCallback = async function () {
   try {
     if (!auth0Client) {
       await window.initAuth();
+    }
+    if (!auth0Client) {
+      throw new Error("Auth0 client failed to initialize");
     }
     await auth0Client.handleRedirectCallback();
     const user = await auth0Client.getUser();
