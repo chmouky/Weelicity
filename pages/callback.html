@@ -3,12 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <title>Connexion...</title>
-</head>
-<body>
-  <p>Connexion en cours...</p>
-  <script type="module">
-    import { handleRedirectCallback } from "/assets/js/auth.js";
-    handleRedirectCallback();
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBlumdq4UcY7TX7wSSy_jAE0w516rVaoxc",
+      authDomain: "weelicity-14e53.firebaseapp.com",
+      projectId: "weelicity-14e53",
+      storageBucket: "weelicity-14e53.firebasestorage.app",
+      messagingSenderId: "761856423358",
+      appId: "1:761856423358:web:e72734a041d3e350a0b5ef",
+      measurementId: "G-79ETF5RKEH"
+    };
+    firebase.initializeApp(firebaseConfig);
   </script>
+  <script src="assets/js/auth.js"></script>
+</head>
+<body onload="handleRedirectCallback()">
+  <p>Connexion en cours...</p>
 </body>
 </html>

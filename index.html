@@ -22,7 +22,13 @@
   <button id="loginBtn" style="position: absolute; top: 10px; right: 10px; z-index: 9999;">
     Login
   </button>
-
+  <button id="logoutBtn" style="position: absolute; top: 50px; right: 10px; z-index: 9999; display: none;">
+    Logout
+  </button>
+  
+  <!-- Pour afficher le nom -->
+  <div id="userInfo" style="position: absolute; top: 90px; right: 10px; z-index: 9999; font-size: 14px;"></div>
+  
   <!-- Overlay de chargement -->
   <div id="loadingOverlay" style="
     position: fixed;
@@ -56,56 +62,7 @@
 
   <!-- Scripts -->
   <script>
-    window.loadAuth0Script = function(attempt = 1, maxAttempts = 3) {
-      return new Promise((resolve, reject) => {
-        const script = document.createElement("script");
-        script.src = "https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js";
-        script.async = true;
-        script.onload = () => {
-          if (window.createAuth0Client) {
-            console.log("✅ Auth0 SPA JS library loaded from CDN");
-            resolve();
-          } else {
-            console.error("❌ Auth0 SPA JS library loaded from CDN but createAuth0Client is undefined");
-            reject(new Error("Auth0 SPA JS library loaded but createAuth0Client is undefined"));
-          }
-        };
-        script.onerror = () => {
-          if (attempt < maxAttempts) {
-            console.warn(`⚠️ Failed to load Auth0 SPA JS from CDN (attempt ${attempt}/${maxAttempts}), retrying...`);
-            setTimeout(() => {
-              window.loadAuth0Script(attempt + 1, maxAttempts).then(resolve).catch(reject);
-            }, 1000);
-          } else {
-            console.warn("⚠️ Failed to load Auth0 SPA JS from CDN after all attempts, trying local fallback");
-            const fallbackScript = document.createElement("script");
-            fallbackScript.src = "/assets/js/auth0-spa-js.min.js";
-            fallbackScript.async = true;
-            fallbackScript.onload = () => {
-              if (window.createAuth0Client) {
-                console.log("✅ Auth0 SPA JS library loaded from local fallback");
-                resolve();
-              } else {
-                console.error("❌ Auth0 SPA JS library loaded from local fallback but createAuth0Client is undefined");
-                reject(new Error("Auth0 SPA JS library loaded from local fallback but createAuth0Client is undefined"));
-              }
-            };
-            fallbackScript.onerror = () => {
-              console.error("❌ Failed to load Auth0 SPA JS from both CDN and local fallback");
-              reject(new Error("Auth0 SPA JS library not loaded"));
-            };
-            document.head.appendChild(fallbackScript);
-          }
-        };
-        document.head.appendChild(script);
-
-        setTimeout(() => {
-          if (!window.createAuth0Client) {
-            reject(new Error("Auth0 SPA JS library failed to load within 5 seconds"));
-          }
-        }, 5000);
-      });
-    };
+    
   </script>
   <script src="assets/js/auth.js" defer></script>
   <script src="assets/js/utils.js" defer></script>
@@ -123,5 +80,24 @@
         });
     } 
   </script>
+
+  <!-- Firebase SDK v10 compat -->
+<script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBlumdq4UcY7TX7wSSy_jAE0w516rVaoxc",
+    authDomain: "weelicity-14e53.firebaseapp.com",
+    projectId: "weelicity-14e53",
+    storageBucket: "weelicity-14e53.firebasestorage.app",
+    messagingSenderId: "761856423358",
+    appId: "1:761856423358:web:e72734a041d3e350a0b5ef",
+    measurementId: "G-79ETF5RKEH"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+</script>
+
 </body>
 </html>

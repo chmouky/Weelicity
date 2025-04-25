@@ -1,67 +1,69 @@
-// 📁 assets/js/auth.js
+// assets/js/auth.js
 
-let auth0Client = null;
+const auth = firebase.auth();
 
-const auth0Config = {
-  domain: 'dev-1of24kih8koq07ek.us.auth0.com',
-  clientId: 'OQ4bNWZZVJqn91glXQrYxWH6p50rB5NL',
-  cacheLocation: 'localstorage',
-  useRefreshTokens: true,
-  useRefreshTokensFallback: true
-};
-
-// Initialisation Auth0
-window.initAuth = async function () {
-  try {
-    await window.loadAuth0Script(); // Ensure the script is loaded
-    if (!window.createAuth0Client) {
-      throw new Error("Auth0 SPA JS library not chargée");
-    }
-    auth0Client = await window.createAuth0Client(auth0Config);
-    console.log("✅ Auth0 client initialisé");
-  } catch (err) {
-    console.error("❌ Erreur init Auth0:", err);
-    throw err; // Propagate the error to handle it in the calling function
-  }
-};
-
+// Crée une fonction de connexion
 window.loginUserWithRedirect = async function () {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  sessionStorage.setItem("postLoginRedirect", window.location.pathname);
   try {
-    if (!auth0Client) {
-      await window.initAuth();
-    }
-    if (!auth0Client) {
-      throw new Error("Auth0 client failed to initialize");
-    }
-    sessionStorage.setItem("postLoginRedirect", window.location.pathname);
-    await auth0Client.loginWithRedirect({
-      authorizationParams: {
-        redirect_uri: window.location.origin + "/callback.html"
-      }
-    });
-  } catch (err) {
-    console.error("❌ Erreur redirection login :", err);
-    alert("Erreur de connexion. Veuillez réessayer plus tard ou vérifier votre connexion réseau.");
+    await auth.signInWithRedirect(provider);
+  } catch (error) {
+    console.error("Erreur login redirect :", error);
+    alert("Erreur de connexion : " + error.message);
   }
 };
 
+// Fonction de traitement du retour
 window.handleRedirectCallback = async function () {
   try {
-    if (!auth0Client) {
-      await window.initAuth();
+    const result = await auth.getRedirectResult();
+    if (result.user) {
+      const user = result.user;
+      sessionStorage.setItem("user", JSON.stringify({
+        email: user.email,
+        name: user.displayName,
+        picture: user.photoURL
+      }));
+      console.log("✅ Connecté :", user);
+
+      const redirectTo = sessionStorage.getItem("postLoginRedirect") || "/pages/menu.html";
+      sessionStorage.removeItem("postLoginRedirect");
+      window.location.href = redirectTo;
     }
-    if (!auth0Client) {
-      throw new Error("Auth0 client failed to initialize");
-    }
-    await auth0Client.handleRedirectCallback();
-    const user = await auth0Client.getUser();
-    sessionStorage.setItem("user", JSON.stringify(user));
-    console.log("✅ Utilisateur connecté :", user);
-    const destination = sessionStorage.getItem("postLoginRedirect") || "/pages/menu.html";
-    sessionStorage.removeItem("postLoginRedirect");
-    window.location.href = destination;
-  } catch (e) {
-    console.error("❌ Erreur callback :", e);
+  } catch (error) {
+    console.error("❌ Erreur callback :", error);
     document.body.innerHTML = "<p>Erreur de connexion. Veuillez réessayer.</p>";
   }
 };
+
+// Déconnexion
+window.logoutUser = function () {
+  firebase.auth().signOut().then(() => {
+    sessionStorage.removeItem("user");
+    location.reload(); // recharge la page pour réinitialiser l’état
+  }).catch((error) => {
+    console.error("Erreur de déconnexion :", error);
+    alert("Erreur pendant la déconnexion.");
+  });
+};
+
+// Gérer l’affichage après chargement de la page
+firebase.auth().onAuthStateChanged((user) => {
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const userInfo = document.getElementById("userInfo");
+
+  if (user) {
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "block";
+    userInfo.textContent = `Connecté en tant que : ${user.displayName || user.email}`;
+  } else {
+    loginBtn.style.display = "block";
+    logoutBtn.style.display = "none";
+    userInfo.textContent = "";
+  }
+});
+
+// Bouton logout
+document.getElementById("logoutBtn")?.addEventListener("click", window.logoutUser);
