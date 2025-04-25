@@ -14,6 +14,9 @@ export async function initAuth() {
   if (!auth0InitPromise) {
     auth0InitPromise = (async () => {
       try {
+        // Wait for Auth0 script to load
+        await window.loadAuth0Script();
+
         if (!window.createAuth0Client) {
           throw new Error("Auth0 SPA JS library not loaded");
         }

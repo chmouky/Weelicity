@@ -28,8 +28,13 @@ import { initAuth, getAuth0Client } from './auth.js';
     await loadAirtableDataIfNeeded();
   } catch (err) {
     console.error("❌ Error in index.js:", err);
-    alert("Failed to initialize authentication. Please try again.");
-    // Remove loading overlay in case of error
+    alert("Failed to initialize authentication. Please try again later or contact support.");
+    // Display an error message on the page
+    const errorMessage = document.createElement("p");
+    errorMessage.textContent = "Erreur de connexion. Veuillez réessayer plus tard ou contacter le support.";
+    errorMessage.style.textAlign = "center";
+    errorMessage.style.color = "red";
+    document.getElementById('siteWrapper')?.appendChild(errorMessage);
     document.getElementById('loadingOverlay')?.remove();
     document.body.style.pointerEvents = 'auto';
   }

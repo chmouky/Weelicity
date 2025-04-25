@@ -6,16 +6,6 @@ let filteredPlacesWithCoords = []; // Stockage global des lieux filtrés
 // Variable globale pour stocker le marqueur de prévisualisation
 let previewMarker = null;
 
-import { initAuth, getAuth0Client } from './auth.js';
-
-const auth0InitPromise = initAuth(); // lancement de l'initialisation dès le début
-
-
-import { loginUserWithRedirect } from "./auth.js";
-
-// Appelle cette fonction quand tu veux lancer la connexion :
-loginUserWithRedirect();
-
 
 
 // Nous conservons également la liste des lieux affichés dans le carousel pour y accéder depuis l’observateur
