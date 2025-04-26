@@ -319,8 +319,9 @@ function onGoogleMapsLoaded() {
           const rawName = place.fields.URLPhoto2 || "default.jpg";
           const encodedName = encodeURIComponent(rawName.trim());
           const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
-  
+        
           return {
+            id: place.id, // 🔥 On récupère l'ID Airtable ici
             name: place.fields.Nom || "Nom inconnu",
             descriptionC: place.fields.DescriptionC || "Description courte indisponible",
             description: place.fields.Description || "Description indisponible",
@@ -331,6 +332,7 @@ function onGoogleMapsLoaded() {
             ticket: Array.isArray(place.fields.Ticket) ? place.fields.Ticket : []
           };
         });
+        
   
         displayCarousel(carouselData);
       } else {
