@@ -4,12 +4,38 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Choose your spots</title>
-  <link rel="stylesheet" href="../assets/css/spots.css"> -->
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="../assets/css/spots.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap">
   <link rel="stylesheet" href="../assets/css/footer.css">
   <link rel="stylesheet" href="../assets/css/styles.css">
 
+  <!-- Firebase SDK (important de les charger ici) -->
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+
+  <!-- Initialisation Firebase -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBlumdq4UcY7TX7wSSy_jAE0w516rVaoxc",
+      authDomain: "weelicity-14e53.firebaseapp.com",
+      projectId: "weelicity-14e53",
+      storageBucket: "weelicity-14e53.appspot.com",
+      messagingSenderId: "761856423358",
+      appId: "1:761856423358:web:e72734a041d3e350a0b5ef",
+      measurementId: "G-79ETF5RKEH"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+  <!-- Auth / Utils -->
+  <script src="/assets/js/auth.js" defer></script>
+  <script src="/assets/js/utils.js" defer></script>
+  <script src="/assets/js/spots.js" defer></script> <!-- ✅ Pas de type=module ici -->
+
 </head>
+
 <body>
   <div id="search-container">
     <span id="search-icon">🔍</span>
@@ -19,6 +45,7 @@
   <button id="back-button">←</button>
   <h1 class="shrikhand-text">Choose your spots</h1>
   <div id="map"></div>
+
   <!-- Bouton de sauvegarde -->
   <button id="save-tour-btn">
     <img src="/assets/img/pages/save.png" alt="Save" />
@@ -31,13 +58,11 @@
   <div id="save-popup" style="display:none;">
     <span id="save-popup-close" style="cursor:pointer;">×</span>
     <h2>My Saved Tours</h2>
-    <button id="new-tour-btn" style="margin-bottom: 10px;">New</button> <!-- ✅ Ajout du bouton NEW -->
-    <ul id="saved-tours-list">
-      <!-- Les 10 noms seront injectés ici en JS -->
-    </ul>
+    <button id="new-tour-btn" style="margin-bottom: 10px;">New</button>
+    <ul id="saved-tours-list"></ul>
   </div>
-  
-  <!-- Popups et overlay -->
+
+  <!-- Popups -->
   <div id="popup" class="popup">
     <div class="popup-content">
       <span class="popup-close">×</span>
@@ -48,7 +73,7 @@
       <div id="popup-link"></div>
     </div>
   </div>
-  
+
   <div id="popup-itinerary" class="popup">
     <div id="popup-itinerary-header">
       <h2 id="popup-itinerary-title"></h2>
@@ -57,9 +82,10 @@
     <div id="popup-itinerary-description"></div>
     <div id="popup-itinerary-link"></div>
   </div>
+
   <div id="overlay" class="overlay"></div>
 
-  <!-- Pied de page dynamique -->
+  <!-- Footer dynamique -->
   <div id="footer-placeholder"></div>
   <script>
     fetch("/assets/components/footer.html")
@@ -70,10 +96,5 @@
         footer.classList.add("loaded");
       });
   </script>
-
-  <script src="../assets/js/utils.js"></script>
-  <!-- <script src="../assets/js/spots.js"></script> -->
-  <script type="module" src="/assets/js/spots.js"></script>
-
 </body>
 </html>
