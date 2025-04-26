@@ -1,16 +1,45 @@
-(async () => {
-  const shouldLoad = confirm("Le chargement des données va commencer. Cliquez sur OK pour continuer.");
-  if (shouldLoad) {
+firebase.auth().onAuthStateChanged(async (user) => {
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const userInfo = document.getElementById("userInfo");
+
+  if (user) {
+    console.log("🔐 Utilisateur connecté :", user.email);
+
+    // UI : afficher utilisateur
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "block";
+    userInfo.textContent = `Connecté en tant que : ${user.displayName || user.email}`;
+
+    // Chargement Airtable
     await loadAirtableDataIfNeeded();
   } else {
-    console.log("⏹️ Chargement annulé par l'utilisateur.");
+    console.log("🔓 Utilisateur non connecté.");
+    loginBtn.style.display = "block";
+    logoutBtn.style.display = "none";
+    userInfo.textContent = "";
+
+    // Débloque l'écran (mais sans charger les données)
     document.getElementById('loadingOverlay')?.remove();
     document.body.style.pointerEvents = 'auto';
   }
-})();
+});
+
+// Gestion du bouton Login
+document.getElementById("loginBtn").addEventListener("click", () => {
+  loginUserWithRedirect(); // défini dans auth.js
+});
+
+// Gestion du bouton Logout
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  logoutUser(); // défini dans auth.js
+});
 
 async function loadAirtableDataIfNeeded() {
-  const keys = ['tags', 'places', 'tour', 'themetour', 'quartiers', 'gastro', 'brands', 'around', 'street', 'parametre', 'ToursPerso'];
+  const keys = [
+    'tags', 'places', 'tour', 'themetour', 'quartiers',
+    'gastro', 'brands', 'around', 'street', 'parametre', 'ToursPerso'
+  ];
 
   const isReady = keys.every(key => {
     const item = sessionStorage.getItem(key);
@@ -48,8 +77,3 @@ async function loadAirtableDataIfNeeded() {
   document.getElementById('loadingOverlay')?.remove();
   document.body.style.pointerEvents = 'auto';
 }
-
-// Gestion du bouton Login
-document.getElementById("loginBtn").addEventListener("click", () => {
-  loginUserWithRedirect(); // défini dans auth.js
-});
