@@ -56,10 +56,12 @@ document.getElementById("authForm")?.addEventListener("submit", async (e) => {
     console.log("✅ Connecté :", user.email);
 
     sessionStorage.setItem("user", JSON.stringify({
+      sub: user.uid, // <-- ici le vrai ID Firebase
       email: user.email,
       name: user.displayName,
       picture: user.photoURL
     }));
+    
 
     await loadFooterIfNeeded(); // Charger le footer immédiatement
     console.log("Connexion réussie.");
