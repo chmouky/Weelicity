@@ -44,6 +44,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
+
+  // 🔥 Correction : On écoute Firebase pour récupérer l'utilisateur
+  if (typeof auth !== "undefined" && auth.onAuthStateChanged) {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log("✅ Utilisateur déjà connecté (Firebase) :", user.email);
+
+        if (!sessionStorage.getItem("user")) {
+          console.log("ℹ️ Remplissage automatique du sessionStorage...");
+          sessionStorage.setItem("user", JSON.stringify({
+            sub: user.uid,
+            email: user.email,
+            name: user.displayName,
+            picture: user.photoURL
+          }));
+        }
+      } else {
+        console.log("🔓 Aucun utilisateur connecté.");
+      }
+    });
+  } else {
+    console.warn("⚠️ Firebase auth non initialisé sur cette page.");
+  }
+
+  // 🔥 Ensuite seulement → tu fais ta logique existante
   const userDataRaw = sessionStorage.getItem("user");
 
   if (userDataRaw) {
@@ -58,7 +83,51 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     console.log("🔓 Aucun utilisateur connecté.");
   }
+
 });
+document.addEventListener("DOMContentLoaded", () => {
+
+  // 🔥 Correction : On écoute Firebase pour récupérer l'utilisateur
+  if (typeof auth !== "undefined" && auth.onAuthStateChanged) {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log("✅ Utilisateur déjà connecté (Firebase) :", user.email);
+
+        if (!sessionStorage.getItem("user")) {
+          console.log("ℹ️ Remplissage automatique du sessionStorage...");
+          sessionStorage.setItem("user", JSON.stringify({
+            sub: user.uid,
+            email: user.email,
+            name: user.displayName,
+            picture: user.photoURL
+          }));
+        }
+      } else {
+        console.log("🔓 Aucun utilisateur connecté.");
+      }
+    });
+  } else {
+    console.warn("⚠️ Firebase auth non initialisé sur cette page.");
+  }
+
+  // 🔥 Ensuite seulement → tu fais ta logique existante
+  const userDataRaw = sessionStorage.getItem("user");
+
+  if (userDataRaw) {
+    try {
+      const user = JSON.parse(userDataRaw);
+      console.log("✅ Utilisateur connecté :");
+      console.log("🆔 ID :", user.sub);
+      console.log("📧 Email :", user.email);
+    } catch (e) {
+      console.warn("⚠️ Impossible de parser les données utilisateur :", e);
+    }
+  } else {
+    console.log("🔓 Aucun utilisateur connecté.");
+  }
+
+});
+
 
 
 
