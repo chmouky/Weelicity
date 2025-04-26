@@ -927,35 +927,21 @@ function createCircularMarkerIcon(imageUrl, size = 50) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  
-  // Cacher le popup par défaut
-  savePopup.style.display = "none";
-
-  // ✅ Gestion du clic sur le bouton save
   const saveBtn = document.getElementById("save-tour-btn");
   const savePopup = document.getElementById("save-popup");
   const closePopup = document.getElementById("save-popup-close");
   const savedToursList = document.getElementById("saved-tours-list");
   const newTourBtn = document.getElementById("new-tour-btn");
-  
+
   if (saveBtn && savePopup && closePopup && savedToursList && newTourBtn) {
-    
-    savePopup.style.display = "none"; // cacher le popup au départ
-  
-    // ✅ Quand on clique sur Save
+    savePopup.style.display = "none"; // cacher popup au début
+
     saveBtn.addEventListener("click", () => {
+      // Remplit la liste avec 10 noms
       savedToursList.innerHTML = "";
       const tours = [
-        "Tour 1",
-        "Tour 2",
-        "Tour 3",
-        "Tour 4",
-        "Tour 5",
-        "Tour 6",
-        "Tour 7",
-        "Tour 8",
-        "Tour 9",
-        "Tour 10"
+        "Tour 1", "Tour 2", "Tour 3", "Tour 4", "Tour 5",
+        "Tour 6", "Tour 7", "Tour 8", "Tour 9", "Tour 10"
       ];
       tours.forEach(name => {
         const li = document.createElement("li");
@@ -964,13 +950,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       savePopup.style.display = "block";
     });
-  
-    // Fermer le popup
+
     closePopup.addEventListener("click", () => {
       savePopup.style.display = "none";
     });
-  
-    // ✅ Gérer NEW
+
     newTourBtn.addEventListener("click", () => {
       const tourName = prompt("Enter a new tour name:");
       if (tourName) {
@@ -979,9 +963,11 @@ document.addEventListener("DOMContentLoaded", () => {
         savedToursList.appendChild(li);
       }
     });
-  
+  } else {
+    console.error("❌ Certains éléments du DOM sont introuvables (saveBtn, savePopup...). Vérifie ton HTML !");
   }
-  
+});
+
   
   
   
