@@ -94,3 +94,27 @@ document.getElementById("emailLoginForm")?.addEventListener("submit", async (e) 
     }
   }
 });
+
+// Bouton pour créer un nouvel utilisateur
+document.getElementById("signupBtn")?.addEventListener("click", async () => {
+  const email = document.getElementById("emailInput").value;
+  const password = document.getElementById("passwordInput").value;
+
+  if (!email || !password) {
+    alert("Merci de saisir un email et un mot de passe.");
+    return;
+  }
+
+  try {
+    const newUser = await firebase.auth().createUserWithEmailAndPassword(email, password);
+    sessionStorage.setItem("user", JSON.stringify({
+      email: newUser.user.email,
+      name: newUser.user.displayName,
+      picture: newUser.user.photoURL
+    }));
+    console.log("✅ Compte créé :", newUser.user.email);
+    location.href = "/pages/menu.html"; // redirige après création
+  } catch (error) {
+    alert("Erreur lors de la création de compte : " + error.message);
+  }
+});

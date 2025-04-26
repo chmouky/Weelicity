@@ -81,11 +81,13 @@
     } 
   </script>
 
-<form id="emailLoginForm" style="display:none; position: absolute; top: 140px; right: 10px; z-index: 9999;">
-  <input type="email" id="emailInput" placeholder="Email" required>
-  <input type="password" id="passwordInput" placeholder="Mot de passe" required>
-  <button type="submit">Connexion Email</button>
+<form id="authForm" style="position: absolute; top: 140px; right: 10px; z-index: 9999; font-size: 14px;">
+  <input type="email" id="emailInput" placeholder="Email" required><br>
+  <input type="password" id="passwordInput" placeholder="Mot de passe" required><br>
+  <button type="submit" id="loginBtnSubmit">Se connecter</button>
+  <button type="button" id="signupBtn">Créer un compte</button>
 </form>
+
 
 
   <!-- Firebase SDK v10 compat -->
