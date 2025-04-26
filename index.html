@@ -18,15 +18,64 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter&family=Shrikhand">
 </head>
 <body>
-  <!-- Bouton Login -->
 
-  <button id="logoutBtn" style="position: absolute; top: 50px; right: 10px; z-index: 9999; display: none;">
-    Logout
-  </button>
-  
-  <!-- Pour afficher le nom -->
-  <div id="userInfo" style="position: absolute; top: 90px; right: 10px; z-index: 9999; font-size: 14px;"></div>
-  
+  <!-- Formulaire d'authentification en haut à gauche -->
+  <div id="authContainer" style="
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 9999;
+    font-family: Arial, sans-serif;
+    background: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 250px;
+  ">
+    <form id="authForm" style="display: flex; flex-direction: column; gap: 8px;">
+      <input type="email" id="emailInput" placeholder="Email" required style="padding: 6px; font-size: 13px; width: 100%;">
+      <input type="password" id="passwordInput" placeholder="Password" required style="padding: 6px; font-size: 13px; width: 100%;">
+      <button type="submit" id="loginBtnSubmit" style="padding: 6px 10px; font-size: 13px;">Sign in</button>
+      <button type="button" id="signupBtn" style="font-size: 12px; padding: 5px 8px;">Sign up</button>
+      <a href="#" id="resetPasswordLink" style="font-size: 11px;">Forgot password?</a>
+    </form>
+  </div>
+
+  <!-- Bouton Logout -->
+  <button id="logoutBtn" style="
+    display: none;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 9999;
+    padding: 10px 20px;
+    border-radius: 8px;
+    background: #f44336;
+    color: white;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+  ">Sign out</button>
+
+  <!-- Info utilisateur connecté -->
+  <div id="userInfo" style="position: absolute; top: 70px; left: 20px; z-index: 9999; font-size: 14px;"></div>
+
+  <!-- Toast notification -->
+  <div id="toast" style="
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 99999;
+  "></div>
+
   <!-- Overlay de chargement -->
   <div id="loadingOverlay" style="
     position: fixed;
@@ -43,9 +92,9 @@
     <img src="assets/img/index/pin_wait.gif" alt="Chargement..." style="width: 120px; height: auto;">
   </div>
 
+  <!-- Contenu principal -->
   <div id="siteWrapper">
     <header><h1></h1></header>
-
     <main id="page" class="container">
       <section>
         <div class="content">
@@ -59,108 +108,43 @@
   <div id="footer-placeholder"></div>
 
   <!-- Scripts -->
-  <script>
-    
-  </script>
   <script src="assets/js/auth.js" defer></script>
   <script src="assets/js/utils.js" defer></script>
   <script type="module" src="assets/js/index.js"></script>
 
   <script>
-    <script>
-  const isIndexPage = location.pathname.endsWith("index.html") || location.pathname === "/";
-  
-  firebase.auth().onAuthStateChanged((user) => {
-    if (!isIndexPage || user) {
-      fetch("/assets/components/footer.html")
-        .then(response => response.text())
-        .then(data => {
-          const footer = document.getElementById("footer-placeholder");
-          footer.innerHTML = data;
-          footer.classList.add("loaded");
-        });
-    }
-  });
+    const isIndexPage = location.pathname.endsWith("index.html") || location.pathname === "/";
 
-</script>
-
+    firebase.auth().onAuthStateChanged((user) => {
+      if (!isIndexPage || user) {
+        fetch("/assets/components/footer.html")
+          .then(response => response.text())
+          .then(data => {
+            const footer = document.getElementById("footer-placeholder");
+            footer.innerHTML = data;
+            footer.classList.add("loaded");
+          });
+      }
+    });
   </script>
 
-  <!-- Formulaire d'authentification -->
-  <!-- Formulaire d'authentification avec design amélioré -->
-  <div id="authContainer" style="...">
-  <form id="authForm" style="display: flex; flex-direction: column; gap: 10px;">
-    <input type="email" id="emailInput" placeholder="Email" required style="padding: 8px; font-size: 14px; width: 100%;">
-    <input type="password" id="passwordInput" placeholder="Password" required style="padding: 8px; font-size: 14px; width: 100%;">
-    <button type="submit" id="loginBtnSubmit" style="padding: 8px 14px; font-size: 14px;">Sign in</button>
-    <button type="button" id="signupBtn" style="font-size: 13px; padding: 6px 12px;">Sign up</button>
-    <a href="#" id="resetPasswordLink" style="font-size: 12px;">Forgot password?</a>
-  </form>
-</div>
-
-
-<!-- Bouton Logout -->
-<button id="logoutBtn" style="
-  display: none;
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 9999;
-  padding: 10px 20px;
-  border-radius: 8px;
-  background: #f44336;
-  color: white;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-">Déconnexion</button>
-
-<!-- Info utilisateur connecté -->
-<div id="userInfo" style="position: absolute; top: 70px; left: 20px; z-index: 9999; font-size: 14px;"></div>
-
-<!-- Toast notification -->
-<div id="toast" style="
-  display: none;
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #4caf50;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  z-index: 99999;
-"></div>
-
-
-<!-- Bouton Logout (caché au départ) -->
-<button id="logoutBtn" style="display: none; position: absolute; top: 10px; right: 10px; z-index: 9999;">
-  Logout
-</button>
-
-<!-- Nom de l'utilisateur connecté -->
-<div id="userInfo" style="position: absolute; top: 60px; right: 10px; z-index: 9999; font-size: 14px;"></div>
-
-
   <!-- Firebase SDK v10 compat -->
-<script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBlumdq4UcY7TX7wSSy_jAE0w516rVaoxc",
-    authDomain: "weelicity-14e53.firebaseapp.com",
-    projectId: "weelicity-14e53",
-    storageBucket: "weelicity-14e53.firebasestorage.app",
-    messagingSenderId: "761856423358",
-    appId: "1:761856423358:web:e72734a041d3e350a0b5ef",
-    measurementId: "G-79ETF5RKEH"
-  };
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBlumdq4UcY7TX7wSSy_jAE0w516rVaoxc",
+      authDomain: "weelicity-14e53.firebaseapp.com",
+      projectId: "weelicity-14e53",
+      storageBucket: "weelicity-14e53.firebasestorage.app",
+      messagingSenderId: "761856423358",
+      appId: "1:761856423358:web:e72734a041d3e350a0b5ef",
+      measurementId: "G-79ETF5RKEH"
+    };
 
-  firebase.initializeApp(firebaseConfig);
-</script>
+    firebase.initializeApp(firebaseConfig);
+  </script>
 
 </body>
 </html>

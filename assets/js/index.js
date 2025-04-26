@@ -12,21 +12,29 @@ auth.onAuthStateChanged(async (user) => {
     userInfo.textContent = `Signed in as: ${user.displayName || user.email}`;
 
     await loadFooterIfNeeded();
-    await loadAirtableDataIfNeeded(); // (si tu veux aussi charger Airtable ici)
+
+    // 👉👉 Avant de charger Airtable, on RE-AFFICHE le GIF !
+    if (loadingOverlay) {
+      loadingOverlay.style.display = "flex"; // Montre le loader
+      document.body.style.pointerEvents = "none"; // Bloque l'interaction
+    }
+
+    await loadAirtableDataIfNeeded(); // ⬅️ Ici, le GIF tournera pendant chargement Airtable
   } else {
     console.log("🔓 Utilisateur non connecté.");
 
     authContainer.style.display = "block";
     logoutBtn.style.display = "none";
     userInfo.textContent = "";
-  }
 
-  // 👉 Maintenant on peut cacher l'overlay
-  if (loadingOverlay) {
-    loadingOverlay.style.display = 'none';
+    // Ici on enlève le loadingOverlay car pas besoin si pas connecté
+    if (loadingOverlay) {
+      loadingOverlay.style.display = 'none';
+    }
+    document.body.style.pointerEvents = 'auto';
   }
-  document.body.style.pointerEvents = 'auto';
 });
+
 
 
 document.getElementById("loginBtn").addEventListener("click", () => {
@@ -52,7 +60,7 @@ async function loadAirtableDataIfNeeded() {
 
   if (isReady) {
     console.log("✅ Données déjà présentes.");
-    document.getElementById('loadingOverlay')?.remove();
+    document.getElementById('loadingOverlay')?.style.display = 'none';
     document.body.style.pointerEvents = 'auto';
     return;
   }
@@ -78,6 +86,8 @@ async function loadAirtableDataIfNeeded() {
     console.error("❌ Erreur de chargement Airtable :", err);
   }
 
-  document.getElementById('loadingOverlay')?.remove();
+  document.getElementById('loadingOverlay')?.style.display = 'none'; // 👉 Masquer une fois Airtable chargé
   document.body.style.pointerEvents = 'auto';
 }
+
+
