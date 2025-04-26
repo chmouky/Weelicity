@@ -1049,9 +1049,25 @@ document.addEventListener("DOMContentLoaded", () => {
       const userId = user.sub;
 
       // 🔥 Récupérer tous les lieux sélectionnés
-      const selectedPlaces = markers
-      .filter(marker => marker.fullRecord)
-      .map(marker => marker.fullRecord.id); // ⚡ ici on utilise le Nom du lieu (peut-être ID si tu en as un)
+      const activeMarkers = markers.filter(marker => {
+        const record = marker.fullRecord;
+        if (!record) return false;
+        
+        // Vérifie si le lieu est actif dans le carousel
+        const carouselItem = Array.from(document.querySelectorAll(".carousel-item")).find(item => {
+          const index = item.getAttribute("data-index");
+          const rec = window.carouselRecords[index];
+          return rec && rec.name === record.name;
+        });
+      
+        if (!carouselItem) return false;
+      
+        const toggleBtn = carouselItem.querySelector(".toggle-btn");
+        return toggleBtn && toggleBtn.classList.contains("active");
+      });
+      
+      const selectedPlaces = activeMarkers.map(marker => marker.fullRecord.id);
+      
 
       if (selectedPlaces.length === 0) {
         alert("Select at least one spot to create a tour.");
