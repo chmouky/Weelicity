@@ -1049,7 +1049,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // 🔥 Récupérer tous les lieux sélectionnés
       const selectedPlaces = markers
       .filter(marker => marker.fullRecord)
-      .map(marker => marker.fullRecord.name); // ⚡ ici on utilise le Nom du lieu (peut-être ID si tu en as un)
+      .map(marker => marker.fullRecord.id); // ⚡ ici on utilise le Nom du lieu (peut-être ID si tu en as un)
 
       if (selectedPlaces.length === 0) {
         alert("Select at least one spot to create a tour.");

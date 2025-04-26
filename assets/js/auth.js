@@ -145,18 +145,18 @@ auth.onAuthStateChanged(async (user) => {
     sessionStorage.setItem("uid", user.uid); // ✅ Stocke l'UID dans sessionStorage
 
     // Masquer formulaire login/signup
-    authContainer.style.display = "none";
+    if (authContainer) authContainer.style.display = "none";
     // Afficher bouton logout
     logoutBtn.style.display = "block";
     // Afficher info utilisateur
-    userInfo.textContent = `Connecté en tant que : ${user.displayName || user.email}`;
+    if (userInfo) userInfo.textContent = `Signed in as: ${user.displayName || user.email}`;
 
     await loadFooterIfNeeded(); // Charger le footer
   } else {
     console.log("🔓 Utilisateur non connecté.");
 
     // Afficher formulaire login/signup
-    authContainer.style.display = "block";
+    if (logoutBtn) logoutBtn.style.display = "block";
     // Masquer bouton logout
     logoutBtn.style.display = "none";
     // Cacher info utilisateur
