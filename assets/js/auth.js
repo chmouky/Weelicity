@@ -2,6 +2,25 @@
 
 const auth = firebase.auth();
 
+// Fonction pour afficher un toast
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.style.display = "block";
+  setTimeout(() => {
+    toast.style.display = "none";
+  }, 3000);
+}
+
+// Fonction pour faire "trembler" un élément
+function shakeElement(element) {
+  element.style.animation = "shake 0.3s";
+  setTimeout(() => {
+    element.style.animation = "";
+  }, 300);
+}
+
+
 // Fonction pour charger dynamiquement le footer
 async function loadFooterIfNeeded() {
   const footerPlaceholder = document.getElementById("footer-placeholder");
@@ -44,10 +63,14 @@ document.getElementById("authForm")?.addEventListener("submit", async (e) => {
 
     await loadFooterIfNeeded(); // Charger le footer immédiatement
     console.log("Connexion réussie.");
+    showToast("✅ Connexion réussie !");
+
   } catch (error) {
     console.error("❌ Erreur connexion :", error);
+    shakeElement(document.getElementById("authContainer")); // Trembler si erreur
     alert("Erreur de connexion : " + error.message);
   }
+  
 });
 
 // Création de compte (bouton Créer un compte)
@@ -72,6 +95,7 @@ document.getElementById("signupBtn")?.addEventListener("click", async () => {
 
     await loadFooterIfNeeded(); // Charger aussi le footer après création
     console.log("Création de compte réussie.");
+    showToast("✅ Compte créé avec succès !");
   } catch (error) {
     console.error("❌ Erreur création compte :", error);
     alert("Erreur création compte : " + error.message);
