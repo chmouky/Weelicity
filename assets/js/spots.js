@@ -974,6 +974,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+
   
 
   // ❌ Fermer le popup
