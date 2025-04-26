@@ -2,64 +2,26 @@
 
 const auth = firebase.auth();
 
-
-// Fonction de traitement du retour après redirection Google
-window.handleRedirectCallback = async function () {
-  try {
-    const result = await auth.getRedirectResult();
-    if (result.user) {
-      const user = result.user;
-      sessionStorage.setItem("user", JSON.stringify({
-        email: user.email,
-        name: user.displayName,
-        picture: user.photoURL
-      }));
-      console.log("✅ Connecté via Google :", user);
-
-      const redirectTo = sessionStorage.getItem("postLoginRedirect") || "/pages/menu.html";
-      sessionStorage.removeItem("postLoginRedirect");
-      window.location.href = redirectTo;
+// Fonction pour charger dynamiquement le footer
+async function loadFooterIfNeeded() {
+  const footerPlaceholder = document.getElementById("footer-placeholder");
+  if (footerPlaceholder && footerPlaceholder.innerHTML.trim() === "") {
+    try {
+      const response = await fetch("assets/components/footer.html");
+      if (!response.ok) throw new Error("Erreur chargement footer");
+      const data = await response.text();
+      footerPlaceholder.innerHTML = data;
+      footerPlaceholder.classList.add("loaded");
+      console.log("✅ Footer chargé dynamiquement");
+    } catch (error) {
+      console.error("❌ Erreur footer :", error);
     }
-  } catch (error) {
-    console.error("❌ Erreur callback Google :", error);
-    document.body.innerHTML = "<p>Erreur de connexion Google. Veuillez réessayer.</p>";
   }
-};
+}
 
-// Déconnexion
-window.logoutUser = function () {
-  firebase.auth().signOut().then(() => {
-    sessionStorage.removeItem("user");
-    location.reload(); // Recharge la page pour réinitialiser l’état
-  }).catch((error) => {
-    console.error("Erreur de déconnexion :", error);
-    alert("Erreur pendant la déconnexion.");
-  });
-};
-
-// Observer l’état de connexion pour afficher/masker les boutons
-firebase.auth().onAuthStateChanged((user) => {
-  const loginBtn = document.getElementById("loginBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
-  const userInfo = document.getElementById("userInfo");
-
-  if (user) {
-    loginBtn.style.display = "none";
-    logoutBtn.style.display = "block";
-    userInfo.textContent = `Connecté en tant que : ${user.displayName || user.email}`;
-  } else {
-    loginBtn.style.display = "block";
-    logoutBtn.style.display = "none";
-    userInfo.textContent = "";
-  }
-});
-
-// Bouton Logout
-document.getElementById("logoutBtn")?.addEventListener("click", window.logoutUser);
-
-// Gestion du login email/password
+// Connexion avec email/password (bouton Se connecter)
 document.getElementById("authForm")?.addEventListener("submit", async (e) => {
-  e.preventDefault(); // Empêche le rechargement de la page
+  e.preventDefault();
 
   const email = document.getElementById("emailInput").value.trim();
   const password = document.getElementById("passwordInput").value.trim();
@@ -70,59 +32,56 @@ document.getElementById("authForm")?.addEventListener("submit", async (e) => {
   }
 
   try {
-    const result = await firebase.auth().signInWithEmailAndPassword(email, password);
+    const result = await auth.signInWithEmailAndPassword(email, password);
     const user = result.user;
     console.log("✅ Connecté :", user.email);
 
-    // Stockage session pour ton app
     sessionStorage.setItem("user", JSON.stringify({
       email: user.email,
       name: user.displayName,
       picture: user.photoURL
     }));
 
-    // ✅ Rediriger ou continuer sur la page actuelle
-    console.log("Redirection en cours...");
-    // Si tu veux rester sur index.html :
-    window.location.reload(); 
-    // Si tu veux aller vers /pages/menu.html :
-    // window.location.href = "/pages/menu.html";
-
+    await loadFooterIfNeeded(); // Charger le footer immédiatement
+    console.log("Connexion réussie.");
   } catch (error) {
     console.error("❌ Erreur connexion :", error);
     alert("Erreur de connexion : " + error.message);
   }
 });
 
-
-// Bouton pour créer un nouvel utilisateur
+// Création de compte (bouton Créer un compte)
 document.getElementById("signupBtn")?.addEventListener("click", async () => {
-  const email = document.getElementById("emailInput").value;
-  const password = document.getElementById("passwordInput").value;
+  const email = document.getElementById("emailInput").value.trim();
+  const password = document.getElementById("passwordInput").value.trim();
 
   if (!email || !password) {
-    alert("Merci de saisir un email et un mot de passe.");
+    alert("Merci de remplir un email et un mot de passe.");
     return;
   }
 
   try {
-    const newUser = await firebase.auth().createUserWithEmailAndPassword(email, password);
+    const newUser = await auth.createUserWithEmailAndPassword(email, password);
+    console.log("✅ Compte créé :", newUser.user.email);
+
     sessionStorage.setItem("user", JSON.stringify({
       email: newUser.user.email,
       name: newUser.user.displayName,
       picture: newUser.user.photoURL
     }));
-    console.log("✅ Compte créé :", newUser.user.email);
-    location.href = "/pages/menu.html"; // redirige après création
+
+    await loadFooterIfNeeded(); // Charger aussi le footer après création
+    console.log("Création de compte réussie.");
   } catch (error) {
-    alert("Erreur lors de la création de compte : " + error.message);
+    console.error("❌ Erreur création compte :", error);
+    alert("Erreur création compte : " + error.message);
   }
 });
 
 // Lien "Mot de passe oublié"
 document.getElementById("resetPasswordLink")?.addEventListener("click", async (e) => {
   e.preventDefault();
-  const email = document.getElementById("emailInput").value;
+  const email = document.getElementById("emailInput").value.trim();
 
   if (!email) {
     alert("Merci de saisir votre adresse e-mail pour recevoir un lien de réinitialisation.");
@@ -130,10 +89,46 @@ document.getElementById("resetPasswordLink")?.addEventListener("click", async (e
   }
 
   try {
-    await firebase.auth().sendPasswordResetEmail(email);
+    await auth.sendPasswordResetEmail(email);
     alert("📧 Un email de réinitialisation vous a été envoyé !");
   } catch (error) {
     console.error("Erreur de réinitialisation :", error);
     alert("Erreur : " + error.message);
   }
 });
+
+// Déconnexion
+window.logoutUser = function () {
+  auth.signOut().then(() => {
+    sessionStorage.removeItem("user");
+    location.reload(); // On recharge la page pour remettre l’état initial
+  }).catch((error) => {
+    console.error("Erreur de déconnexion :", error);
+    alert("Erreur pendant la déconnexion.");
+  });
+};
+
+// Observer l’état utilisateur au chargement de la page
+auth.onAuthStateChanged(async (user) => {
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const userInfo = document.getElementById("userInfo");
+
+  if (user) {
+    console.log("🔐 Utilisateur connecté :", user.email);
+
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "block";
+    userInfo.textContent = `Connecté en tant que : ${user.displayName || user.email}`;
+
+    await loadFooterIfNeeded(); // Charger le footer automatiquement
+  } else {
+    console.log("🔓 Utilisateur non connecté.");
+    loginBtn.style.display = "block";
+    logoutBtn.style.display = "none";
+    userInfo.textContent = "";
+  }
+});
+
+// Bouton logout
+document.getElementById("logoutBtn")?.addEventListener("click", window.logoutUser);
