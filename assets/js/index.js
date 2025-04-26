@@ -25,9 +25,8 @@ firebase.auth().onAuthStateChanged(async (user) => {
   }
 });
 
-// Gestion du bouton Login
-document.getElementById("loginBtn").addEventListener("click", () => {
-  loginUserWithRedirect(); // défini dans auth.js
+document.getElementById("showEmailLogin")?.addEventListener("click", () => {
+  document.getElementById("emailLoginForm").style.display = "block";
 });
 
 // Gestion du bouton Logout

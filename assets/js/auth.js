@@ -2,17 +2,6 @@
 
 const auth = firebase.auth();
 
-// Connexion avec Google
-window.loginUserWithRedirect = async function () {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  sessionStorage.setItem("postLoginRedirect", window.location.pathname);
-  try {
-    await auth.signInWithRedirect(provider);
-  } catch (error) {
-    console.error("Erreur login redirect :", error);
-    alert("Erreur de connexion Google : " + error.message);
-  }
-};
 
 // Fonction de traitement du retour après redirection Google
 window.handleRedirectCallback = async function () {
