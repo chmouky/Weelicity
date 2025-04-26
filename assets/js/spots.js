@@ -265,9 +265,9 @@ function onGoogleMapsLoaded() {
 document.addEventListener("DOMContentLoaded", () => {
   try {
     loadGoogleMaps(
-      "https://google-map-back.samueltoledano94.workers.dev/load-google-maps",
+      "https://google-map-back.samueltoledano94.workers.dev/load-google-maps?callback=onGoogleMapsLoaded",
       "onGoogleMapsLoaded"
-    );
+    );    
   } catch (error) {
     console.error("Erreur lors du chargement de Google Maps API :", error);
   }
