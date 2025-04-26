@@ -927,19 +927,19 @@ function createCircularMarkerIcon(imageUrl, size = 50) {
 }
 
 // Gestion du bouton SAVE + Popup
-document.addEventListener("DOMContentLoaded", () => {
-  const saveBtn = document.getElementById("save-tour-btn");
-  const savePopup = document.getElementById("save-popup");
-  const closePopup = document.getElementById("save-popup-close");
-  const savedToursList = document.getElementById("saved-tours-list");
-  const newTourBtn = document.getElementById("new-tour-btn");
+// Gestion du bouton SAVE + popup
+const saveBtn = document.getElementById("save-tour-btn");
+const savePopup = document.getElementById("save-popup");
+const closePopup = document.getElementById("save-popup-close");
+const savedToursList = document.getElementById("saved-tours-list");
+const newTourBtn = document.getElementById("new-tour-btn");
 
-  // Cacher le popup par défaut
-  savePopup.style.display = "none";
+if (saveBtn && savePopup && closePopup && savedToursList && newTourBtn) {
 
   // Quand on clique sur Save
   saveBtn.addEventListener("click", () => {
-    savedToursList.innerHTML = ""; // Vider la liste
+    // Remplir la liste avec 10 éléments
+    savedToursList.innerHTML = "";
     const tours = [
       "Tour 1",
       "Tour 2",
@@ -957,10 +957,10 @@ document.addEventListener("DOMContentLoaded", () => {
       li.textContent = name;
       savedToursList.appendChild(li);
     });
-    savePopup.style.display = "block"; // Montrer le popup
+    savePopup.style.display = "block"; // afficher le popup
   });
 
-  // Quand on clique sur fermer (croix)
+  // Quand on clique sur la croix
   closePopup.addEventListener("click", () => {
     savePopup.style.display = "none";
   });
@@ -975,14 +975,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Si on revient sur la page avec #openSavePopup
-  if (window.location.hash === "#openSavePopup") {
-    window.location.hash = "";
-    setTimeout(() => {
-      savePopup.style.display = "block";
-    }, 300);
-  }
-});
+}
+
 
   
 
