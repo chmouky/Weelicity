@@ -48,16 +48,21 @@
    * Fonction pour initialiser la carte Google Maps
    ********************************************************/
   function initMap(containerId, lat = 48.9990, lng = 2.3022, zoom = 11.5) {
+    if (!containerId) {
+      console.error("❌ initMap: Aucun ID de container fourni !");
+      return null;
+    }
+  
     let map;
     try {
       const mapElement = document.getElementById(containerId);
       if (!mapElement) {
         console.error(`Element avec l'ID '${containerId}' introuvable.`);
-        return;
+        return null;
       }
-
+  
       const location = { lat: parseFloat(lat), lng: parseFloat(lng) };
-
+  
       map = new google.maps.Map(mapElement, {
         center: location,
         zoom: zoom,
@@ -67,14 +72,15 @@
         streetViewControl: false,
         zoomControl: true,
       });
-
-      console.log("Carte Google Maps initialisée avec succès.");
+  
+      console.log("✅ Carte Google Maps initialisée avec succès.");
     } catch (error) {
       console.error("Erreur lors de l'initialisation de la carte:", error);
     }
-
+  
     return map;
   }
+  
 
   /********************************************************
    * Fonction pour charger dynamiquement le script Google Maps
