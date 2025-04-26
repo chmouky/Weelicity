@@ -2,7 +2,7 @@
 
 const auth = firebase.auth();
 
-// Crée une fonction de connexion
+// Connexion avec Google
 window.loginUserWithRedirect = async function () {
   const provider = new firebase.auth.GoogleAuthProvider();
   sessionStorage.setItem("postLoginRedirect", window.location.pathname);
@@ -10,11 +10,11 @@ window.loginUserWithRedirect = async function () {
     await auth.signInWithRedirect(provider);
   } catch (error) {
     console.error("Erreur login redirect :", error);
-    alert("Erreur de connexion : " + error.message);
+    alert("Erreur de connexion Google : " + error.message);
   }
 };
 
-// Fonction de traitement du retour
+// Fonction de traitement du retour après redirection Google
 window.handleRedirectCallback = async function () {
   try {
     const result = await auth.getRedirectResult();
@@ -25,15 +25,15 @@ window.handleRedirectCallback = async function () {
         name: user.displayName,
         picture: user.photoURL
       }));
-      console.log("✅ Connecté :", user);
+      console.log("✅ Connecté via Google :", user);
 
       const redirectTo = sessionStorage.getItem("postLoginRedirect") || "/pages/menu.html";
       sessionStorage.removeItem("postLoginRedirect");
       window.location.href = redirectTo;
     }
   } catch (error) {
-    console.error("❌ Erreur callback :", error);
-    document.body.innerHTML = "<p>Erreur de connexion. Veuillez réessayer.</p>";
+    console.error("❌ Erreur callback Google :", error);
+    document.body.innerHTML = "<p>Erreur de connexion Google. Veuillez réessayer.</p>";
   }
 };
 
@@ -41,14 +41,14 @@ window.handleRedirectCallback = async function () {
 window.logoutUser = function () {
   firebase.auth().signOut().then(() => {
     sessionStorage.removeItem("user");
-    location.reload(); // recharge la page pour réinitialiser l’état
+    location.reload(); // Recharge la page pour réinitialiser l’état
   }).catch((error) => {
     console.error("Erreur de déconnexion :", error);
     alert("Erreur pendant la déconnexion.");
   });
 };
 
-// Gérer l’affichage après chargement de la page
+// Observer l’état de connexion pour afficher/masker les boutons
 firebase.auth().onAuthStateChanged((user) => {
   const loginBtn = document.getElementById("loginBtn");
   const logoutBtn = document.getElementById("logoutBtn");
@@ -65,5 +65,43 @@ firebase.auth().onAuthStateChanged((user) => {
   }
 });
 
-// Bouton logout
+// Bouton Logout
 document.getElementById("logoutBtn")?.addEventListener("click", window.logoutUser);
+
+// Connexion Email/Password
+document.getElementById("emailLoginForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("emailInput").value;
+  const password = document.getElementById("passwordInput").value;
+
+  try {
+    const result = await auth.signInWithEmailAndPassword(email, password);
+    const user = result.user;
+    sessionStorage.setItem("user", JSON.stringify({
+      email: user.email,
+      name: user.displayName,
+      picture: user.photoURL
+    }));
+    console.log("✅ Connecté avec email :", user.email);
+    location.href = "/pages/menu.html";
+  } catch (error) {
+    if (error.code === "auth/user-not-found") {
+      if (confirm("Aucun compte trouvé. Voulez-vous créer un compte avec cet email ?")) {
+        try {
+          const newUser = await auth.createUserWithEmailAndPassword(email, password);
+          sessionStorage.setItem("user", JSON.stringify({
+            email: newUser.user.email,
+            name: newUser.user.displayName,
+            picture: newUser.user.photoURL
+          }));
+          console.log("✅ Compte créé :", newUser.user.email);
+          location.href = "/pages/menu.html";
+        } catch (signupError) {
+          alert("Erreur création compte : " + signupError.message);
+        }
+      }
+    } else {
+      alert("Erreur de connexion : " + error.message);
+    }
+  }
+});
