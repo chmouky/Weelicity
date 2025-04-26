@@ -140,6 +140,7 @@ auth.onAuthStateChanged(async (user) => {
 
   if (user) {
     console.log("🔐 Utilisateur connecté :", user.email);
+    sessionStorage.setItem("uid", user.uid); // ✅ Stocke l'UID dans sessionStorage
 
     // Masquer formulaire login/signup
     authContainer.style.display = "none";

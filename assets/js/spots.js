@@ -930,40 +930,50 @@ document.addEventListener("DOMContentLoaded", () => {
   const saveBtn = document.getElementById("save-tour-btn");
   const savePopup = document.getElementById("save-popup");
   const closePopup = document.getElementById("save-popup-close");
+  const savedToursList = document.getElementById("saved-tours-list");
 
   // Cacher le popup par défaut
   savePopup.style.display = "none";
 
-  // ✅ Gestion du clic sur le bouton save
-  saveBtn.addEventListener("click", async () => {
-    await auth0InitPromise;
-  
-    const auth0Client = getAuth0Client();
-    if (!auth0Client) {
-      alert("Auth0 n'est pas prêt. Réessaie dans quelques secondes.");
-      return;
-    }
+  // Quand on clique sur "Save", on affiche le popup et les 10 tours
+  saveBtn.addEventListener("click", () => {
+    savedToursList.innerHTML = ""; // Vide avant d'ajouter
+    const tours = [
+      "Tour 1",
+      "Tour 2",
+      "Tour 3",
+      "Tour 4",
+      "Tour 5",
+      "Tour 6",
+      "Tour 7",
+      "Tour 8",
+      "Tour 9",
+      "Tour 10"
+    ];
+    tours.forEach(name => {
+      const li = document.createElement("li");
+      li.textContent = name;
+      savedToursList.appendChild(li);
+    });
 
-    const userRaw = sessionStorage.getItem("user");
-  
-    if (userRaw) {
-      savePopup.style.display = "block";
-    } else {
-      try {
-        await auth0Client.loginWithRedirect({
-          redirect_uri: window.location.origin + '/callback.html',
-          appState: { targetUrl: window.location.pathname + '#openSavePopup' }
-        });        
-        savePopup.style.display = "block";
-      } catch (e) {
-        console.error("❌ Erreur Auth0 loginWithPopup :", e);
-        alert("Connexion annulée ou échouée.");
-      }
-    }
+    savePopup.style.display = "block"; // Ouvre le popup
   });
-  
-  
-  
+
+  // Fermer le popup
+  closePopup.addEventListener("click", () => {
+    savePopup.style.display = "none";
+  });
+
+  // Si on revient avec #openSavePopup → ouvrir automatiquement
+  if (window.location.hash === "#openSavePopup") {
+    window.location.hash = ""; // Nettoyage URL
+    setTimeout(() => {
+      savePopup.style.display = "block";
+    }, 300); // Petit délai
+  }
+});
+
+
   
 
   // ❌ Fermer le popup

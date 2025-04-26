@@ -28,14 +28,15 @@
   <button id="go-button">Go!</button>
 
   <!-- Popup de sauvegarde -->
-  <div id="save-popup">
-    <span id="save-popup-close">×</span>
+  <div id="save-popup" style="display:none;">
+    <span id="save-popup-close" style="cursor:pointer;">×</span>
     <h2>My Saved Tours</h2>
+    <button id="new-tour-btn" style="margin-bottom: 10px;">New</button> <!-- ✅ Ajout du bouton NEW -->
     <ul id="saved-tours-list">
-      <li>Aucune sauvegarde pour l'instant</li>
+      <!-- Les 10 noms seront injectés ici en JS -->
     </ul>
   </div>
-
+  
   <!-- Popups et overlay -->
   <div id="popup" class="popup">
     <div class="popup-content">
