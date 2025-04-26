@@ -1,29 +1,33 @@
-firebase.auth().onAuthStateChanged(async (user) => {
-  const loginBtn = document.getElementById("loginBtn");
+auth.onAuthStateChanged(async (user) => {
+  const authContainer = document.getElementById("authContainer");
   const logoutBtn = document.getElementById("logoutBtn");
   const userInfo = document.getElementById("userInfo");
+  const loadingOverlay = document.getElementById("loadingOverlay");
 
   if (user) {
     console.log("🔐 Utilisateur connecté :", user.email);
 
-    // UI : afficher utilisateur
-    loginBtn.style.display = "none";
+    authContainer.style.display = "none";
     logoutBtn.style.display = "block";
-    userInfo.textContent = `Connecté en tant que : ${user.displayName || user.email}`;
+    userInfo.textContent = `Signed in as: ${user.displayName || user.email}`;
 
-    // Chargement Airtable
-    await loadAirtableDataIfNeeded();
+    await loadFooterIfNeeded();
+    await loadAirtableDataIfNeeded(); // (si tu veux aussi charger Airtable ici)
   } else {
     console.log("🔓 Utilisateur non connecté.");
-    loginBtn.style.display = "block";
+
+    authContainer.style.display = "block";
     logoutBtn.style.display = "none";
     userInfo.textContent = "";
-
-    // Débloque l'écran (mais sans charger les données)
-    document.getElementById('loadingOverlay')?.remove();
-    document.body.style.pointerEvents = 'auto';
   }
+
+  // 👉 Maintenant on peut cacher l'overlay
+  if (loadingOverlay) {
+    loadingOverlay.style.display = 'none';
+  }
+  document.body.style.pointerEvents = 'auto';
 });
+
 
 document.getElementById("loginBtn").addEventListener("click", () => {
   document.getElementById("emailLoginForm").style.display = "block";

@@ -88,28 +88,16 @@
 
   <!-- Formulaire d'authentification -->
   <!-- Formulaire d'authentification avec design amélioré -->
-<div id="authContainer" style="
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 9999;
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  width: 280px;
-  font-family: Arial, sans-serif;
-">
+  <div id="authContainer" style="...">
   <form id="authForm" style="display: flex; flex-direction: column; gap: 10px;">
-    <div style="display: flex; gap: 8px;">
-      <input type="email" id="emailInput" placeholder="Email" required style="flex: 1; padding: 8px; font-size: 14px;">
-      <button type="submit" id="loginBtnSubmit" style="padding: 8px 14px; font-size: 14px;">Login</button>
-    </div>
-    <input type="password" id="passwordInput" placeholder="Mot de passe" required style="padding: 8px; font-size: 14px;">
-    <button type="button" id="signupBtn" style="font-size: 13px; padding: 6px 12px;">Créer un compte</button>
-    <a href="#" id="resetPasswordLink" style="font-size: 12px; text-align: left;">Mot de passe oublié ?</a>
+    <input type="email" id="emailInput" placeholder="Email" required style="padding: 8px; font-size: 14px; width: 100%;">
+    <input type="password" id="passwordInput" placeholder="Password" required style="padding: 8px; font-size: 14px; width: 100%;">
+    <button type="submit" id="loginBtnSubmit" style="padding: 8px 14px; font-size: 14px;">Sign in</button>
+    <button type="button" id="signupBtn" style="font-size: 13px; padding: 6px 12px;">Sign up</button>
+    <a href="#" id="resetPasswordLink" style="font-size: 12px;">Forgot password?</a>
   </form>
 </div>
+
 
 <!-- Bouton Logout -->
 <button id="logoutBtn" style="
