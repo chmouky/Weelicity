@@ -1,16 +1,18 @@
-document.addEventListener("DOMContentLoaded", () => {
-  firebase.auth().onAuthStateChanged(user => {
-    if (user && !sessionStorage.getItem("user")) {
-      sessionStorage.setItem("user", JSON.stringify({
-        sub: user.uid,
-        email: user.email,
-        name: user.displayName,
-        picture: user.photoURL
-      }));
-    }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user && !sessionStorage.getItem("user")) {
+        console.log("📦 Session restaurée depuis Firebase.");
+        sessionStorage.setItem("user", JSON.stringify({
+          sub: user.uid,
+          email: user.email,
+          name: user.displayName,
+          picture: user.photoURL
+        }));
+      }
+    });
   });
-
-
+  
 
 let map;
 let userMarker = null;
@@ -1093,4 +1095,3 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-});
