@@ -1073,7 +1073,19 @@ document.addEventListener("DOMContentLoaded", () => {
           body: JSON.stringify(payload)
         });
 
-        const result = await response.json();
+        const text = await response.text();
+
+        if (!response.ok) {
+          console.error("Erreur Worker :", text);
+          alert("❌ Failed to create tour: " + text);
+        } else {
+          const result = JSON.parse(text); // cette fois c'est du JSON correct
+          alert("✅ Tour created successfully!");
+          const li = document.createElement("li");
+          li.textContent = tourName;
+          savedToursList.appendChild(li);
+        }
+
 
         if (response.ok) {
           alert("✅ Tour created successfully!");
