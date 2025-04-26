@@ -47,7 +47,7 @@
   /********************************************************
    * Fonction pour initialiser la carte Google Maps
    ********************************************************/
-  function initMap(containerId, lat = 48.9990, lng = 2.3022, zoom = 11.5) {
+  function initGoogleMap(containerId, lat = 48.9990, lng = 2.3022, zoom = 11.5) {
     if (!containerId) {
       console.error("❌ initMap: Aucun ID de container fourni !");
       return null;
@@ -159,7 +159,7 @@
     return url;
   }
 
-  window.initMap = initMap;
+  window.initGoogleMap = initGoogleMap;
   window.loadGoogleMaps = loadGoogleMaps;
   window.solveTSPNearestNeighbor = solveTSPNearestNeighbor;
   window.buildOptimizedGoogleMapsUrl = buildOptimizedGoogleMapsUrl;
