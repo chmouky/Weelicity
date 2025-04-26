@@ -926,18 +926,20 @@ function createCircularMarkerIcon(imageUrl, size = 50) {
   });
 }
 
+// Gestion du bouton SAVE + Popup
 document.addEventListener("DOMContentLoaded", () => {
   const saveBtn = document.getElementById("save-tour-btn");
   const savePopup = document.getElementById("save-popup");
   const closePopup = document.getElementById("save-popup-close");
   const savedToursList = document.getElementById("saved-tours-list");
+  const newTourBtn = document.getElementById("new-tour-btn");
 
   // Cacher le popup par défaut
   savePopup.style.display = "none";
 
-  // Quand on clique sur "Save", on affiche le popup et les 10 tours
+  // Quand on clique sur Save
   saveBtn.addEventListener("click", () => {
-    savedToursList.innerHTML = ""; // Vide avant d'ajouter
+    savedToursList.innerHTML = ""; // Vider la liste
     const tours = [
       "Tour 1",
       "Tour 2",
@@ -955,25 +957,32 @@ document.addEventListener("DOMContentLoaded", () => {
       li.textContent = name;
       savedToursList.appendChild(li);
     });
-
-    savePopup.style.display = "block"; // Ouvre le popup
+    savePopup.style.display = "block"; // Montrer le popup
   });
 
-  // Fermer le popup
+  // Quand on clique sur fermer (croix)
   closePopup.addEventListener("click", () => {
     savePopup.style.display = "none";
   });
 
-  // Si on revient avec #openSavePopup → ouvrir automatiquement
+  // Quand on clique sur NEW
+  newTourBtn.addEventListener("click", () => {
+    const tourName = prompt("Enter a new tour name:");
+    if (tourName) {
+      const li = document.createElement("li");
+      li.textContent = tourName;
+      savedToursList.appendChild(li);
+    }
+  });
+
+  // Si on revient sur la page avec #openSavePopup
   if (window.location.hash === "#openSavePopup") {
-    window.location.hash = ""; // Nettoyage URL
+    window.location.hash = "";
     setTimeout(() => {
       savePopup.style.display = "block";
-    }, 300); // Petit délai
+    }, 300);
   }
 });
-
-
 
   
 
