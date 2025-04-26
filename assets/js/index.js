@@ -25,9 +25,10 @@ firebase.auth().onAuthStateChanged(async (user) => {
   }
 });
 
-document.getElementById("showEmailLogin")?.addEventListener("click", () => {
+document.getElementById("loginBtn").addEventListener("click", () => {
   document.getElementById("emailLoginForm").style.display = "block";
 });
+
 
 // Gestion du bouton Logout
 document.getElementById("logoutBtn").addEventListener("click", () => {
