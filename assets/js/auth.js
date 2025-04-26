@@ -57,43 +57,43 @@ firebase.auth().onAuthStateChanged((user) => {
 // Bouton Logout
 document.getElementById("logoutBtn")?.addEventListener("click", window.logoutUser);
 
-// Connexion Email/Password
-document.getElementById("emailLoginForm")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const email = document.getElementById("emailInput").value;
-  const password = document.getElementById("passwordInput").value;
+// Gestion du login email/password
+document.getElementById("authForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault(); // Empêche le rechargement de la page
+
+  const email = document.getElementById("emailInput").value.trim();
+  const password = document.getElementById("passwordInput").value.trim();
+
+  if (!email || !password) {
+    alert("Merci de remplir les deux champs.");
+    return;
+  }
 
   try {
-    const result = await auth.signInWithEmailAndPassword(email, password);
+    const result = await firebase.auth().signInWithEmailAndPassword(email, password);
     const user = result.user;
+    console.log("✅ Connecté :", user.email);
+
+    // Stockage session pour ton app
     sessionStorage.setItem("user", JSON.stringify({
       email: user.email,
       name: user.displayName,
       picture: user.photoURL
     }));
-    console.log("✅ Connecté avec email :", user.email);
-    location.href = "/pages/menu.html";
+
+    // ✅ Rediriger ou continuer sur la page actuelle
+    console.log("Redirection en cours...");
+    // Si tu veux rester sur index.html :
+    window.location.reload(); 
+    // Si tu veux aller vers /pages/menu.html :
+    // window.location.href = "/pages/menu.html";
+
   } catch (error) {
-    if (error.code === "auth/user-not-found") {
-      if (confirm("Aucun compte trouvé. Voulez-vous créer un compte avec cet email ?")) {
-        try {
-          const newUser = await auth.createUserWithEmailAndPassword(email, password);
-          sessionStorage.setItem("user", JSON.stringify({
-            email: newUser.user.email,
-            name: newUser.user.displayName,
-            picture: newUser.user.photoURL
-          }));
-          console.log("✅ Compte créé :", newUser.user.email);
-          location.href = "/pages/menu.html";
-        } catch (signupError) {
-          alert("Erreur création compte : " + signupError.message);
-        }
-      }
-    } else {
-      alert("Erreur de connexion : " + error.message);
-    }
+    console.error("❌ Erreur connexion :", error);
+    alert("Erreur de connexion : " + error.message);
   }
 });
+
 
 // Bouton pour créer un nouvel utilisateur
 document.getElementById("signupBtn")?.addEventListener("click", async () => {
@@ -116,5 +116,24 @@ document.getElementById("signupBtn")?.addEventListener("click", async () => {
     location.href = "/pages/menu.html"; // redirige après création
   } catch (error) {
     alert("Erreur lors de la création de compte : " + error.message);
+  }
+});
+
+// Lien "Mot de passe oublié"
+document.getElementById("resetPasswordLink")?.addEventListener("click", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("emailInput").value;
+
+  if (!email) {
+    alert("Merci de saisir votre adresse e-mail pour recevoir un lien de réinitialisation.");
+    return;
+  }
+
+  try {
+    await firebase.auth().sendPasswordResetEmail(email);
+    alert("📧 Un email de réinitialisation vous a été envoyé !");
+  } catch (error) {
+    console.error("Erreur de réinitialisation :", error);
+    alert("Erreur : " + error.message);
   }
 });
