@@ -1,4 +1,4 @@
-auth.onAuthStateChanged(async (user) => {
+firebase.auth().onAuthStateChanged(async (user) => {
   const authContainer = document.getElementById("authContainer");
   const logoutBtn = document.getElementById("logoutBtn");
   const userInfo = document.getElementById("userInfo");
@@ -13,13 +13,13 @@ auth.onAuthStateChanged(async (user) => {
 
     await loadFooterIfNeeded();
 
-    // 👉👉 Avant de charger Airtable, on RE-AFFICHE le GIF !
+    // 👉 On laisse le loader actif
     if (loadingOverlay) {
-      loadingOverlay.style.display = "flex"; // Montre le loader
-      document.body.style.pointerEvents = "none"; // Bloque l'interaction
+      loadingOverlay.style.display = "flex"; 
+      document.body.style.pointerEvents = "none";
     }
 
-    await loadAirtableDataIfNeeded(); // ⬅️ Ici, le GIF tournera pendant chargement Airtable
+    await loadAirtableDataIfNeeded(); // ⬅️ GIF actif pendant chargement Airtable
   } else {
     console.log("🔓 Utilisateur non connecté.");
 
@@ -27,27 +27,33 @@ auth.onAuthStateChanged(async (user) => {
     logoutBtn.style.display = "none";
     userInfo.textContent = "";
 
-    // Ici on enlève le loadingOverlay car pas besoin si pas connecté
+    // 👉 Pas connecté : cacher tout de suite l'overlay
     if (loadingOverlay) {
-      loadingOverlay.style.display = 'none';
+      fadeOutOverlay(); // Utilise l'animation propre
     }
-    document.body.style.pointerEvents = 'auto';
+    document.body.style.pointerEvents = "auto";
   }
 });
 
-
-
-document.getElementById("loginBtn").addEventListener("click", () => {
-  document.getElementById("emailLoginForm").style.display = "block";
-});
-
-
 // Gestion du bouton Logout
-document.getElementById("logoutBtn").addEventListener("click", () => {
+document.getElementById("logoutBtn")?.addEventListener("click", () => {
   logoutUser(); // défini dans auth.js
 });
 
+// Fonction pour fade-out propre de l'overlay
+function fadeOutOverlay() {
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  if (loadingOverlay) {
+    loadingOverlay.style.transition = "opacity 0.8s ease"; // Animation douce
+    loadingOverlay.style.opacity = "0";
+    setTimeout(() => {
+      loadingOverlay.style.display = "none";
+    }, 800); // 800ms après (le temps de l'animation)
+  }
+}
+
 async function loadAirtableDataIfNeeded() {
+  const loadingOverlay = document.getElementById('loadingOverlay');
   const keys = [
     'tags', 'places', 'tour', 'themetour', 'quartiers',
     'gastro', 'brands', 'around', 'street', 'parametre', 'ToursPerso'
@@ -60,8 +66,8 @@ async function loadAirtableDataIfNeeded() {
 
   if (isReady) {
     console.log("✅ Données déjà présentes.");
-    document.getElementById('loadingOverlay')?.style.display = 'none';
-    document.body.style.pointerEvents = 'auto';
+    fadeOutOverlay(); // ✅ Animation au lieu de brut display:none
+    document.body.style.pointerEvents = "auto";
     return;
   }
 
@@ -86,8 +92,6 @@ async function loadAirtableDataIfNeeded() {
     console.error("❌ Erreur de chargement Airtable :", err);
   }
 
-  document.getElementById('loadingOverlay')?.style.display = 'none'; // 👉 Masquer une fois Airtable chargé
-  document.body.style.pointerEvents = 'auto';
+  fadeOutOverlay(); // ✅ Animation de disparition douce à la fin
+  document.body.style.pointerEvents = "auto";
 }
-
-

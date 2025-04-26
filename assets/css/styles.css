@@ -7,7 +7,6 @@ body.menu-page {
   font-family: var(--main-font) !important;
 }
 
-<style>
 @keyframes shake {
   0% { transform: translateX(0); }
   25% { transform: translateX(-5px); }
@@ -15,4 +14,7 @@ body.menu-page {
   75% { transform: translateX(-5px); }
   100% { transform: translateX(0); }
 }
-</style>
+
+#loadingOverlay {
+  transition: opacity 0.8s ease;
+}
