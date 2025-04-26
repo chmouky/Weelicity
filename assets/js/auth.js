@@ -108,27 +108,35 @@ window.logoutUser = function () {
   });
 };
 
-// Observer l’état utilisateur au chargement de la page
+// Observer l’état utilisateur
 auth.onAuthStateChanged(async (user) => {
-  const loginBtn = document.getElementById("loginBtn");
+  const authContainer = document.getElementById("authContainer");
   const logoutBtn = document.getElementById("logoutBtn");
   const userInfo = document.getElementById("userInfo");
 
   if (user) {
     console.log("🔐 Utilisateur connecté :", user.email);
 
-    loginBtn.style.display = "none";
+    // Masquer formulaire login/signup
+    authContainer.style.display = "none";
+    // Afficher bouton logout
     logoutBtn.style.display = "block";
+    // Afficher info utilisateur
     userInfo.textContent = `Connecté en tant que : ${user.displayName || user.email}`;
 
-    await loadFooterIfNeeded(); // Charger le footer automatiquement
+    await loadFooterIfNeeded(); // Charger le footer
   } else {
     console.log("🔓 Utilisateur non connecté.");
-    loginBtn.style.display = "block";
+
+    // Afficher formulaire login/signup
+    authContainer.style.display = "block";
+    // Masquer bouton logout
     logoutBtn.style.display = "none";
+    // Cacher info utilisateur
     userInfo.textContent = "";
   }
 });
+
 
 // Bouton logout
 document.getElementById("logoutBtn")?.addEventListener("click", window.logoutUser);
