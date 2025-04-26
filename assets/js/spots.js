@@ -927,10 +927,7 @@ function createCircularMarkerIcon(imageUrl, size = 50) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const saveBtn = document.getElementById("save-tour-btn");
-  const savePopup = document.getElementById("save-popup");
-  const closePopup = document.getElementById("save-popup-close");
-
+  
   // Cacher le popup par défaut
   savePopup.style.display = "none";
 
