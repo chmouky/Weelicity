@@ -21,25 +21,26 @@
 
   <!-- Formulaire d'authentification en haut à gauche -->
   <div id="authContainer" style="
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    z-index: 9999;
-    font-family: Arial, sans-serif;
-    background: white;
-    padding: 5px 10px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    width: 300px;
-  ">
-    <form id="authForm" style="display: flex; flex-direction: column; gap: 8px;">
-      <input type="email" id="emailInput" placeholder="Email" required style="padding: 8px; font-size: 16px; width: 100%;">
-      <input type="password" id="passwordInput" placeholder="Password" required style="padding: 8px; font-size: 16px; width: 100%;">
-      <button type="submit" id="loginBtnSubmit" style="padding: 8px 14px; font-size: 16px;">Sign in</button>
-      <button type="button" id="signupBtn" style="font-size: 14px; padding: 6px 12px;">Sign up</button>
-      <a href="#" id="resetPasswordLink" style="font-size: 11px;">Forgot password?</a>
-    </form>
-  </div>
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 9999;
+  font-family: Arial, sans-serif;
+  background: white;
+  padding: 20px; /* ✅ Plus d'air dans le cadre */
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 300px;
+">
+  <form id="authForm" style="display: flex; flex-direction: column; gap: 5px;">
+    <input type="email" id="emailInput" placeholder="Email" required style="padding: 6px; font-size: 16px; width: 100%; box-sizing: border-box;">
+    <input type="password" id="passwordInput" placeholder="Password" required style="padding: 6px; font-size: 16px; width: 100%; box-sizing: border-box;">
+    <button type="submit" id="loginBtnSubmit" style="padding: 6px 10px; font-size: 16px;">Sign in</button>
+    <button type="button" id="signupBtn" style="font-size: 14px; padding: 5px 8px;">Sign up</button>
+    <a href="#" id="resetPasswordLink" style="font-size: 12px; text-align: center;">Forgot password?</a>
+  </form>
+</div>
+
 
   <!-- Bouton Logout -->
   <button id="logoutBtn" style="
