@@ -1023,10 +1023,38 @@ document.addEventListener("DOMContentLoaded", () => {
   if (saveBtn && savePopup && closePopup && savedToursList && newTourBtn) {
     savePopup.style.display = "none"; // cacher popup au début
 
-    saveBtn.addEventListener("click", () => {
+    saveBtn.addEventListener("click", async () => {
       savedToursList.innerHTML = ""; // vide la liste
       savePopup.style.display = "block";
+    
+      // 🔥 Ajoute ce bloc pour charger les tours depuis Airtable
+      const userRaw = sessionStorage.getItem("user");
+      if (!userRaw) {
+        console.warn("Utilisateur non connecté !");
+        return;
+      }
+    
+      const user = JSON.parse(userRaw);
+      const userId = user.sub;
+    
+      try {
+        const response = await fetch('https://airtable-get-tours.samueltoledano94.workers.dev/?userId=' + encodeURIComponent(userId));
+        const result = await response.json();
+    
+        if (Array.isArray(result.records)) {
+          result.records.forEach(record => {
+            const li = document.createElement("li");
+            li.textContent = record.fields.Nom || "Unnamed Tour";
+            savedToursList.appendChild(li);
+          });
+        } else {
+          console.warn("Aucun tour trouvé pour cet utilisateur.");
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement des tours:", error);
+      }
     });
+    
 
     closePopup.addEventListener("click", () => {
       savePopup.style.display = "none";
