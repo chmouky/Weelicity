@@ -69,8 +69,11 @@
   <script type="module" src="assets/js/index.js"></script>
 
   <script>
-    const isIndexPage = location.pathname.endsWith("index.html") || location.pathname === "/";
-    if (!isIndexPage) {
+    <script>
+  const isIndexPage = location.pathname.endsWith("index.html") || location.pathname === "/";
+  
+  firebase.auth().onAuthStateChanged((user) => {
+    if (!isIndexPage || user) {
       fetch("assets/components/footer.html")
         .then(response => response.text())
         .then(data => {
@@ -78,7 +81,10 @@
           footer.innerHTML = data;
           footer.classList.add("loaded");
         });
-    } 
+    }
+  });
+</script>
+
   </script>
 
 <form id="authForm" style="position: absolute; top: 140px; right: 10px; z-index: 9999; font-size: 14px;">
