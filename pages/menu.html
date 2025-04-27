@@ -23,11 +23,6 @@
     <div class="menu-item">Setup <span class="menu-icon">&gt;</span></div>
   </div>
 
-  <div id="auth-buttons">
-    <button id="login-button" class="auth-button" style="display: none;">Log in</button>
-    <button id="logout-button" class="auth-button" style="display: none;">Log out</button>
-  </div>
-  
 
   <!-- Footer -->
   <div id="footer-placeholder" style="margin-top: 60px;"></div>
@@ -45,6 +40,12 @@
   <script src="../assets/js/visit.js"></script>
   <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
 <script type="module" src="/assets/js/menu.js"></script>
+
+<script>
+  document.getElementById("my-tours-link").addEventListener("click", () => {
+    window.location.href = "mytours.html"; // 🔥 Ou "../pages/mytours.html" si ton fichier est ailleurs
+  });
+</script>
 
 </body>
 </html>
