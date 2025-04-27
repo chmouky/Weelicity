@@ -1041,8 +1041,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const response = await fetch('https://airtable-toursperso.samueltoledano94.workers.dev/?userId=' + encodeURIComponent(userId));
         const result = await response.json();
     
-        if (Array.isArray(result.records)) {
-          result.records.forEach(record => {
+        if (Array.isArray(result)) {
+             result.forEach(record => {
             const li = document.createElement("li");
             li.textContent = record.fields.Nom || "Unnamed Tour";
             savedToursList.appendChild(li);
