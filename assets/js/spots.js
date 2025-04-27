@@ -1174,7 +1174,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function saveTour(userId, tourName, existingTourId = null) {
-  const savePopup = document.getElementById("save-popup");
   try {
     const activeMarkers = markers.filter(marker => {
       const record = marker.fullRecord;
@@ -1199,16 +1198,21 @@ async function saveTour(userId, tourName, existingTourId = null) {
       return;
     }
 
+    // 🔥 Ici : récupérer les tags de l'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const tagsParam = urlParams.get("filter");
+    const selectedTags = tagsParam ? tagsParam.split(",").map(tag => tag.trim()) : [];
+
     const payload = {
       Nom: tourName,
       UserID: userId,
       LieuIDs: selectedPlaces,
-      TagIDs: selectedTags, // ✅ Les tags sont bien envoyés
+      TagIDs: selectedTags, // ✅ Maintenant selectedTags est bien défini
       Date: new Date().toISOString()
     };
 
     if (existingTourId) {
-      payload.recordId = existingTourId; // Si on écrase un tour existant
+      payload.recordId = existingTourId;
     }
 
     const response = await fetch('https://airtable-create.samueltoledano94.workers.dev/', {
@@ -1219,7 +1223,8 @@ async function saveTour(userId, tourName, existingTourId = null) {
 
     if (response.ok) {
       alert("✅ Tour saved successfully!");
-      savePopup.style.display = "none"; // Fermer le popup
+      const savePopup = document.getElementById("save-popup");
+      savePopup.style.display = "none";
     } else {
       const errorResult = await response.text();
       console.error("Erreur lors de l'enregistrement:", errorResult);
@@ -1230,5 +1235,6 @@ async function saveTour(userId, tourName, existingTourId = null) {
     alert("❌ Error saving tour: " + error.message);
   }
 }
+
 
 
