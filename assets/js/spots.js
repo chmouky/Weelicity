@@ -1161,7 +1161,7 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("❌ Error saving tour: " + error.message);
       }
     }
-   
+ 
 
     closePopup.addEventListener("click", () => {
       savePopup.style.display = "none";
