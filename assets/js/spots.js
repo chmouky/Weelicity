@@ -1038,7 +1038,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const userId = user.sub;
     
       try {
-        const response = await fetch('https://airtable-get-tours.samueltoledano94.workers.dev/?userId=' + encodeURIComponent(userId));
+        const response = await fetch('https://airtable-toursperso.samueltoledano94.workers.dev/?userId=' + encodeURIComponent(userId));
         const result = await response.json();
     
         if (Array.isArray(result.records)) {
