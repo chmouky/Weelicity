@@ -590,7 +590,7 @@ function handleCarouselScroll() {
 
   const requestId = ++previewMarkerRequestId;
 
-  createCircularMarkerIcon(record.image, 50).then((iconUrl) => {
+  createCircularMarkerIcon(record.image, 50, "#FF0000").then((iconUrl) => {
     if (requestId !== previewMarkerRequestId) return; // ignore si scroll depuis
     previewMarker = new google.maps.Marker({
       position: { lat: record.lat, lng: record.lng },
@@ -979,9 +979,9 @@ function updateGoButtonVisibility() {
 
 
 
-function createCircularMarkerIcon(imageUrl, size = 50) {
-  if (markerIconCache.has(imageUrl)) {
-    return Promise.resolve(markerIconCache.get(imageUrl));
+function createCircularMarkerIcon(imageUrl, size = 50, borderColor = "#fff") {
+  if (markerIconCache.has(imageUrl + borderColor)) {
+    return Promise.resolve(markerIconCache.get(imageUrl + borderColor));
   }
 
   const canvas = document.createElement("canvas");
@@ -1005,16 +1005,16 @@ function createCircularMarkerIcon(imageUrl, size = 50) {
       ctx.beginPath();
       ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2, true);
       ctx.lineWidth = 4;
-      ctx.strokeStyle = "#fff";
+      ctx.strokeStyle = borderColor; // 🔥 ici on utilise borderColor
       ctx.stroke();
 
       const iconDataUrl = canvas.toDataURL();
-      markerIconCache.set(imageUrl, iconDataUrl); // 💾 Mise en cache
+      markerIconCache.set(imageUrl + borderColor, iconDataUrl); // cache par image + couleur
       resolve(iconDataUrl);
     };
 
     img.onerror = () => {
-      resolve("https://via.placeholder.com/50"); // Fallback si erreur
+      resolve("https://via.placeholder.com/50"); // fallback
     };
   });
 }

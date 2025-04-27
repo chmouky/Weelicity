@@ -1,3 +1,19 @@
+
+  document.addEventListener("DOMContentLoaded", () => {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user && !sessionStorage.getItem("user")) {
+        console.log("📦 Session restaurée depuis Firebase.");
+        sessionStorage.setItem("user", JSON.stringify({
+          sub: user.uid,
+          email: user.email,
+          name: user.displayName,
+          picture: user.photoURL
+        }));
+      }
+    });
+  });
+  
+
 let map;
 let userMarker = null;
 
@@ -5,6 +21,9 @@ const markers = [];
 let filteredPlacesWithCoords = []; // Stockage global des lieux filtrés
 // Variable globale pour stocker le marqueur de prévisualisation
 let previewMarker = null;
+
+
+
 // Nous conservons également la liste des lieux affichés dans le carousel pour y accéder depuis l’observateur
 window.carouselRecords = [];
 
@@ -38,6 +57,94 @@ document.addEventListener("DOMContentLoaded", () => {
   restoreButtonState(); // Restaure les boutons sélectionnés
   updateGoButtonVisibility(); // Vérifie si le bouton "Go!" doit être affiché
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  // 🔥 Correction : On écoute Firebase pour récupérer l'utilisateur
+  if (typeof auth !== "undefined" && auth.onAuthStateChanged) {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log("✅ Utilisateur déjà connecté (Firebase) :", user.email);
+
+        if (!sessionStorage.getItem("user")) {
+          console.log("ℹ️ Remplissage automatique du sessionStorage...");
+          sessionStorage.setItem("user", JSON.stringify({
+            sub: user.uid,
+            email: user.email,
+            name: user.displayName,
+            picture: user.photoURL
+          }));
+        }
+      } else {
+        console.log("🔓 Aucun utilisateur connecté.");
+      }
+    });
+  } else {
+    console.warn("⚠️ Firebase auth non initialisé sur cette page.");
+  }
+
+  // 🔥 Ensuite seulement → tu fais ta logique existante
+  const userDataRaw = sessionStorage.getItem("user");
+
+  if (userDataRaw) {
+    try {
+      const user = JSON.parse(userDataRaw);
+      console.log("✅ Utilisateur connecté :");
+      console.log("🆔 ID :", user.sub);
+      console.log("📧 Email :", user.email);
+    } catch (e) {
+      console.warn("⚠️ Impossible de parser les données utilisateur :", e);
+    }
+  } else {
+    console.log("🔓 Aucun utilisateur connecté.");
+  }
+
+});
+document.addEventListener("DOMContentLoaded", () => {
+
+  // 🔥 Correction : On écoute Firebase pour récupérer l'utilisateur
+  if (typeof auth !== "undefined" && auth.onAuthStateChanged) {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log("✅ Utilisateur déjà connecté (Firebase) :", user.email);
+
+        if (!sessionStorage.getItem("user")) {
+          console.log("ℹ️ Remplissage automatique du sessionStorage...");
+          sessionStorage.setItem("user", JSON.stringify({
+            sub: user.uid,
+            email: user.email,
+            name: user.displayName,
+            picture: user.photoURL
+          }));
+        }
+      } else {
+        console.log("🔓 Aucun utilisateur connecté.");
+      }
+    });
+  } else {
+    console.warn("⚠️ Firebase auth non initialisé sur cette page.");
+  }
+
+  // 🔥 Ensuite seulement → tu fais ta logique existante
+  const userDataRaw = sessionStorage.getItem("user");
+
+  if (userDataRaw) {
+    try {
+      const user = JSON.parse(userDataRaw);
+      console.log("✅ Utilisateur connecté :");
+      console.log("🆔 ID :", user.sub);
+      console.log("📧 Email :", user.email);
+    } catch (e) {
+      console.warn("⚠️ Impossible de parser les données utilisateur :", e);
+    }
+  } else {
+    console.log("🔓 Aucun utilisateur connecté.");
+  }
+
+});
+
+
 
 
 const markerIconCache = new Map(); // Clé = URL image brute, Valeur = dataURL circulaire
@@ -119,6 +226,8 @@ function loadGoogleMaps(url, callbackName) {
   };
   document.head.appendChild(script);
 }
+
+window.onGoogleMapsLoaded = onGoogleMapsLoaded;
 
 /********************************************************
  * Fonction exécutée après le chargement de Google Maps
@@ -210,8 +319,9 @@ function onGoogleMapsLoaded() {
           const rawName = place.fields.URLPhoto2 || "default.jpg";
           const encodedName = encodeURIComponent(rawName.trim());
           const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
-  
+        
           return {
+            id: place.id, // 🔥 On récupère l'ID Airtable ici
             name: place.fields.Nom || "Nom inconnu",
             descriptionC: place.fields.DescriptionC || "Description courte indisponible",
             description: place.fields.Description || "Description indisponible",
@@ -222,6 +332,7 @@ function onGoogleMapsLoaded() {
             ticket: Array.isArray(place.fields.Ticket) ? place.fields.Ticket : []
           };
         });
+        
   
         displayCarousel(carouselData);
       } else {
@@ -241,9 +352,9 @@ function onGoogleMapsLoaded() {
 document.addEventListener("DOMContentLoaded", () => {
   try {
     loadGoogleMaps(
-      "https://google-map-back.samueltoledano94.workers.dev/load-google-maps",
+      "https://google-map-back.samueltoledano94.workers.dev/load-google-maps?callback=onGoogleMapsLoaded",
       "onGoogleMapsLoaded"
-    );
+    );    
   } catch (error) {
     console.error("Erreur lors du chargement de Google Maps API :", error);
   }
@@ -416,8 +527,6 @@ const ticketText = (Array.isArray(record.ticket) &&
 
   carouselContainer.addEventListener("scroll", handleCarouselScroll);
   handleCarouselScroll();
-
-setTimeout(updateCarouselArrows, 100); // Laisse le DOM se stabiliser
 
 }
 
@@ -855,50 +964,19 @@ function showLargeImage(imageUrl) {
 
 function updateGoButtonVisibility() {
   const goButton = document.getElementById("go-button");
+  const saveButton = document.getElementById("save-tour-btn"); // ✅
+
   const selectedPlaces = document.querySelectorAll(".toggle-btn.active").length;
+
   if (selectedPlaces > 0) {
-      goButton.style.display = "block"; // Affiche le bouton
+    if (goButton) goButton.style.display = "block";
+    if (saveButton) saveButton.style.display = "block"; // ✅ Affiche Save
   } else {
-      goButton.style.display = "none"; // Cache le bouton
+    if (goButton) goButton.style.display = "none";
+    if (saveButton) saveButton.style.display = "none"; // ✅ Cache Save
   }
 }
 
-function updateCarouselArrows() {
-const container = document.getElementById("carousel-container");
-const leftArrow = document.getElementById("carousel-left-arrow");
-const rightArrow = document.getElementById("carousel-right-arrow");
-const items = container.querySelectorAll('.carousel-item');
-
-let activeIndex = -1;
-if (items.length > 0) {
-  const containerRect = container.getBoundingClientRect();
-  const containerCenter = containerRect.left + containerRect.width / 2;
-  let minDistance = Infinity;
-  items.forEach(item => {
-    const itemRect = item.getBoundingClientRect();
-    const itemCenter = itemRect.left + itemRect.width / 2;
-    const distance = Math.abs(containerCenter - itemCenter);
-    if (distance < minDistance) {
-      minDistance = distance;
-      activeIndex = parseInt(item.getAttribute("data-index"));
-    }
-  });
-}
-
-// Masquer la flèche gauche si le premier élément est centré
-if (activeIndex <= 0) {
-  leftArrow.style.display = "none";
-} else {
-  leftArrow.style.display = "flex";
-}
-
-// Masquer la flèche droite si le dernier élément est centré
-if (activeIndex >= items.length - 1) {
-  rightArrow.style.display = "none";
-} else {
-  rightArrow.style.display = "flex";
-}
-}
 
 
 function createCircularMarkerIcon(imageUrl, size = 50) {
@@ -941,16 +1019,184 @@ function createCircularMarkerIcon(imageUrl, size = 50) {
   });
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  const saveBtn = document.getElementById("save-tour-btn");
+  const savePopup = document.getElementById("save-popup");
+  const closePopup = document.getElementById("save-popup-close");
+  const savedToursList = document.getElementById("saved-tours-list");
+  const newTourBtn = document.getElementById("new-tour-btn");
 
+  if (saveBtn && savePopup && closePopup && savedToursList) {
+    saveBtn.addEventListener("click", async () => {
+      savedToursList.innerHTML = ""; // Vide la liste à chaque ouverture
+      savePopup.style.display = "block";
+  
+      // 🔥 Ajoute un message d'instruction
+      const instruction = document.createElement("p");
+      instruction.textContent = "Tap an empty slot to save. Tap an existing tour to replace it.";
+      instruction.style.textAlign = "center";
+      instruction.style.fontSize = "16px";
+      instruction.style.marginBottom = "20px";
+      savedToursList.appendChild(instruction);
+  
+      const userRaw = sessionStorage.getItem("user");
+      if (!userRaw) {
+        alert("You must be logged in.");
+        return;
+      }
+  
+      const user = JSON.parse(userRaw);
+      const userId = user.sub;
+  
+      try {
+        const response = await fetch('https://airtable-toursperso.samueltoledano94.workers.dev/?userId=' + encodeURIComponent(userId));
+        const result = await response.json();
+  
+        let existingTours = Array.isArray(result) ? result : [];
+  
+        // 🔥 Générer 10 boutons
+        for (let i = 0; i < 10; i++) {
+          const slotBtn = document.createElement("button");
+          slotBtn.classList.add("slot-btn");
+          slotBtn.style.display = "block";
+          slotBtn.style.width = "100%";
+          slotBtn.style.marginBottom = "10px";
+          slotBtn.style.padding = "12px";
+          slotBtn.style.fontSize = "16px";
+  
+          if (existingTours[i]) {
+            const tourName = existingTours[i].fields.Nom || "Unnamed";
+            slotBtn.textContent = tourName;
+  
+            // Slot existant → demande confirmation avant d'écraser
+            slotBtn.addEventListener("click", async () => {
+              const confirmOverwrite = confirm(`⚠️ A tour already exists here ("${tourName}").\nDo you want to replace it?`);
+              if (confirmOverwrite) {
+                await saveTour(userId, tourName, existingTours[i].id);
+              }
+            });
+          } else {
+            // Slot vide → proposer création
+            slotBtn.textContent = "Empty";
+            slotBtn.addEventListener("click", async () => {
+              const newTourName = prompt("Enter a name for your new tour:");
+              if (newTourName) {
+                await saveTour(userId, newTourName);
+              }
+            });
+          }
+  
+          savedToursList.appendChild(slotBtn);
+        }
+  
+      } catch (error) {
+        console.error("Erreur lors du chargement des tours :", error);
+        alert("Erreur de chargement des tours : " + error.message);
+      }
+    });
+  }
+  
 
-document.getElementById("carousel-container").addEventListener("scroll", updateCarouselArrows);
-window.addEventListener("resize", updateCarouselArrows);
-window.addEventListener("load", updateCarouselArrows);
+  if (saveBtn && savePopup && closePopup && savedToursList) {
+    savePopup.style.display = "none"; // cacher popup au début
 
-document.getElementById("carousel-left-arrow").addEventListener("click", () => {
-document.getElementById("carousel-container").scrollBy({ left: -200, behavior: "smooth" });
+      closePopup.addEventListener("click", () => {
+      savePopup.style.display = "none";
+    });
+
+    
+  } else {
+    console.error("❌ Certains éléments du DOM sont introuvables (saveBtn, savePopup...).");
+  }
 });
 
-document.getElementById("carousel-right-arrow").addEventListener("click", () => {
-document.getElementById("carousel-container").scrollBy({ left: 200, behavior: "smooth" });
-});
+async function saveTour(userId, tourName, existingTourId = null) {
+  const savePopup = document.getElementById("save-popup");
+  try {
+    const activeMarkers = markers.filter(marker => {
+      const record = marker.fullRecord;
+      if (!record) return false;
+
+      const carouselItem = Array.from(document.querySelectorAll(".carousel-item")).find(item => {
+        const index = item.getAttribute("data-index");
+        const rec = window.carouselRecords[index];
+        return rec && rec.name === record.name;
+      });
+
+      if (!carouselItem) return false;
+
+      const toggleBtn = carouselItem.querySelector(".toggle-btn");
+      return toggleBtn && toggleBtn.classList.contains("active");
+    });
+
+    const selectedPlaces = activeMarkers.map(marker => marker.fullRecord.id);
+
+    if (selectedPlaces.length === 0) {
+      alert("❌ Select at least one spot before saving.");
+      return;
+    }
+
+    console.log("📍 Selected Places IDs :", selectedPlaces);
+
+    // 🔥 Récupérer les vrais ID Airtable des tags à partir des codes URL
+    const tagsRaw = sessionStorage.getItem("tags");
+    const allTags = tagsRaw ? JSON.parse(tagsRaw) : [];
+
+    console.log("📦 Tous les tags (sessionStorage) :", allTags);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const tagsParam = urlParams.get("filter"); 
+    const tagCodesFromURL = tagsParam ? tagsParam.split(",").map(tag => tag.trim()) : [];
+
+    console.log("🔗 Tag codes reçus dans l'URL :", tagCodesFromURL);
+
+    const matchedTags = allTags.filter(tag => 
+      tag.fields && tag.fields.ID !== undefined && tagCodesFromURL.includes(String(tag.fields.ID))
+    );
+
+    console.log("🔎 Tags correspondant aux codes URL :", matchedTags);
+
+    const selectedTags = matchedTags.map(tag => tag.id); // 🔥 Record IDs des tags
+
+    console.log("✅ Selected Tag Record IDs :", selectedTags);
+
+    const payload = {
+      Nom: tourName,
+      UserID: userId,
+      LieuIDs: selectedPlaces,
+      TagIDs: selectedTags, // ✅ maintenant correct
+      Date: new Date().toISOString()
+    };
+
+    if (existingTourId) {
+      payload.recordId = existingTourId;
+    }
+
+    console.log("🛰️ Payload envoyé à Airtable :", payload);
+
+    const response = await fetch('https://airtable-create.samueltoledano94.workers.dev/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+      alert("✅ Tour saved successfully!");
+      savePopup.style.display = "none"; 
+    } else {
+      const errorResult = await response.text();
+      console.error("Erreur lors de l'enregistrement:", errorResult);
+      alert("❌ Error saving tour");
+    }
+  } catch (error) {
+    console.error("Erreur JS lors de l'enregistrement:", error);
+    alert("❌ Error saving tour: " + error.message);
+  }
+}
+
+
+
+
+
+
+

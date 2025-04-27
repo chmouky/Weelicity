@@ -407,6 +407,11 @@ html, body {
     transition: color 0.2s ease;
   }
   
+  #popup, #popup-itinerary {
+    z-index: 5000; /* un chiffre très haut pour passer au-dessus de tout */
+  }
+  
+
   #google-maps-button {
     display: block;
     margin: 15px auto;
