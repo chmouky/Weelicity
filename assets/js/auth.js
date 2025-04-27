@@ -142,27 +142,22 @@ auth.onAuthStateChanged(async (user) => {
 
   if (user) {
     console.log("🔐 Utilisateur connecté :", user.email);
-    sessionStorage.setItem("uid", user.uid); // ✅ Stocke l'UID dans sessionStorage
+    sessionStorage.setItem("uid", user.uid);
 
-    // Masquer formulaire login/signup
     if (authContainer) authContainer.style.display = "none";
-    // Afficher bouton logout
-    logoutBtn.style.display = "block";
-    // Afficher info utilisateur
-    if (userInfo) userInfo.textContent = `Signed in as: ${user.displayName || user.email}`;
+    if (logoutBtn) logoutBtn.style.display = "block"; // 🔥 protection ajoutée
+    if (userInfo) userInfo.textContent = `Connecté en tant que : ${user.displayName || user.email}`;
 
-    await loadFooterIfNeeded(); // Charger le footer
+    await loadFooterIfNeeded();
   } else {
     console.log("🔓 Utilisateur non connecté.");
 
-    // Afficher formulaire login/signup
-    if (logoutBtn) logoutBtn.style.display = "block";
-    // Masquer bouton logout
-    logoutBtn.style.display = "none";
-    // Cacher info utilisateur
-    userInfo.textContent = "";
+    if (authContainer) authContainer.style.display = "block"; // 🔥 protection ajoutée
+    if (logoutBtn) logoutBtn.style.display = "none";
+    if (userInfo) userInfo.textContent = "";
   }
 });
+
 
 
 // Bouton logout
