@@ -1203,6 +1203,7 @@ async function saveTour(userId, tourName, existingTourId = null) {
       Nom: tourName,
       UserID: userId,
       LieuIDs: selectedPlaces,
+      TagIDs: selectedTags, // ✅ Les tags sont bien envoyés
       Date: new Date().toISOString()
     };
 
