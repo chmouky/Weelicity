@@ -1136,6 +1136,8 @@ document.addEventListener("DOMContentLoaded", () => {
           payload.recordId = existingTourId; // Si on écrase un tour existant
         }
     
+        savedToursList.innerHTML = "<li style='text-align:center; color:gray;'>Loading tours...</li>";
+
         const response = await fetch('https://airtable-create.samueltoledano94.workers.dev/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
