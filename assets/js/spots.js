@@ -1118,13 +1118,11 @@ document.addEventListener("DOMContentLoaded", () => {
           },
           body: JSON.stringify(payload)
         });
-
-        const text = await response.text();
-
+        
+        const result = await response.json(); // 🤩 ici directement du JSON
         
         if (response.ok) {
           alert("✅ Tour created successfully!");
-          // 🔥 Ajouter le nouveau tour dans la liste du popup
           const li = document.createElement("li");
           li.textContent = tourName;
           savedToursList.appendChild(li);
@@ -1132,10 +1130,7 @@ document.addEventListener("DOMContentLoaded", () => {
           console.error("Erreur Worker :", result);
           alert("❌ Failed to create tour: " + (result.error || "Unknown error"));
         }
-      } catch (error) {
-        console.error("Erreur JS:", error);
-        alert("❌ Failed to create tour: Network error");
-      }
+        
     });
   } else {
     console.error("❌ Certains éléments du DOM sont introuvables (saveBtn, savePopup...).");
