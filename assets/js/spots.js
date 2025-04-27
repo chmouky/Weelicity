@@ -1021,111 +1021,135 @@ document.addEventListener("DOMContentLoaded", () => {
   const newTourBtn = document.getElementById("new-tour-btn");
 
   if (saveBtn && savePopup && closePopup && savedToursList) {
-    savePopup.style.display = "none"; // cacher popup au début
-
     saveBtn.addEventListener("click", async () => {
-      savedToursList.innerHTML = ""; // vide la liste
+      savedToursList.innerHTML = ""; // Vide la liste à chaque ouverture
       savePopup.style.display = "block";
-    
+  
+      // 🔥 Ajoute un message d'instruction
+      const instruction = document.createElement("p");
+      instruction.textContent = "Tap an empty slot to save. Tap an existing tour to replace it.";
+      instruction.style.textAlign = "center";
+      instruction.style.fontSize = "16px";
+      instruction.style.marginBottom = "20px";
+      savedToursList.appendChild(instruction);
+  
       const userRaw = sessionStorage.getItem("user");
       if (!userRaw) {
-        console.warn("Utilisateur non connecté !");
+        alert("You must be logged in.");
         return;
       }
-    
+  
       const user = JSON.parse(userRaw);
       const userId = user.sub;
-    
+  
       try {
         const response = await fetch('https://airtable-toursperso.samueltoledano94.workers.dev/?userId=' + encodeURIComponent(userId));
         const result = await response.json();
-    
-        let existingTours = [];
-        if (Array.isArray(result)) {
-          existingTours = result.map(record => record.fields.Nom || "Unnamed Tour");
-        }
-    
+  
+        let existingTours = Array.isArray(result) ? result : [];
+  
+        // 🔥 Générer 10 boutons
         for (let i = 0; i < 10; i++) {
-          const button = document.createElement("button");
-          button.style.display = "block";
-          button.style.width = "100%";
-          button.style.marginBottom = "10px";
-          button.style.padding = "10px";
-          button.style.fontSize = "16px";
-    
-          const tourName = existingTours[i] || "Empty";
-          button.textContent = tourName;
-          
-          if (tourName !== "Empty") {
-            button.disabled = true; // si déjà utilisé, on désactive le bouton
-          } else {
-            button.addEventListener("click", async () => {
-              const newTourName = prompt("Enter a new tour name:");
-              if (!newTourName) return;
-    
-              const activeMarkers = markers.filter(marker => {
-                const record = marker.fullRecord;
-                if (!record) return false;
-                
-                const carouselItem = Array.from(document.querySelectorAll(".carousel-item")).find(item => {
-                  const index = item.getAttribute("data-index");
-                  const rec = window.carouselRecords[index];
-                  return rec && rec.name === record.name;
-                });
-              
-                if (!carouselItem) return false;
-              
-                const toggleBtn = carouselItem.querySelector(".toggle-btn");
-                return toggleBtn && toggleBtn.classList.contains("active");
-              });
-    
-              const selectedPlaces = activeMarkers.map(marker => marker.fullRecord.id);
-    
-              if (selectedPlaces.length === 0) {
-                alert("Select at least one spot to create a tour.");
-                return;
+          const slotBtn = document.createElement("button");
+          slotBtn.classList.add("slot-btn");
+          slotBtn.style.display = "block";
+          slotBtn.style.width = "100%";
+          slotBtn.style.marginBottom = "10px";
+          slotBtn.style.padding = "12px";
+          slotBtn.style.fontSize = "16px";
+  
+          if (existingTours[i]) {
+            const tourName = existingTours[i].fields.Nom || "Unnamed";
+            slotBtn.textContent = tourName;
+  
+            // Slot existant → demande confirmation avant d'écraser
+            slotBtn.addEventListener("click", async () => {
+              const confirmOverwrite = confirm(`⚠️ A tour already exists here ("${tourName}").\nDo you want to replace it?`);
+              if (confirmOverwrite) {
+                await saveTour(userId, tourName, existingTours[i].id);
               }
-    
-              const payload = {
-                Nom: newTourName,
-                UserID: userId,
-                LieuIDs: selectedPlaces,
-                Date: new Date().toISOString()
-              };
-    
-              try {
-                const createResponse = await fetch('https://airtable-create.samueltoledano94.workers.dev/', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify(payload)
-                });
-    
-                const createResult = await createResponse.json();
-    
-                if (createResponse.ok) {
-                  alert("✅ Tour created successfully!");
-                  button.textContent = newTourName;
-                  button.disabled = true;
-                } else {
-                  console.error("Erreur Worker :", createResult);
-                  alert("❌ Failed to create tour: " + (createResult.error || "Unknown error"));
-                }
-              } catch (error) {
-                console.error("Erreur JS:", error);
-                alert("❌ Failed to create tour: Network error");
+            });
+          } else {
+            // Slot vide → proposer création
+            slotBtn.textContent = "Empty";
+            slotBtn.addEventListener("click", async () => {
+              const newTourName = prompt("Enter a name for your new tour:");
+              if (newTourName) {
+                await saveTour(userId, newTourName);
               }
             });
           }
-    
-          savedToursList.appendChild(button);
+  
+          savedToursList.appendChild(slotBtn);
         }
-    
+  
       } catch (error) {
-        console.error("Erreur lors du chargement des tours:", error);
+        console.error("Erreur lors du chargement des tours :", error);
+        alert("Erreur de chargement des tours : " + error.message);
       }
     });
+  }
+  
+
+  if (saveBtn && savePopup && closePopup && savedToursList) {
+    savePopup.style.display = "none"; // cacher popup au début
+
+    async function saveTour(userId, tourName, existingTourId = null) {
+      try {
+        const activeMarkers = markers.filter(marker => {
+          const record = marker.fullRecord;
+          if (!record) return false;
+    
+          const carouselItem = Array.from(document.querySelectorAll(".carousel-item")).find(item => {
+            const index = item.getAttribute("data-index");
+            const rec = window.carouselRecords[index];
+            return rec && rec.name === record.name;
+          });
+    
+          if (!carouselItem) return false;
+    
+          const toggleBtn = carouselItem.querySelector(".toggle-btn");
+          return toggleBtn && toggleBtn.classList.contains("active");
+        });
+    
+        const selectedPlaces = activeMarkers.map(marker => marker.fullRecord.id);
+    
+        if (selectedPlaces.length === 0) {
+          alert("❌ Select at least one spot before saving.");
+          return;
+        }
+    
+        const payload = {
+          Nom: tourName,
+          UserID: userId,
+          LieuIDs: selectedPlaces,
+          Date: new Date().toISOString()
+        };
+    
+        if (existingTourId) {
+          payload.recordId = existingTourId; // Si on écrase un tour existant
+        }
+    
+        const response = await fetch('https://airtable-create.samueltoledano94.workers.dev/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+    
+        if (response.ok) {
+          alert("✅ Tour saved successfully!");
+          savePopup.style.display = "none"; // Fermer le popup
+        } else {
+          const errorResult = await response.text();
+          console.error("Erreur lors de l'enregistrement:", errorResult);
+          alert("❌ Error saving tour");
+        }
+      } catch (error) {
+        console.error("Erreur JS lors de l'enregistrement:", error);
+        alert("❌ Error saving tour: " + error.message);
+      }
+    }
+    
     
     
 
@@ -1138,4 +1162,61 @@ document.addEventListener("DOMContentLoaded", () => {
     console.error("❌ Certains éléments du DOM sont introuvables (saveBtn, savePopup...).");
   }
 });
+
+async function saveTour(userId, tourName, existingTourId = null) {
+  try {
+    const activeMarkers = markers.filter(marker => {
+      const record = marker.fullRecord;
+      if (!record) return false;
+
+      const carouselItem = Array.from(document.querySelectorAll(".carousel-item")).find(item => {
+        const index = item.getAttribute("data-index");
+        const rec = window.carouselRecords[index];
+        return rec && rec.name === record.name;
+      });
+
+      if (!carouselItem) return false;
+
+      const toggleBtn = carouselItem.querySelector(".toggle-btn");
+      return toggleBtn && toggleBtn.classList.contains("active");
+    });
+
+    const selectedPlaces = activeMarkers.map(marker => marker.fullRecord.id);
+
+    if (selectedPlaces.length === 0) {
+      alert("❌ Select at least one spot before saving.");
+      return;
+    }
+
+    const payload = {
+      Nom: tourName,
+      UserID: userId,
+      LieuIDs: selectedPlaces,
+      Date: new Date().toISOString()
+    };
+
+    if (existingTourId) {
+      payload.recordId = existingTourId; // Si on écrase un tour existant
+    }
+
+    const response = await fetch('https://airtable-create.samueltoledano94.workers.dev/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+      alert("✅ Tour saved successfully!");
+      savePopup.style.display = "none"; // Fermer le popup
+    } else {
+      const errorResult = await response.text();
+      console.error("Erreur lors de l'enregistrement:", errorResult);
+      alert("❌ Error saving tour");
+    }
+  } catch (error) {
+    console.error("Erreur JS lors de l'enregistrement:", error);
+    alert("❌ Error saving tour: " + error.message);
+  }
+}
+
 

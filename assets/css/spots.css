@@ -510,3 +510,16 @@ html, body {
   border-radius: 5px;
   font-family: 'Shrikhand', cursive;
 }
+
+.slot-button {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #f7f7f7;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+}
+.slot-button:hover {
+  background-color: #e0e0e0;
+}
