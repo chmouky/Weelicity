@@ -1,0 +1,42 @@
+.tour-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  
+  .menu-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .menu {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(50%);
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    width: 100px;
+    text-align: left;
+    z-index: 1000;
+  }
+  
+  .menu-item {
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .menu-item:hover {
+    background: #f0f0f0;
+  }
+  
