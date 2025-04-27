@@ -1020,7 +1020,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const savedToursList = document.getElementById("saved-tours-list");
   const newTourBtn = document.getElementById("new-tour-btn");
 
-  if (saveBtn && savePopup && closePopup && savedToursList && newTourBtn) {
+  if (saveBtn && savePopup && closePopup && savedToursList) {
     savePopup.style.display = "none"; // cacher popup au début
 
     saveBtn.addEventListener("click", async () => {
@@ -1133,84 +1133,7 @@ document.addEventListener("DOMContentLoaded", () => {
       savePopup.style.display = "none";
     });
 
-    newTourBtn.addEventListener("click", async () => {
-      const tourName = prompt("Enter a new tour name:");
-      if (!tourName) {
-        return;
-      }
-
-      // 🔥 Récupérer l'utilisateur
-      const userRaw = sessionStorage.getItem("user");
-      if (!userRaw) {
-        alert("You must be logged in to create a tour.");
-        return;
-      }
-
-      const user = JSON.parse(userRaw);
-      const userId = user.sub;
-
-      // 🔥 Récupérer tous les lieux sélectionnés
-      const activeMarkers = markers.filter(marker => {
-        const record = marker.fullRecord;
-        if (!record) return false;
-        
-        // Vérifie si le lieu est actif dans le carousel
-        const carouselItem = Array.from(document.querySelectorAll(".carousel-item")).find(item => {
-          const index = item.getAttribute("data-index");
-          const rec = window.carouselRecords[index];
-          return rec && rec.name === record.name;
-        });
-      
-        if (!carouselItem) return false;
-      
-        const toggleBtn = carouselItem.querySelector(".toggle-btn");
-        return toggleBtn && toggleBtn.classList.contains("active");
-      });
-      
-      const selectedPlaces = activeMarkers.map(marker => marker.fullRecord.id);
-      
-
-      if (selectedPlaces.length === 0) {
-        alert("Select at least one spot to create a tour.");
-        return;
-      }
-
-      // 🔥 Construire la requête
-      const payload = {
-        Nom: tourName,
-        UserID: userId,
-        LieuIDs: selectedPlaces,
-        Date: new Date().toISOString()
-      };
-
-      try {
-        const response = await fetch('https://airtable-create.samueltoledano94.workers.dev/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
-
-        const result = await response.json(); // 🤩 ici du JSON même en cas d'erreur
-
-        if (response.ok) {
-          alert("✅ Tour created successfully!");
-          const li = document.createElement("li");
-          li.textContent = tourName;
-          savedToursList.appendChild(li);
-        } else {
-          console.error("Erreur Worker :", result);
-          alert("❌ Failed to create tour: " + (result.error || "Unknown error"));
-        }
-
-      } catch (error) { // 👈 AJOUTE CE catch !!
-        console.error("Erreur JS:", error);
-        alert("❌ Failed to create tour: Network error");
-      }
-
-        
-    });
+    
   } else {
     console.error("❌ Certains éléments du DOM sont introuvables (saveBtn, savePopup...).");
   }
