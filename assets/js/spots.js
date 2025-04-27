@@ -538,7 +538,6 @@ const ticketText = (Array.isArray(record.ticket) &&
  * Fonction pour gérer le scroll du carousel et afficher un marqueur de prévisualisation
  * Modification : le marqueur rouge est affiché même si le lieu est déjà sélectionné.
  ********************************************************/
-let currentPreviewName = null; // 🔥 On ajoute une variable globale pour suivre le lieu actuel
 
 function handleCarouselScroll() {
   const carouselContainer = document.getElementById("carousel-container");
