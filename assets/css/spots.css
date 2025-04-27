@@ -527,6 +527,31 @@ html, body {
   text-align: center;
 }
 
-#save-popup button {
+#save-popup h2 {
+  text-align: center;
+}
+
+#saved-tours-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  margin: 0;
+  list-style: none;
+}
+
+#saved-tours-list button {
   color: black;
+  background: white;
+  border: 2px solid #ccc;
+  padding: 20px 10px; /* plus haut pour laisser de la place au texte */
+  margin: 10px 0;
+  width: 90%; /* quasi toute la largeur du popup */
+  text-align: center;
+  font-size: 18px; /* un peu plus gros */
+  cursor: pointer;
+  border-radius: 10px; /* coins arrondis */
+  white-space: normal; /* permet 2 lignes de texte */
+  word-wrap: break-word; /* coupe si nécessaire */
+  box-sizing: border-box; /* pour ne pas dépasser le parent */
 }
