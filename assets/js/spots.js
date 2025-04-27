@@ -1118,9 +1118,9 @@ document.addEventListener("DOMContentLoaded", () => {
           },
           body: JSON.stringify(payload)
         });
-        
-        const result = await response.json(); // 🤩 ici directement du JSON
-        
+
+        const result = await response.json(); // 🤩 ici du JSON même en cas d'erreur
+
         if (response.ok) {
           alert("✅ Tour created successfully!");
           const li = document.createElement("li");
@@ -1130,6 +1130,12 @@ document.addEventListener("DOMContentLoaded", () => {
           console.error("Erreur Worker :", result);
           alert("❌ Failed to create tour: " + (result.error || "Unknown error"));
         }
+
+      } catch (error) { // 👈 AJOUTE CE catch !!
+        console.error("Erreur JS:", error);
+        alert("❌ Failed to create tour: Network error");
+      }
+
         
     });
   } else {
