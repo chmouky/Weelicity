@@ -557,7 +557,6 @@ function handleCarouselScroll() {
     }
   });
 
-  // Si aucun élément centré → on retire le preview
   if (!closestItem) {
     if (previewMarker) {
       previewMarker.setMap(null);
@@ -568,21 +567,8 @@ function handleCarouselScroll() {
 
   const index = closestItem.getAttribute("data-index");
   const record = window.carouselRecords[index];
-  const toggleBtn = closestItem.querySelector(".toggle-btn");
 
-  // Si le lieu est sélectionné (bouton vert), on ne touche pas au preview
-  if (toggleBtn && toggleBtn.classList.contains("active")) {
-    if (previewMarker && previewMarker.title !== record.name) {
-      previewMarker.setMap(null);
-      previewMarker = null;
-    }
-    return;
-  }
-
-  // Si on affiche déjà le bon preview, ne rien faire
-  if (previewMarker && previewMarker.title === record.name) return;
-
-  // Sinon : créer un nouveau preview pour le lieu centré
+  // 🔥 Toujours recréer un preview en rouge pour le lieu centré
   if (previewMarker) {
     previewMarker.setMap(null);
     previewMarker = null;
@@ -591,7 +577,7 @@ function handleCarouselScroll() {
   const requestId = ++previewMarkerRequestId;
 
   createCircularMarkerIcon(record.image, 50, "#FF0000").then((iconUrl) => {
-    if (requestId !== previewMarkerRequestId) return; // ignore si scroll depuis
+    if (requestId !== previewMarkerRequestId) return; // protection si scroll rapide
     previewMarker = new google.maps.Marker({
       position: { lat: record.lat, lng: record.lng },
       map: map,
@@ -600,10 +586,12 @@ function handleCarouselScroll() {
         url: iconUrl,
         scaledSize: new google.maps.Size(50, 50),
         anchor: new google.maps.Point(25, 25)
-      }
+      },
+      zIndex: 999 // 🔥 Important : on force à passer au-dessus
     });
   });
 }
+
 
 
 /********************************************************
