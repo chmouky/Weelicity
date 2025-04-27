@@ -1210,23 +1210,24 @@ async function saveTour(userId, tourName, existingTourId = null) {
 
     if (filterParam) {
       const tagCodesFromURL = filterParam.split(",").map(tag => tag.trim().toLowerCase());
-
+    
       const allTagsRaw = sessionStorage.getItem('tags');
       if (allTagsRaw) {
         try {
-          const allTags = JSON.parse(allTagsRaw); // Tableau d'objets Airtable
+          const allTags = JSON.parse(allTagsRaw);
           
           const matchedTags = allTags.filter(tag => 
-            tagCodesFromURL.includes(tag.fields.NomCode.toLowerCase())
+            tag.fields.NomCode && tagCodesFromURL.includes(tag.fields.NomCode.toLowerCase())
           );
-
-          selectedTagIDs = matchedTags.map(tag => tag.id); // Les vrais ID Airtable
-          selectedTagNames = matchedTags.map(tag => tag.fields.Nom || ""); // Noms lisibles facultatifs
+    
+          selectedTagIDs = matchedTags.map(tag => tag.id);
+          selectedTagNames = matchedTags.map(tag => tag.fields.Nom || ""); 
         } catch (e) {
           console.error("Erreur parsing tags:", e);
         }
       }
     }
+    
 
     // 🔥 3. Construction du payload à envoyer
     const payload = {
