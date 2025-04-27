@@ -1027,7 +1027,6 @@ document.addEventListener("DOMContentLoaded", () => {
       savedToursList.innerHTML = ""; // vide la liste
       savePopup.style.display = "block";
     
-      // 🔥 Ajoute ce bloc pour charger les tours depuis Airtable
       const userRaw = sessionStorage.getItem("user");
       if (!userRaw) {
         console.warn("Utilisateur non connecté !");
@@ -1041,19 +1040,93 @@ document.addEventListener("DOMContentLoaded", () => {
         const response = await fetch('https://airtable-toursperso.samueltoledano94.workers.dev/?userId=' + encodeURIComponent(userId));
         const result = await response.json();
     
+        let existingTours = [];
         if (Array.isArray(result)) {
-             result.forEach(record => {
-            const li = document.createElement("li");
-            li.textContent = record.fields.Nom || "Unnamed Tour";
-            savedToursList.appendChild(li);
-          });
-        } else {
-          console.warn("Aucun tour trouvé pour cet utilisateur.");
+          existingTours = result.map(record => record.fields.Nom || "Unnamed Tour");
         }
+    
+        for (let i = 0; i < 10; i++) {
+          const button = document.createElement("button");
+          button.style.display = "block";
+          button.style.width = "100%";
+          button.style.marginBottom = "10px";
+          button.style.padding = "10px";
+          button.style.fontSize = "16px";
+    
+          const tourName = existingTours[i] || "Empty";
+          button.textContent = tourName;
+          
+          if (tourName !== "Empty") {
+            button.disabled = true; // si déjà utilisé, on désactive le bouton
+          } else {
+            button.addEventListener("click", async () => {
+              const newTourName = prompt("Enter a new tour name:");
+              if (!newTourName) return;
+    
+              const activeMarkers = markers.filter(marker => {
+                const record = marker.fullRecord;
+                if (!record) return false;
+                
+                const carouselItem = Array.from(document.querySelectorAll(".carousel-item")).find(item => {
+                  const index = item.getAttribute("data-index");
+                  const rec = window.carouselRecords[index];
+                  return rec && rec.name === record.name;
+                });
+              
+                if (!carouselItem) return false;
+              
+                const toggleBtn = carouselItem.querySelector(".toggle-btn");
+                return toggleBtn && toggleBtn.classList.contains("active");
+              });
+    
+              const selectedPlaces = activeMarkers.map(marker => marker.fullRecord.id);
+    
+              if (selectedPlaces.length === 0) {
+                alert("Select at least one spot to create a tour.");
+                return;
+              }
+    
+              const payload = {
+                Nom: newTourName,
+                UserID: userId,
+                LieuIDs: selectedPlaces,
+                Date: new Date().toISOString()
+              };
+    
+              try {
+                const createResponse = await fetch('https://airtable-create.samueltoledano94.workers.dev/', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(payload)
+                });
+    
+                const createResult = await createResponse.json();
+    
+                if (createResponse.ok) {
+                  alert("✅ Tour created successfully!");
+                  button.textContent = newTourName;
+                  button.disabled = true;
+                } else {
+                  console.error("Erreur Worker :", createResult);
+                  alert("❌ Failed to create tour: " + (createResult.error || "Unknown error"));
+                }
+              } catch (error) {
+                console.error("Erreur JS:", error);
+                alert("❌ Failed to create tour: Network error");
+              }
+            });
+          }
+    
+          savedToursList.appendChild(button);
+        }
+    
       } catch (error) {
         console.error("Erreur lors du chargement des tours:", error);
       }
     });
+    
     
 
     closePopup.addEventListener("click", () => {
