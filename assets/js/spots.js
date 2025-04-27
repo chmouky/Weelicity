@@ -1175,7 +1175,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function saveTour(userId, tourName, existingTourId = null) {
   const savePopup = document.getElementById("save-popup");
+
   try {
+    // 🔥 1. On récupère les lieux sélectionnés
     const activeMarkers = markers.filter(marker => {
       const record = marker.fullRecord;
       if (!record) return false;
@@ -1199,27 +1201,48 @@ async function saveTour(userId, tourName, existingTourId = null) {
       return;
     }
 
-    // 🔥 Prendre les tags passés dans l'URL (filter=...)
+    // 🔥 2. On récupère les TAGs sélectionnés dans l'URL
     const urlParams = new URLSearchParams(window.location.search);
     const filterParam = urlParams.get('filter');
 
     let selectedTagIDs = [];
+    let selectedTagNames = [];
+
     if (filterParam) {
-      selectedTagIDs = filterParam.split(",").map(tag => tag.trim());
+      const tagCodesFromURL = filterParam.split(",").map(tag => tag.trim().toLowerCase());
+
+      const allTagsRaw = sessionStorage.getItem('tags');
+      if (allTagsRaw) {
+        try {
+          const allTags = JSON.parse(allTagsRaw); // Tableau d'objets Airtable
+          
+          const matchedTags = allTags.filter(tag => 
+            tagCodesFromURL.includes(tag.fields.NomCode.toLowerCase())
+          );
+
+          selectedTagIDs = matchedTags.map(tag => tag.id); // Les vrais ID Airtable
+          selectedTagNames = matchedTags.map(tag => tag.fields.Nom || ""); // Noms lisibles facultatifs
+        } catch (e) {
+          console.error("Erreur parsing tags:", e);
+        }
+      }
     }
 
+    // 🔥 3. Construction du payload à envoyer
     const payload = {
       Nom: tourName,
       UserID: userId,
       LieuIDs: selectedPlaces,
-      TagIDs: selectedTagIDs, // ✅ Ici seulement ceux de l'URL
+      TagIDs: selectedTagIDs,
+      TagsText: selectedTagNames.join(", "), // (optionnel) pour debug ou affichage humain
       Date: new Date().toISOString()
     };
 
     if (existingTourId) {
-      payload.recordId = existingTourId;
+      payload.recordId = existingTourId; // Si on écrase un tour existant
     }
 
+    // 🔥 4. Envoi au Worker
     const response = await fetch('https://airtable-create.samueltoledano94.workers.dev/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1228,17 +1251,19 @@ async function saveTour(userId, tourName, existingTourId = null) {
 
     if (response.ok) {
       alert("✅ Tour saved successfully!");
-      savePopup.style.display = "none";
+      savePopup.style.display = "none"; // Fermer le popup
     } else {
       const errorResult = await response.text();
       console.error("Erreur lors de l'enregistrement:", errorResult);
       alert("❌ Error saving tour");
     }
+
   } catch (error) {
     console.error("Erreur JS lors de l'enregistrement:", error);
     alert("❌ Error saving tour: " + error.message);
   }
 }
+
 
 
 
