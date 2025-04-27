@@ -16,6 +16,9 @@
 
 let map;
 let userMarker = null;
+let previewMarkerRequestId = 0;
+let currentPreviewName = null; // 🔥 aussi, pour éviter le clignotement
+
 
 const markers = [];
 let filteredPlacesWithCoords = []; // Stockage global des lieux filtrés
