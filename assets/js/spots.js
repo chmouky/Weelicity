@@ -1174,6 +1174,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function saveTour(userId, tourName, existingTourId = null) {
+  const savePopup = document.getElementById("save-popup");
   try {
     const activeMarkers = markers.filter(marker => {
       const record = marker.fullRecord;
@@ -1198,16 +1199,36 @@ async function saveTour(userId, tourName, existingTourId = null) {
       return;
     }
 
-    // 🔥 Ici : récupérer les tags de l'URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const tagsParam = urlParams.get("filter");
-    const selectedTags = tagsParam ? tagsParam.split(",").map(tag => tag.trim()) : [];
+    // 🔥 Charger les lieux depuis le sessionStorage
+    const placesJSON = sessionStorage.getItem('places');
+    let places = [];
+
+    if (placesJSON) {
+      try {
+        places = JSON.parse(placesJSON);
+      } catch (error) {
+        console.error("Erreur de parsing de places :", error);
+      }
+    }
+
+    // 🔥 Construire TagIDs depuis les lieux sélectionnés
+    let selectedTagIDs = [];
+
+    selectedPlaces.forEach(placeId => {
+      const place = places.find(p => p.id === placeId);
+      if (place && Array.isArray(place.fields?.Tags)) {
+        selectedTagIDs.push(...place.fields.Tags);
+      }
+    });
+
+    // 🔥 Enlever les doublons
+    selectedTagIDs = [...new Set(selectedTagIDs)];
 
     const payload = {
       Nom: tourName,
       UserID: userId,
       LieuIDs: selectedPlaces,
-      TagIDs: selectedTags, // ✅ Maintenant selectedTags est bien défini
+      TagIDs: selectedTagIDs,
       Date: new Date().toISOString()
     };
 
@@ -1223,7 +1244,6 @@ async function saveTour(userId, tourName, existingTourId = null) {
 
     if (response.ok) {
       alert("✅ Tour saved successfully!");
-      const savePopup = document.getElementById("save-popup");
       savePopup.style.display = "none";
     } else {
       const errorResult = await response.text();
@@ -1235,6 +1255,7 @@ async function saveTour(userId, tourName, existingTourId = null) {
     alert("❌ Error saving tour: " + error.message);
   }
 }
+
 
 
 
