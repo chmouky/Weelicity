@@ -964,13 +964,19 @@ function showLargeImage(imageUrl) {
 
 function updateGoButtonVisibility() {
   const goButton = document.getElementById("go-button");
+  const saveButton = document.getElementById("save-tour-btn"); // ✅
+
   const selectedPlaces = document.querySelectorAll(".toggle-btn.active").length;
+
   if (selectedPlaces > 0) {
-      goButton.style.display = "block"; // Affiche le bouton
+    if (goButton) goButton.style.display = "block";
+    if (saveButton) saveButton.style.display = "block"; // ✅ Affiche Save
   } else {
-      goButton.style.display = "none"; // Cache le bouton
+    if (goButton) goButton.style.display = "none";
+    if (saveButton) saveButton.style.display = "none"; // ✅ Cache Save
   }
-}   
+}
+
 
 
 function createCircularMarkerIcon(imageUrl, size = 50) {
