@@ -1125,10 +1125,16 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
     
+        // 🔥 Ici : on récupère les tags utilisés dans l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const tagsParam = urlParams.get("filter");
+        const selectedTags = tagsParam ? tagsParam.split(",").map(tag => tag.trim()) : [];
+    
         const payload = {
           Nom: tourName,
           UserID: userId,
           LieuIDs: selectedPlaces,
+          TagIDs: selectedTags, // ✅ Nouvelle ligne pour ajouter les tags
           Date: new Date().toISOString()
         };
     
@@ -1136,8 +1142,6 @@ document.addEventListener("DOMContentLoaded", () => {
           payload.recordId = existingTourId; // Si on écrase un tour existant
         }
     
-        savedToursList.innerHTML = "<li style='text-align:center; color:gray;'>Loading tours...</li>";
-
         const response = await fetch('https://airtable-create.samueltoledano94.workers.dev/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1157,7 +1161,6 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("❌ Error saving tour: " + error.message);
       }
     }
-    
     
     
 
