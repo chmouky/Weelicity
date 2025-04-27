@@ -1164,6 +1164,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function saveTour(userId, tourName, existingTourId = null) {
+  const savePopup = document.getElementById("save-popup");
   try {
     const activeMarkers = markers.filter(marker => {
       const record = marker.fullRecord;

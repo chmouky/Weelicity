@@ -523,3 +523,10 @@ html, body {
 .slot-button:hover {
   background-color: #e0e0e0;
 }
+#save-popup h2 {
+  text-align: center;
+}
+
+#save-popup button {
+  color: black;
+}
