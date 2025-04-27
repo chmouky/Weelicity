@@ -1199,36 +1199,20 @@ async function saveTour(userId, tourName, existingTourId = null) {
       return;
     }
 
-    // 🔥 Charger les lieux depuis le sessionStorage
-    const placesJSON = sessionStorage.getItem('places');
-    let places = [];
+    // 🔥 Prendre les tags passés dans l'URL (filter=...)
+    const urlParams = new URLSearchParams(window.location.search);
+    const filterParam = urlParams.get('filter');
 
-    if (placesJSON) {
-      try {
-        places = JSON.parse(placesJSON);
-      } catch (error) {
-        console.error("Erreur de parsing de places :", error);
-      }
-    }
-
-    // 🔥 Construire TagIDs depuis les lieux sélectionnés
     let selectedTagIDs = [];
-
-    selectedPlaces.forEach(placeId => {
-      const place = places.find(p => p.id === placeId);
-      if (place && Array.isArray(place.fields?.Tags)) {
-        selectedTagIDs.push(...place.fields.Tags);
-      }
-    });
-
-    // 🔥 Enlever les doublons
-    selectedTagIDs = [...new Set(selectedTagIDs)];
+    if (filterParam) {
+      selectedTagIDs = filterParam.split(",").map(tag => tag.trim());
+    }
 
     const payload = {
       Nom: tourName,
       UserID: userId,
       LieuIDs: selectedPlaces,
-      TagIDs: selectedTagIDs,
+      TagIDs: selectedTagIDs, // ✅ Ici seulement ceux de l'URL
       Date: new Date().toISOString()
     };
 
@@ -1255,7 +1239,6 @@ async function saveTour(userId, tourName, existingTourId = null) {
     alert("❌ Error saving tour: " + error.message);
   }
 }
-
 
 
 
