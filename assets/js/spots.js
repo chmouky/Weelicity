@@ -535,7 +535,7 @@ const ticketText = (Array.isArray(record.ticket) &&
  * Fonction pour gérer le scroll du carousel et afficher un marqueur de prévisualisation
  * Modification : le marqueur rouge est affiché même si le lieu est déjà sélectionné.
  ********************************************************/
-let previewMarkerRequestId = 0;
+let currentPreviewName = null; // 🔥 On ajoute une variable globale pour suivre le lieu actuel
 
 function handleCarouselScroll() {
   const carouselContainer = document.getElementById("carousel-container");
@@ -561,6 +561,7 @@ function handleCarouselScroll() {
     if (previewMarker) {
       previewMarker.setMap(null);
       previewMarker = null;
+      currentPreviewName = null;
     }
     return;
   }
@@ -568,7 +569,12 @@ function handleCarouselScroll() {
   const index = closestItem.getAttribute("data-index");
   const record = window.carouselRecords[index];
 
-  // 🔥 Toujours recréer un preview en rouge pour le lieu centré
+  // 🔥 NE RIEN FAIRE si le lieu centré est déjà affiché en preview
+  if (previewMarker && currentPreviewName === record.name) {
+    return;
+  }
+
+  // Sinon, on change le preview
   if (previewMarker) {
     previewMarker.setMap(null);
     previewMarker = null;
@@ -577,7 +583,7 @@ function handleCarouselScroll() {
   const requestId = ++previewMarkerRequestId;
 
   createCircularMarkerIcon(record.image, 50, "#FF0000").then((iconUrl) => {
-    if (requestId !== previewMarkerRequestId) return; // protection si scroll rapide
+    if (requestId !== previewMarkerRequestId) return;
     previewMarker = new google.maps.Marker({
       position: { lat: record.lat, lng: record.lng },
       map: map,
@@ -587,10 +593,12 @@ function handleCarouselScroll() {
         scaledSize: new google.maps.Size(50, 50),
         anchor: new google.maps.Point(25, 25)
       },
-      zIndex: 999 // 🔥 Important : on force à passer au-dessus
+      zIndex: 999
     });
+    currentPreviewName = record.name; // 🔥 On mémorise le lieu en cours
   });
 }
+
 
 
 
