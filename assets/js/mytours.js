@@ -7,14 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         toursList.innerHTML = "<p>You must be logged in.</p>";
         return;
     }
-    const toursList = document.getElementById('tours-list');
-  
-    const userRaw = sessionStorage.getItem("user");
-    if (!userRaw) {
-      toursList.innerHTML = "<p>You must be logged in.</p>";
-      return;
-    }
-  
+     
     const user = JSON.parse(userRaw);
     const userId = user.sub;
   
