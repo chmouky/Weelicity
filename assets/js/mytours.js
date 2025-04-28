@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    await new Promise(resolve => setTimeout(resolve, 200)); // attendre 200ms
+    const toursList = document.getElementById('tours-list');
+
+    const userRaw = sessionStorage.getItem("user");
+    if (!userRaw) {
+        toursList.innerHTML = "<p>You must be logged in.</p>";
+        return;
+    }
     const toursList = document.getElementById('tours-list');
   
     const userRaw = sessionStorage.getItem("user");
