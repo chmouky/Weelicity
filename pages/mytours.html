@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>My Tours</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/assets/css/style.css"> <!-- adapte le chemin si besoin -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap">
 </head>
 <body>
 
@@ -13,23 +14,8 @@
     <!-- Les tours seront injectés ici -->
   </div>
 
-
-  <script>
-    fetch("/assets/components/footer.html")
-      .then(response => response.text())
-      .then(data => {
-        const footer = document.getElementById("footer-placeholder");
-        footer.innerHTML = data;
-        footer.classList.add("loaded");
-      });
-  
-    // 👉 Ajouter l'action sur "My Tours"
-    document.getElementById("my-tours-link").addEventListener("click", () => {
-      window.location.href = "/pages/mytours.html"; // 📍 adapte le chemin selon ton dossier
-    });
-  </script>
-  
-  <script src="mytours.js"></script>
+  <!-- 👉 uniquement ton script spécifique -->
+  <script src="/assets/js/mytours.js"></script>
 
 </body>
 </html>
