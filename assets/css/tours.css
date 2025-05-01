@@ -366,3 +366,19 @@ html, body {
 #popup-itinerary-header {
   position: relative;
 }
+
+#popup-lieux-list {
+  max-height: 200px;         /* ajuste cette hauteur selon la taille de ton popup */
+  overflow-y: auto;          /* active le défilement vertical */
+  padding: 0;
+  margin-top: 10px;
+  list-style: none;
+}
+#popup-lieux-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+#popup-lieux-list::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
