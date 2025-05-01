@@ -410,3 +410,25 @@ function updateMarkerColor(nomLieu, isRed) {
   }
   
   
+  document.addEventListener("DOMContentLoaded", () => {
+    const list = document.getElementById("popup-lieux-list");
+    const arrowUp = document.getElementById("arrow-up");
+    const arrowDown = document.getElementById("arrow-down");
+  
+    function updateArrows() {
+      arrowUp.style.display = list.scrollTop > 0 ? "block" : "none";
+      arrowDown.style.display = (list.scrollTop + list.clientHeight < list.scrollHeight) ? "block" : "none";
+    }
+  
+    list.addEventListener("scroll", updateArrows);
+    updateArrows(); // initial
+  
+    arrowUp.addEventListener("click", () => {
+      list.scrollBy({ top: -100, behavior: "smooth" });
+    });
+  
+    arrowDown.addEventListener("click", () => {
+      list.scrollBy({ top: 100, behavior: "smooth" });
+    });
+  });
+  
