@@ -811,17 +811,20 @@ function getGastroPlaces(calcID, gastroData) {
 }
 
 function getAllLieux(lieuData) {
-  return lieuData.map(lieu => ({
-    name: lieu.fields.Nom || "Nom inconnu",
-    descriptionC: lieu.fields.DescriptionC || "Description courte indisponible",
-    description: lieu.fields.Description || "Description complète indisponible",
-    image: lieu.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image",
-    lat: lieu.fields.Latitude ? parseFloat(lieu.fields.Latitude) : null,
-    lng: lieu.fields.Longitude ? parseFloat(lieu.fields.Longitude) : null,
-    inout: lieu.fields.Inout || "",
-    ticket: lieu.fields.Ticket || ""
-  }));
-}
+    return lieuData.map(lieu => ({
+      name: lieu.fields.Nom || "Nom inconnu",
+      descriptionC: lieu.fields.DescriptionC || "Description courte indisponible",
+      description: lieu.fields.Description || "Description complète indisponible",
+      image: lieu.fields.URLPhoto2 
+        ? `/assets/img/photos/Lieux/${encodeURIComponent(lieu.fields.URLPhoto2.trim())}`
+        : "https://via.placeholder.com/300x150?text=Aucune+Image",
+      lat: lieu.fields.Latitude ? parseFloat(lieu.fields.Latitude) : null,
+      lng: lieu.fields.Longitude ? parseFloat(lieu.fields.Longitude) : null,
+      inout: lieu.fields.Inout || "",
+      ticket: lieu.fields.Ticket || ""
+    }));
+  }
+  
 
 function clearQuartierPolygons() {
     quartierPolygons.forEach(polygon => polygon.setMap(null)); // 🔴 Supprime les polygones
