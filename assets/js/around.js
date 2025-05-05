@@ -212,7 +212,7 @@ const carouselData = aroundData.map(record => ({
   name: record.fields.Nom || "Nom inconnu",
   descriptionC: record.fields.DescriptionC || "Description courte indisponible",
   description: record.fields.Description || "Description complète indisponible",
-  image: record.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image",
+  image: record.fields.NURLPhoto ? `/assets/img/photos/break/${encodeURIComponent(record.fields.NURLPhoto.trim())}` : "https://via.placeholder.com/300x150?text=Aucune+Image",
   lat: record.fields.Latitude ? parseFloat(record.fields.Latitude) : null,
   lng: record.fields.Longitude ? parseFloat(record.fields.Longitude) : null,
   calcID: record.fields.CalcID || record.id,
