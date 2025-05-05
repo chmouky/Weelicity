@@ -555,7 +555,7 @@ function getRelatedPlaces(calcID) {
         .map(place => ({
             name: place.fields.Nom || "Nom inconnu",
             description: place.fields.Description || "Description indisponible",
-            image: place.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image",
+            image: place.fields.NURLPhoto ? `/assets/img/photos/break/${encodeURIComponent(place.fields.NURLPhoto.trim())}` : "https://via.placeholder.com/300x150?text=Aucune+Image",
             lat: place.fields.Latitude ? parseFloat(place.fields.Latitude) : null,
             lng: place.fields.Longitude ? parseFloat(place.fields.Longitude) : null
         }));
