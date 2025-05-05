@@ -798,17 +798,25 @@ function showLieuDetails(lieu) {
  * Fonction pour récupérer les lieux associés dans Gastro
  ********************************************************/
 function getGastroPlaces(calcID, gastroData) {
-  return gastroData
-    .filter(gastro => gastro.fields.CalcTags && gastro.fields.CalcTags.includes(calcID))
-    .map(gastro => ({
-      name: gastro.fields.Nom || "Nom inconnu",
-      description: gastro.fields.Description || "Description indisponible",
-      image: gastro.fields.URLPhoto || "https://via.placeholder.com/300x150?text=Aucune+Image",
-      lat: gastro.fields.Latitude ? parseFloat(gastro.fields.Latitude) : null,
-      lng: gastro.fields.Longitude ? parseFloat(gastro.fields.Longitude) : null,
-      brands: gastro.fields.Brands || null // Ajout du lien vers la table Brands
-    }));
-}
+    return gastroData
+      .filter(gastro => gastro.fields.CalcTags && gastro.fields.CalcTags.includes(calcID))
+      .map(gastro => {
+        const imageName = gastro.fields.NURLPhoto?.trim();
+        const imageURL = imageName
+          ? `/assets/img/photos/break/${encodeURIComponent(imageName)}`
+          : "https://via.placeholder.com/300x150?text=Aucune+Image";
+  
+        return {
+          name: gastro.fields.Nom || "Nom inconnu",
+          description: gastro.fields.Description || "Description indisponible",
+          image: imageURL,
+          lat: gastro.fields.Latitude ? parseFloat(gastro.fields.Latitude) : null,
+          lng: gastro.fields.Longitude ? parseFloat(gastro.fields.Longitude) : null,
+          brands: gastro.fields.Brands || null
+        };
+      });
+  }
+  
 
 function getAllLieux(lieuData) {
     return lieuData.map(lieu => ({
