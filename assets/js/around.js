@@ -922,11 +922,7 @@ function showQuartierPolygons() {
 
         // ✅ Gérer le clic sur le polygone
         google.maps.event.addListener(polygon, 'click', function(event) {
-            const imageName = street.fields.NURLPhoto?.trim();
-            const imageURL = imageName
-            ? `/assets/img/photos/break/${encodeURIComponent(imageName)}`
-            : "https://via.placeholder.com/300x150?text=Aucune+Image";
-
+            
             const imageName = quartier.fields.NURLPhoto?.trim();
             const imageURL = imageName
             ? `/assets/img/photos/Quartiers/${encodeURIComponent(imageName)}`
