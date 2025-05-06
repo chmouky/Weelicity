@@ -688,7 +688,6 @@ function createMarker(place, iconUrl) {
 function showLieuDetails(lieu) {
     if (!lieu) return;
 
-    // Mise à jour de la description (vérification de la présence d'une "brand")
     let description = lieu.description || "Description indisponible";
     let webLink = "";
     if (lieu.brands && Array.isArray(lieu.brands) && lieu.brands.length > 0) {
@@ -710,7 +709,6 @@ function showLieuDetails(lieu) {
         }
     }
 
-    // Mise à jour des éléments du popup
     document.getElementById("popup-lieu-title").textContent = lieu.name || "Nom inconnu";
     const descriptionContainer = document.getElementById("popup-lieu-description");
     descriptionContainer.textContent = description;
@@ -729,8 +727,8 @@ function showLieuDetails(lieu) {
 
     const popupLieuImage = document.getElementById("popup-lieu-image");
     const imageUrl = (lieu.image && lieu.image.trim()) ? lieu.image.trim() : "https://via.placeholder.com/300x150?text=Aucune+Image";
+    popupLieuImage.alt = lieu.name || "Nom inconnu";
 
-    // Réinitialisation et création des liens
     const popupLinks = document.getElementById("popup-lieu-links");
     popupLinks.innerHTML = "";
     let googleMapsRouteLink = `https://www.google.com/maps/dir/?api=1&destination=${lieu.lat},${lieu.lng}`;
@@ -743,7 +741,6 @@ function showLieuDetails(lieu) {
         <a href="${googleSearchLink}" target="_blank" style="display: block; margin-top: 5px; text-decoration: underline; color: var(--theme-color); font-weight: bold;">🔍 More details</a>
     `;
 
-    // Mise à jour du lien "Go !" si la géolocalisation est dispo
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
             const userLat = position.coords.latitude;
@@ -758,29 +755,9 @@ function showLieuDetails(lieu) {
         });
     }
 
-    // Masque le popup au début
-    const popupDetails = document.getElementById("popup-lieu-details");
-    popupDetails.style.display = "none";
-
-    const overlay = document.getElementById("overlay");
-
-    // Quand l'image est chargée, on affiche tout avec animation
-    popupLieuImage.onload = () => {
-        overlay.style.zIndex = "9999";
-        overlay.style.display = "block";
-
-        popupDetails.style.zIndex = "10000";
-        popupDetails.style.display = "block";
-        popupDetails.classList.remove("popup-animated"); // reset
-        void popupDetails.offsetWidth; // reflow
-        popupDetails.classList.add("popup-animated");
-
-        document.body.classList.add("no-scroll");
-    };
-
-    popupLieuImage.onerror = () => {
-        popupLieuImage.src = "https://via.placeholder.com/300x150?text=Aucune+Image";
-        popupLieuImage.alt = lieu.name || "Nom inconnu";
+    function showPopup() {
+        const overlay = document.getElementById("overlay");
+        const popupDetails = document.getElementById("popup-lieu-details");
 
         overlay.style.zIndex = "9999";
         overlay.style.display = "block";
@@ -792,12 +769,17 @@ function showLieuDetails(lieu) {
         popupDetails.classList.add("popup-animated");
 
         document.body.classList.add("no-scroll");
+    }
+
+    popupLieuImage.onload = showPopup;
+    popupLieuImage.onerror = () => {
+        popupLieuImage.src = "https://via.placeholder.com/300x150?text=Aucune+Image";
+        showPopup(); // ✅ on l'affiche quand même même si image absente
     };
 
-    // Déclenche le chargement
     popupLieuImage.src = imageUrl;
-    popupLieuImage.alt = lieu.name || "Nom inconnu";
 }
+
 
 
 /********************************************************
