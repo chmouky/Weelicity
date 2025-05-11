@@ -31,9 +31,7 @@ function updateToursByDay() {
   if (!tourJSON) return;
 
   const themeID = getThemeIDFromURL();
-  const dayValue = getDayFromURL();                     // ← passe par l’URL
-
-  // si pas de dayValue valide, on ne fait rien
+  const dayValue = getDayFromURL();
   if (!dayValue) return;
 
   let tours = JSON.parse(tourJSON);
@@ -44,25 +42,25 @@ function updateToursByDay() {
     )
     .sort((a, b) => Number(a.fields.Tri) - Number(b.fields.Tri));
 
-    const carouselData = filteredTours.map(tour => {
-      const rawName = tour.fields.URLPhoto2 || "default.jpg";
-      const encodedName = encodeURIComponent(rawName.trim());
-      const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
-    
-      return {
-        name:        tour.fields.Nom,
-        description: tour.fields.Description,
-        image:       imageUrl,
-        lat:         parseFloat(tour.fields.Latitude),
-        lng:         parseFloat(tour.fields.Longitude),
-        calcID:      tour.fields.CalcID.toString()
-      };
-    });
-    
-  document.getElementById("go-button").style.display = "block";
+  const carouselData = filteredTours.map(tour => {
+    const rawName = tour.fields.URLPhoto2 || "default.jpg";
+    const encodedName = encodeURIComponent(rawName.trim());
+    const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
 
+    return {
+      name:        tour.fields.Nom,
+      description: tour.fields.Description,
+      image:       imageUrl,
+      lat:         parseFloat(tour.fields.Latitude),
+      lng:         parseFloat(tour.fields.Longitude),
+      calcID:      tour.fields.CalcID.toString()
+    };
+  });
+
+  document.getElementById("go-button").style.display = "block";
   displayCarousel(carouselData);
 }
+
 
 
 function displayCarousel(data) {
@@ -134,14 +132,21 @@ function getRelatedPlaces(calcID) {
       .split(',')
       .map(val => val.trim());
     return calcToursArray.includes(calcID.toString());
-  }).map(p => ({
-    name: p.fields.Nom,
-    description: p.fields.Description,
-    image: p.fields.URLPhoto,
-    lat: parseFloat(p.fields.Latitude),
-    lng: parseFloat(p.fields.Longitude)
-  }));
+  }).map(p => {
+    const rawName = p.fields.URLPhoto2 || "default.jpg";
+    const encodedName = encodeURIComponent(rawName.trim());
+    const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
+
+    return {
+      name: p.fields.Nom,
+      description: p.fields.Description,
+      image: imageUrl,
+      lat: parseFloat(p.fields.Latitude),
+      lng: parseFloat(p.fields.Longitude)
+    };
+  });
 }
+
 
 async function updateMapMarkers(places) {
   markers.forEach(m => m.setMap(null));
