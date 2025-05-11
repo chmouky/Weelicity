@@ -44,14 +44,21 @@ function updateToursByDay() {
     )
     .sort((a, b) => Number(a.fields.Tri) - Number(b.fields.Tri));
 
-  const carouselData = filteredTours.map(tour => ({
-    name:        tour.fields.Nom,
-    description: tour.fields.Description,
-    image:       tour.fields.URLPhoto,
-    lat:         parseFloat(tour.fields.Latitude),
-    lng:         parseFloat(tour.fields.Longitude),
-    calcID:      tour.fields.CalcID.toString()
-  }));
+    const carouselData = filteredTours.map(tour => {
+      const rawName = tour.fields.URLPhoto2 || "default.jpg";
+      const encodedName = encodeURIComponent(rawName.trim());
+      const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
+    
+      return {
+        name:        tour.fields.Nom,
+        description: tour.fields.Description,
+        image:       imageUrl,
+        lat:         parseFloat(tour.fields.Latitude),
+        lng:         parseFloat(tour.fields.Longitude),
+        calcID:      tour.fields.CalcID.toString()
+      };
+    });
+    
   document.getElementById("go-button").style.display = "block";
 
   displayCarousel(carouselData);
