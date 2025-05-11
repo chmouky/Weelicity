@@ -779,13 +779,20 @@ function showLieuDetails(lieu) {
         document.body.classList.add("no-scroll");
     }
 
-    popupLieuImage.onload = showPopup;
-    popupLieuImage.onerror = () => {
-        popupLieuImage.src = "https://via.placeholder.com/300x150?text=Aucune+Image";
-        showPopup(); // ✅ on l'affiche quand même même si image absente
-    };
+    let alreadyTriedFallback = false;
 
-    popupLieuImage.src = imageUrl;
+        popupLieuImage.onload = showPopup;
+        popupLieuImage.onerror = () => {
+            if (!alreadyTriedFallback) {
+                alreadyTriedFallback = true;
+                popupLieuImage.src = "/assets/img/photos/Rues/default.jpg"; // ✅ image locale
+            } else {
+                showPopup(); // même si default.jpg échoue
+            }
+        };
+
+        popupLieuImage.src = imageUrl;
+
 }
 
 
