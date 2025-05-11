@@ -34,7 +34,7 @@ function updateToursByDay() {
   const dayValue = getDayFromURL();
   if (!dayValue) return;
 
-  const tours = JSON.parse(tourJSON);
+  let tours = JSON.parse(tourJSON);
   const filteredTours = tours
     .filter(tour =>
       Number(tour.fields.Day) === dayValue &&
@@ -43,9 +43,16 @@ function updateToursByDay() {
     .sort((a, b) => Number(a.fields.Tri) - Number(b.fields.Tri));
 
   const carouselData = filteredTours.map(tour => {
-    const rawName = tour.fields.NURLPhoto || "default.jpg"; // 🔁 Nom de l'image du thème
-    const encodedName = encodeURIComponent(rawName.trim());
-    const imageUrl = `/assets/img/photos/Tours/${encodedName}`; // 🔁 Dossier correct
+    const rawName = tour.fields.NURLPhoto || "default.jpg";  // 📌 champ NURLPhoto
+    const encodedName = encodeURIComponent(rawName.trim());  // ⚠️ encodage
+    const imageUrl = `/assets/img/photos/Tours/${encodedName}`;  // 📁 dossier Tours
+
+    console.log("🖼️ Image générée pour carrousel :", {
+      nom: tour.fields.Nom,
+      rawName,
+      encodedName,
+      imageUrl
+    });
 
     return {
       name:        tour.fields.Nom,
@@ -65,13 +72,13 @@ function updateToursByDay() {
 
 
 
+
 function displayCarousel(data) {
   const container = document.getElementById("carousel-container");
   container.innerHTML = "";
 
-  // Ajoute un espace avant le premier carousel
   const startSpacer = document.createElement("div");
-  startSpacer.style.flex = "0 0 10vw"; // espace à gauche
+  startSpacer.style.flex = "0 0 10vw";
   container.appendChild(startSpacer);
 
   data.forEach(record => {
@@ -87,6 +94,13 @@ function displayCarousel(data) {
     const image = document.createElement("img");
     image.src = record.image;
     image.alt = record.name;
+
+    // 🔍 Ajoute un log et un fallback
+    image.onerror = function () {
+      console.warn("❌ Image non chargée :", this.src);
+      this.src = "https://via.placeholder.com/300x150?text=No+Image";
+    };
+
     image.addEventListener("click", () => showPopup(record));
 
     const titleContainer = document.createElement("div");
@@ -99,13 +113,13 @@ function displayCarousel(data) {
     container.append(item);
   });
 
-  // Ajoute un espace après le dernier carousel
   const endSpacer = document.createElement("div");
-  endSpacer.style.flex = "0 0 10vw"; // espace à droite
+  endSpacer.style.flex = "0 0 10vw";
   container.appendChild(endSpacer);
 
   setupCarouselObserver();
 }
+
 
 
 function setupCarouselObserver() {
