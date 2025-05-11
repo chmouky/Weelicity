@@ -484,19 +484,20 @@ function setupCarouselObserver(gastroData, lieuData) {
                         polyline.addListener('click', (event) => {
                             const imageName = street.fields.NURLPhoto?.trim();
                             const imageURL = imageName
-                            ? `/assets/img/photos/Rues/${encodeURIComponent(imageName)}`
-                            : "https://via.placeholder.com/300x150?text=Aucune+Image";
-
+                              ? `/assets/img/photos/Rues/${encodeURIComponent(imageName)}`
+                              : `/assets/img/photos/Rues/default.jpg`;
+                          
                             const lieu = {
-                                name: street.fields.Nom || "Rue inconnue",
-                                description: street.fields.Description || "Aucune description disponible",
-                                image: imageURL,
-                                lat: event.latLng.lat(),
-                                lng: event.latLng.lng()
+                              name: street.fields.Nom || "Rue inconnue",
+                              description: street.fields.Description || "Aucune description disponible",
+                              image: imageURL,
+                              lat: event.latLng.lat(),
+                              lng: event.latLng.lng()
                             };
-
+                          
                             showLieuDetails(lieu);
-                        });
+                          });
+                          
 
                         // ✅ Gérer le clic sur le label → Déclencher l'événement sur la polyline
                         google.maps.event.addListener(streetLabel, 'click', function(event) {
