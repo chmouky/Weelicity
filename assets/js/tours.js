@@ -43,9 +43,9 @@ function updateToursByDay() {
     .sort((a, b) => Number(a.fields.Tri) - Number(b.fields.Tri));
 
   const carouselData = filteredTours.map(tour => {
-    const rawName = tour.fields.URLPhoto2 || "default.jpg";
+    const rawName = tour.fields.NURLPhoto || "default.jpg"; // 📌 NURLPhoto de la table ThemeTour
     const encodedName = encodeURIComponent(rawName.trim());
-    const imageUrl = `/assets/img/photos/Lieux/${encodedName}`;
+    const imageUrl = `/assets/img/photos/Tours/${encodedName}`; // 📁 Dossier /Tours
 
     return {
       name:        tour.fields.Nom,
