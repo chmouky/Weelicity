@@ -208,16 +208,23 @@ const gastroData = JSON.parse(gastroJSON);
 const placesData = JSON.parse(placesJSON);
 
 // Construire le carrousel
-const carouselData = aroundData.map(record => ({
-  name: record.fields.Nom || "Nom inconnu",
-  descriptionC: record.fields.DescriptionC || "Description courte indisponible",
-  description: record.fields.Description || "Description complète indisponible",
-  image: record.fields.NURLPhoto ? `/assets/img/photos/break/${encodeURIComponent(record.fields.NURLPhoto.trim())}` : "https://via.placeholder.com/300x150?text=Aucune+Image",
-  lat: record.fields.Latitude ? parseFloat(record.fields.Latitude) : null,
-  lng: record.fields.Longitude ? parseFloat(record.fields.Longitude) : null,
-  calcID: record.fields.CalcID || record.id,
-  zoomMin: record.fields.ZoomMin || 10
-}));
+const carouselData = aroundData.map(record => {
+    const rawName = record.fields.NURLPhoto || "default.jpg";
+    const encodedName = encodeURIComponent(rawName.trim());
+    const imageUrl = `/assets/img/photos/Around/${encodedName}`; // ✅ bon dossier
+  
+    return {
+      name: record.fields.Nom || "Nom inconnu",
+      descriptionC: record.fields.DescriptionC || "Description courte indisponible",
+      description: record.fields.Description || "Description complète indisponible",
+      image: imageUrl,
+      lat: record.fields.Latitude ? parseFloat(record.fields.Latitude) : null,
+      lng: record.fields.Longitude ? parseFloat(record.fields.Longitude) : null,
+      calcID: record.fields.CalcID || record.id,
+      zoomMin: record.fields.ZoomMin || 10
+    };
+  });
+  
 
 displayCarousel(carouselData, gastroData);
 setupCarouselObserver(gastroData, placesData);
