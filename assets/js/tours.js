@@ -43,16 +43,13 @@ function updateToursByDay() {
     .sort((a, b) => Number(a.fields.Tri) - Number(b.fields.Tri));
 
   const carouselData = filteredTours.map(tour => {
-    const rawName = tour.fields.NURLPhoto || "default.jpg";  // 📌 champ NURLPhoto
-    const encodedName = encodeURIComponent(rawName.trim());  // ⚠️ encodage
-    const imageUrl = `/assets/img/photos/Tours/${encodedName}`;  // 📁 dossier Tours
+    const rawName = tour.fields.NURLPhoto || "default.jpg";
+    const encodedName = encodeURIComponent(rawName.trim());
+    const imageUrl = `/assets/img/photos/Tours/${encodedName}`;
 
-    console.log("🖼️ Image générée pour carrousel :", {
-      nom: tour.fields.Nom,
-      rawName,
-      encodedName,
-      imageUrl
-    });
+    // 🛠️ Logs pour diagnostic
+    console.log("📝 Nom brut (NURLPhoto) :", rawName);
+    console.log("📸 URL image générée :", imageUrl);
 
     return {
       name:        tour.fields.Nom,
@@ -67,6 +64,7 @@ function updateToursByDay() {
   document.getElementById("go-button").style.display = "block";
   displayCarousel(carouselData);
 }
+
 
 
 
