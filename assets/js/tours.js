@@ -34,7 +34,7 @@ function updateToursByDay() {
   const dayValue = getDayFromURL();
   if (!dayValue) return;
 
-  let tours = JSON.parse(tourJSON);
+  const tours = JSON.parse(tourJSON);
   const filteredTours = tours
     .filter(tour =>
       Number(tour.fields.Day) === dayValue &&
@@ -43,15 +43,9 @@ function updateToursByDay() {
     .sort((a, b) => Number(a.fields.Tri) - Number(b.fields.Tri));
 
   const carouselData = filteredTours.map(tour => {
-    let imageUrl = "https://via.placeholder.com/300x150?text=No+Image";
-    
-    if (tour.fields.NURLPhoto) {
-      const rawName = Array.isArray(tour.fields.NURLPhoto)
-        ? tour.fields.NURLPhoto[0]
-        : tour.fields.NURLPhoto;
-      const encodedName = encodeURIComponent(rawName.trim());
-      imageUrl = `/assets/img/photos/Tours/${encodedName}`;
-    }
+    const rawName = tour.fields.NURLPhoto || "default.jpg"; // 🔁 Nom de l'image du thème
+    const encodedName = encodeURIComponent(rawName.trim());
+    const imageUrl = `/assets/img/photos/Tours/${encodedName}`; // 🔁 Dossier correct
 
     return {
       name:        tour.fields.Nom,
@@ -66,6 +60,7 @@ function updateToursByDay() {
   document.getElementById("go-button").style.display = "block";
   displayCarousel(carouselData);
 }
+
 
 
 
