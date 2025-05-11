@@ -95,10 +95,13 @@ function displayCarousel(data) {
     image.src = record.image;
     image.alt = record.name;
 
-    // 🔍 Ajoute un log et un fallback
+    // ✅ Bloque la boucle infinie
     image.onerror = function () {
-      console.warn("❌ Image non chargée :", this.src);
-      this.src = "https://via.placeholder.com/300x150?text=No+Image";
+      if (!this.dataset.fallbacked) {
+        console.warn("❌ Image non chargée :", this.src);
+        this.dataset.fallbacked = "true";
+        this.src = "/assets/img/photos/Tours/default.jpg"; // 🔄 fichier local garanti
+      }
     };
 
     image.addEventListener("click", () => showPopup(record));
@@ -119,6 +122,7 @@ function displayCarousel(data) {
 
   setupCarouselObserver();
 }
+
 
 
 
