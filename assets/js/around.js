@@ -822,7 +822,7 @@ function getGastroPlaces(calcID, gastroData) {
           : "https://via.placeholder.com/300x150?text=Aucune+Image";
   
         return {
-          name: gastro.fields.Nom || "Nom inconnu",
+          name: gastro.fields.Nom || "Nom inconnu", 
           description: gastro.fields.Description || "Description indisponible",
           image: imageURL,
           lat: gastro.fields.Latitude ? parseFloat(gastro.fields.Latitude) : null,
