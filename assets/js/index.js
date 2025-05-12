@@ -6,21 +6,21 @@ firebase.auth().onAuthStateChanged(async (user) => {
 
   if (user) {
     console.log("🔐 Utilisateur connecté :", user.email);
-
+  
     authContainer.style.display = "none";
     logoutBtn.style.display = "block";
-    userInfo.textContent = Signed in as: ${user.displayName || user.email};
-
+    userInfo.textContent = `Signed in as: ${user.displayName || user.email}`;
+  
     await loadFooterIfNeeded();
-
-    // 👉 On laisse le loader actif
+  
     if (loadingOverlay) {
       loadingOverlay.style.display = "flex"; 
       document.body.style.pointerEvents = "none";
     }
-
-    await loadAirtableDataIfNeeded(); // ⬅️ GIF actif pendant chargement Airtable
-  } else {
+  
+    await loadAirtableDataIfNeeded();
+  }
+   else {
     console.log("🔓 Utilisateur non connecté.");
 
     authContainer.style.display = "block";
