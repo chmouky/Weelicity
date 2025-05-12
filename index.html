@@ -108,6 +108,24 @@
   <!-- Footer (chargé dynamiquement sauf sur index) -->
   <div id="footer-placeholder"></div>
 
+  <!-- Firebase SDK v10 compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBlumdq4UcY7TX7wSSy_jAE0w516rVaoxc",
+      authDomain: "weelicity-14e53.firebaseapp.com",
+      projectId: "weelicity-14e53",
+      storageBucket: "weelicity-14e53.firebasestorage.app",
+      messagingSenderId: "761856423358",
+      appId: "1:761856423358:web:e72734a041d3e350a0b5ef",
+      measurementId: "G-79ETF5RKEH"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
   <!-- Scripts -->
   <script src="assets/js/auth.js" defer></script>
   <script src="assets/js/utils.js" defer></script>
@@ -129,23 +147,7 @@
     });
   </script>
 
-  <!-- Firebase SDK v10 compat -->
-  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBlumdq4UcY7TX7wSSy_jAE0w516rVaoxc",
-      authDomain: "weelicity-14e53.firebaseapp.com",
-      projectId: "weelicity-14e53",
-      storageBucket: "weelicity-14e53.firebasestorage.app",
-      messagingSenderId: "761856423358",
-      appId: "1:761856423358:web:e72734a041d3e350a0b5ef",
-      measurementId: "G-79ETF5RKEH"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-  </script>
 
 </body>
 </html>
