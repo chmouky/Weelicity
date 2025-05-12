@@ -517,6 +517,11 @@ function setupCarouselObserver(gastroData, lieuData) {
                 else if (itemCalcID === "4") {
                     showQuartierPolygons();
                 } 
+                else if (itemCalcID === "5") {
+                    console.log("🍽️ Affichage des restaurants...");
+                    const restaurantPlaces = getRestaurantPlaces(restaurantData);
+                    updateMapMarkers(restaurantPlaces);
+                }                
                 else {
                     console.log("🔄 Réinitialisation complète de la carte.");
                 }
