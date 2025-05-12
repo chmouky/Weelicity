@@ -56,7 +56,7 @@ async function loadAirtableDataIfNeeded() {
   const loadingOverlay = document.getElementById('loadingOverlay');
   const keys = [
     'tags', 'places', 'tour', 'themetour', 'quartiers',
-    'gastro', 'brands', 'around', 'street', 'parametre', 'ToursPerso'
+    'gastro', 'brands', 'around', 'street', 'parametre', 'ToursPerso', 'restaurants' // ✅ Ajout ici
   ];
 
   const isReady = keys.every(key => {
@@ -66,7 +66,7 @@ async function loadAirtableDataIfNeeded() {
 
   if (isReady) {
     console.log("✅ Données déjà présentes.");
-    fadeOutOverlay(); // ✅ Animation au lieu de brut display:none
+    fadeOutOverlay();
     document.body.style.pointerEvents = "auto";
     return;
   }
@@ -86,12 +86,14 @@ async function loadAirtableDataIfNeeded() {
     sessionStorage.setItem('street', JSON.stringify(data.Street));
     sessionStorage.setItem('parametre', JSON.stringify(data.Parametre));
     sessionStorage.setItem('ToursPerso', JSON.stringify(data.ToursPerso));
+    sessionStorage.setItem('restaurants', JSON.stringify(data.Restaurants)); // ✅ Ajout ici
 
     console.log("📦 Données Airtable chargées.");
   } catch (err) {
     console.error("❌ Erreur de chargement Airtable :", err);
   }
 
-  fadeOutOverlay(); // ✅ Animation de disparition douce à la fin
+  fadeOutOverlay();
   document.body.style.pointerEvents = "auto";
 }
+
