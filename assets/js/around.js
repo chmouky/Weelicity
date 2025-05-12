@@ -183,8 +183,9 @@ function onGoogleMapsLoaded() {
 const aroundJSON = sessionStorage.getItem("around");
 const gastroJSON = sessionStorage.getItem("gastro");
 const placesJSON = sessionStorage.getItem("places");
+const restaurantJSON = sessionStorage.getItem("restaurants");
 
-if (!aroundJSON || !gastroJSON || !placesJSON) {
+if (!aroundJSON || !gastroJSON || !placesJSON || !restaurantJSON) {
   alert("Erreur : certaines données sont manquantes !");
   return;
 }
@@ -206,6 +207,8 @@ console.log("Après tri - Affichage:", aroundData.map(item => item.fields.Affich
 
 const gastroData = JSON.parse(gastroJSON);
 const placesData = JSON.parse(placesJSON);
+const restaurantData = JSON.parse(restaurantJSON);
+
 
 // Construire le carrousel
 const carouselData = aroundData.map(record => {
@@ -818,7 +821,29 @@ function getGastroPlaces(calcID, gastroData) {
           brands: gastro.fields.Brands || null
         };
       });
-  }
+}
+
+function getRestaurantPlaces(restaurantData) {
+    return restaurantData
+      .filter(r => r.fields.Latitude && r.fields.Longitude)
+      .map(r => {
+        const imageName = r.fields.NURLPhoto?.trim();
+        const imageURL = imageName
+          ? `/assets/img/photos/Restaurants/${encodeURIComponent(imageName)}`
+          : "https://via.placeholder.com/300x150?text=Aucune+Image";
+
+        return {
+          name: r.fields.Nom || "Nom inconnu",
+          description: r.fields.Description || "Description indisponible",
+          image: imageURL,
+          lat: parseFloat(r.fields.Latitude),
+          lng: parseFloat(r.fields.Longitude),
+          brands: r.fields.Brands || null,
+          zoomMin: r.fields.ZoomMin || 10
+        };
+      });
+}
+
   
 
 function getAllLieux(lieuData) {
