@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.getElementById("loadingGifWrapper")?.classList.add("visible");
 
-    waitForStorageReady(["around", "places", "gastro", "quartiers", "street", "parametre"], () => {  
+    waitForStorageReady(["around", "places", "gastro", "quartiers", "street", "parametre", "restaurants"], () => {
         loadGoogleMaps("https://google-map-back.samueltoledano94.workers.dev/load-google-maps", "onGoogleMapsLoaded");
     });
 
