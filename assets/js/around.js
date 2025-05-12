@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.getElementById("loadingGifWrapper")?.classList.add("visible");
 
-    waitForStorageReady(["around", "places", "gastro", "quartiers", "street", "parametre", "restaurants"], () => {
+    waitForStorageReady(["around", "places", "gastro", "quartiers", "street", "parametre", "restaurant"], () => {
         loadGoogleMaps("https://google-map-back.samueltoledano94.workers.dev/load-google-maps", "onGoogleMapsLoaded");
     });
 
@@ -183,13 +183,17 @@ function onGoogleMapsLoaded() {
 const aroundJSON = sessionStorage.getItem("around");
 const gastroJSON = sessionStorage.getItem("gastro");
 const placesJSON = sessionStorage.getItem("places");
-const restaurantJSON = sessionStorage.getItem("restaurants");
+const restaurantJSON = sessionStorage.getItem("restaurant");
 
 if (!aroundJSON || !gastroJSON || !placesJSON || !restaurantJSON) {
   alert("Erreur : certaines données sont manquantes !");
   return;
 }
-
+if (!aroundJSON || aroundJSON === "undefined") {
+    alert("❌ Données 'around' manquantes ou invalides !");
+    return;
+  }
+  
 // Parse et tri par champ "Affichage"
 let aroundData = JSON.parse(aroundJSON);
 

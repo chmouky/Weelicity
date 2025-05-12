@@ -56,7 +56,7 @@ async function loadAirtableDataIfNeeded() {
   const loadingOverlay = document.getElementById('loadingOverlay');
   const keys = [
     'tags', 'places', 'tour', 'themetour', 'quartiers',
-    'gastro', 'brands', 'around', 'street', 'parametre', 'ToursPerso', 'restaurants' // ✅ Ajout ici
+    'gastro', 'brands', 'around', 'street', 'parametre', 'ToursPerso', 'restaurant' // ✅ Ajout ici
   ];
 
   const isReady = keys.every(key => {
@@ -86,7 +86,7 @@ async function loadAirtableDataIfNeeded() {
     sessionStorage.setItem('street', JSON.stringify(data.Street));
     sessionStorage.setItem('parametre', JSON.stringify(data.Parametre));
     sessionStorage.setItem('ToursPerso', JSON.stringify(data.ToursPerso));
-    sessionStorage.setItem('restaurants', JSON.stringify(data.Restaurants)); // ✅ Ajout ici
+    sessionStorage.setItem('restaurant', JSON.stringify(data.Restaurant)); // ✅ Ajout ici
 
     console.log("📦 Données Airtable chargées.");
   } catch (err) {
