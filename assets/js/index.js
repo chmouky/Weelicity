@@ -9,7 +9,7 @@ firebase.auth().onAuthStateChanged(async (user) => {
 
     authContainer.style.display = "none";
     logoutBtn.style.display = "block";
-    userInfo.textContent = `Signed in as: ${user.displayName || user.email}`;
+    userInfo.textContent = Signed in as: ${user.displayName || user.email};
 
     await loadFooterIfNeeded();
 
@@ -56,7 +56,7 @@ async function loadAirtableDataIfNeeded() {
   const loadingOverlay = document.getElementById('loadingOverlay');
   const keys = [
     'tags', 'places', 'tour', 'themetour', 'quartiers',
-    'gastro', 'brands', 'around', 'street', 'parametre', 'ToursPerso', 'restaurant' // ✅ Ajout ici
+    'gastro', 'brands', 'around', 'street', 'parametre', 'ToursPerso'
   ];
 
   const isReady = keys.every(key => {
@@ -66,7 +66,7 @@ async function loadAirtableDataIfNeeded() {
 
   if (isReady) {
     console.log("✅ Données déjà présentes.");
-    fadeOutOverlay();
+    fadeOutOverlay(); // ✅ Animation au lieu de brut display:none
     document.body.style.pointerEvents = "auto";
     return;
   }
@@ -86,14 +86,12 @@ async function loadAirtableDataIfNeeded() {
     sessionStorage.setItem('street', JSON.stringify(data.Street));
     sessionStorage.setItem('parametre', JSON.stringify(data.Parametre));
     sessionStorage.setItem('ToursPerso', JSON.stringify(data.ToursPerso));
-    sessionStorage.setItem('restaurant', JSON.stringify(data.Restaurant)); // ✅ Ajout ici
 
     console.log("📦 Données Airtable chargées.");
   } catch (err) {
     console.error("❌ Erreur de chargement Airtable :", err);
   }
 
-  fadeOutOverlay();
+  fadeOutOverlay(); // ✅ Animation de disparition douce à la fin
   document.body.style.pointerEvents = "auto";
 }
-
