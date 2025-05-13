@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.getElementById("loadingGifWrapper")?.classList.add("visible");
 
-    waitForStorageReady(["around", "places", "gastro", "quartiers", "street", "parametre", "restaurant"], () => {
+    waitForStorageReady(["around", "places", "gastro", "quartiers", "street", "parametre"], () => {  
         loadGoogleMaps("https://google-map-back.samueltoledano94.workers.dev/load-google-maps", "onGoogleMapsLoaded");
     });
 
@@ -183,17 +183,12 @@ function onGoogleMapsLoaded() {
 const aroundJSON = sessionStorage.getItem("around");
 const gastroJSON = sessionStorage.getItem("gastro");
 const placesJSON = sessionStorage.getItem("places");
-const restaurantJSON = sessionStorage.getItem("restaurant");
 
-if (!aroundJSON || !gastroJSON || !placesJSON || !restaurantJSON) {
+if (!aroundJSON || !gastroJSON || !placesJSON) {
   alert("Erreur : certaines données sont manquantes !");
   return;
 }
-if (!aroundJSON || aroundJSON === "undefined") {
-    alert("❌ Données 'around' manquantes ou invalides !");
-    return;
-  }
-  
+
 // Parse et tri par champ "Affichage"
 let aroundData = JSON.parse(aroundJSON);
 
@@ -211,8 +206,6 @@ console.log("Après tri - Affichage:", aroundData.map(item => item.fields.Affich
 
 const gastroData = JSON.parse(gastroJSON);
 const placesData = JSON.parse(placesJSON);
-const restaurantData = JSON.parse(restaurantJSON);
-
 
 // Construire le carrousel
 const carouselData = aroundData.map(record => {
@@ -521,11 +514,6 @@ function setupCarouselObserver(gastroData, lieuData) {
                 else if (itemCalcID === "4") {
                     showQuartierPolygons();
                 } 
-                else if (itemCalcID === "5") {
-                    console.log("🍽️ Affichage des restaurants...");
-                    const restaurantPlaces = getRestaurantPlaces(restaurantData);
-                    updateMapMarkers(restaurantPlaces);
-                }                
                 else {
                     console.log("🔄 Réinitialisation complète de la carte.");
                 }
@@ -822,7 +810,7 @@ function getGastroPlaces(calcID, gastroData) {
           : "https://via.placeholder.com/300x150?text=Aucune+Image";
   
         return {
-          name: gastro.fields.Nom || "Nom inconnu", 
+          name: gastro.fields.Nom || "Nom inconnu",
           description: gastro.fields.Description || "Description indisponible",
           image: imageURL,
           lat: gastro.fields.Latitude ? parseFloat(gastro.fields.Latitude) : null,
@@ -830,29 +818,7 @@ function getGastroPlaces(calcID, gastroData) {
           brands: gastro.fields.Brands || null
         };
       });
-}
-
-function getRestaurantPlaces(restaurantData) {
-    return restaurantData
-      .filter(r => r.fields.Latitude && r.fields.Longitude)
-      .map(r => {
-        const imageName = r.fields.NURLPhoto?.trim();
-        const imageURL = imageName
-          ? `/assets/img/photos/Restaurants/${encodeURIComponent(imageName)}`
-          : "https://via.placeholder.com/300x150?text=Aucune+Image";
-
-        return {
-          name: r.fields.Nom || "Nom inconnu",
-          description: r.fields.Description || "Description indisponible",
-          image: imageURL,
-          lat: parseFloat(r.fields.Latitude),
-          lng: parseFloat(r.fields.Longitude),
-          brands: r.fields.Brands || null,
-          zoomMin: r.fields.ZoomMin || 10
-        };
-      });
-}
-
+  }
   
 
 function getAllLieux(lieuData) {
