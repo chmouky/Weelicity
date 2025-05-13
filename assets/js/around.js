@@ -1068,22 +1068,36 @@ function debounce(func, delay) {
   }
   
   function getRestaurantPlaces(calcID, restaurantData) {
-    return restaurantData
-      .filter(r => r.fields.CalcTags && r.fields.CalcTags.includes(calcID))
-      .map(r => {
-        const imageName = r.fields.NURLPhoto?.trim();
-        const imageURL = imageName
-          ? `/assets/img/photos/Restaurants/${encodeURIComponent(imageName)}`
-          : "https://via.placeholder.com/300x150?text=Aucune+Image";
+    console.log("📦 Données restaurants reçues :", restaurantData);
+    console.log("🎯 calcID reçu :", calcID);
   
-        return {
-          name: r.fields.Nom || "Nom inconnu",
-          description: r.fields.Description || "Description indisponible",
-          image: imageURL,
-          lat: r.fields.Latitude ? parseFloat(r.fields.Latitude) : null,
-          lng: r.fields.Longitude ? parseFloat(r.fields.Longitude) : null,
-          brands: r.fields.Brands || null
-        };
-      });
+    const filtered = restaurantData.filter(r => {
+      const match = r.fields.CalcTags && r.fields.CalcTags.includes(calcID);
+      if (!match) {
+        console.log(`⛔ Restaurant ignoré : ${r.fields.Nom} (tags = ${r.fields.CalcTags})`);
+      }
+      return match;
+    });
+  
+    console.log(`✅ ${filtered.length} restaurants filtrés pour calcID = ${calcID}`);
+  
+    return filtered.map(r => {
+      const imageName = r.fields.NURLPhoto?.trim();
+      const imageURL = imageName
+        ? `/assets/img/photos/Restaurants/${encodeURIComponent(imageName)}`
+        : "https://via.placeholder.com/300x150?text=Aucune+Image";
+  
+      console.log(`📍 Marqueur restaurant : ${r.fields.Nom}, image : ${imageURL}`);
+  
+      return {
+        name: r.fields.Nom || "Nom inconnu",
+        description: r.fields.Description || "Description indisponible",
+        image: imageURL,
+        lat: r.fields.Latitude ? parseFloat(r.fields.Latitude) : null,
+        lng: r.fields.Longitude ? parseFloat(r.fields.Longitude) : null,
+        brands: r.fields.Brands || null
+      };
+    });
   }
+  
   
