@@ -1020,44 +1020,50 @@ responseDiv.textContent = "Erreur lors de la récupération des détails.";
 }
 }
 
-const iawtfButton = document.getElementById("iawtf-button");
+document.addEventListener("DOMContentLoaded", () => {
+  const iawtfButton = document.getElementById("iawtf-button");
 
-let startX = 0;
-let startY = 0;
-let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  let isDragging = false;
 
-iawtfButton.addEventListener("mousedown", (e) => {
-  startX = e.clientX;
-  startY = e.clientY;
-  isDragging = true;
+  iawtfButton.addEventListener("mousedown", (e) => {
+    startX = e.clientX;
+    startY = e.clientY;
+    isDragging = true;
+  });
+
+  document.addEventListener("mouseup", (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+
+    const deltaX = e.clientX - startX;
+    const deltaY = e.clientY - startY;
+
+    if ((Math.abs(deltaX) > 75 || deltaY > 75) && deltaY >= 0) {
+      console.log("🎯 Action déclenchée par déplacement !");
+
+      // Exemple d'action : déclencher une popup ou changer un style
+      iawtfButton.style.backgroundColor = "#e63946";
+    }
+  });
+
+  // Pour tactile (mobile)
+  iawtfButton.addEventListener("touchstart", (e) => {
+    const touch = e.touches[0];
+    startX = touch.clientX;
+    startY = touch.clientY;
+  });
+
+  iawtfButton.addEventListener("touchend", (e) => {
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - startX;
+    const deltaY = touch.clientY - startY;
+
+    if ((Math.abs(deltaX) > 75 || deltaY > 75) && deltaY >= 0) {
+      console.log("📱 Action déclenchée par swipe !");
+      iawtfButton.style.backgroundColor = "#e63946";
+    }
+  });
 });
 
-document.addEventListener("mouseup", (e) => {
-  if (!isDragging) return;
-  isDragging = false;
-
-  const deltaX = e.clientX - startX;
-  const deltaY = e.clientY - startY;
-
-  if (Math.abs(deltaX) > 75 || (deltaY > 75)) {
-    console.log("🎯 Action déclenchée par déplacement !");
-    // 👉 Remplace par ton action ici
-  }
-});
-
-iawtfButton.addEventListener("touchstart", (e) => {
-  const touch = e.touches[0];
-  startX = touch.clientX;
-  startY = touch.clientY;
-});
-
-iawtfButton.addEventListener("touchend", (e) => {
-  const touch = e.changedTouches[0];
-  const deltaX = touch.clientX - startX;
-  const deltaY = touch.clientY - startY;
-
-  if (Math.abs(deltaX) > 75 || (deltaY > 75)) {
-    console.log("📱 Action déclenchée par swipe !");
-    // 👉 Remplace par ton action ici
-  }
-});
