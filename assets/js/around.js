@@ -222,6 +222,16 @@ try {
   placesData = [];
 }
 
+let restaurantData = [];
+try {
+  const restaurantJSON = sessionStorage.getItem("restaurant");
+  restaurantData = JSON.parse(restaurantJSON);
+  if (!Array.isArray(restaurantData)) restaurantData = [];
+} catch (err) {
+  console.error("Erreur de parsing restaurant :", err);
+  restaurantData = [];
+}
+
 
 // Construire le carrousel
 const carouselData = aroundData.map(record => {
@@ -243,7 +253,7 @@ const carouselData = aroundData.map(record => {
   
 
   displayCarousel(carouselData, gastroData, placesData); // ✅
-setupCarouselObserver(gastroData, placesData);
+  setupCarouselObserver(gastroData, placesData, restaurantData);
 
 // Exemple : scroll vers l'élément ayant Affichage = 1
 const firstItem = aroundData.find(item => Number(item.fields.Affichage) === 1);
@@ -376,7 +386,7 @@ function displayCarousel(data, gastroData, placesData) {
       carouselContainer.appendChild(item);
     });
   
-    setupCarouselObserver(gastroData, placesData); // ✅ correct
+    setupCarouselObserver(gastroData, placesData, restaurantData);
   }
   
 
@@ -385,7 +395,7 @@ let lastAlertedItem = null;
 /********************************************************
  * Fonction pour détecter le carrousel centré et afficher les lieux
  ********************************************************/
-function setupCarouselObserver(gastroData, lieuData) {
+function setupCarouselObserver(gastroData, lieuData, restaurantData) {
     const carouselContainer = document.getElementById("carousel-container");
     const carouselItems = document.querySelectorAll(".carousel-item");
 
