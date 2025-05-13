@@ -394,7 +394,7 @@ function setupCarouselObserver(gastroData, lieuData) {
                 updateMapMarkers([]);
                 clearQuartierPolygons();
                 clearStreetPolylines();
-
+                
                 // 📌 Gestion du zoom en fonction du carrousel actif
                 let newZoom = (itemCalcID === "3") ? 14 : (itemCalcID === "4") ? 12 : 15;
 
@@ -415,9 +415,13 @@ function setupCarouselObserver(gastroData, lieuData) {
                     updateMapMarkers(relatedGastroPlaces);
                 } 
                 else if (itemCalcID === "2") {
+                    if (!lieuData || !Array.isArray(lieuData)) {
+                        console.warn("❌ lieuData est invalide ou manquant !");
+                        return;
+                    }
                     const allLieux = getAllLieux(lieuData);
                     updateMapMarkers(allLieux);
-                } 
+                }
                 else if (itemCalcID === "3") {
                     console.log("🛣️ Affichage des rues...");
 
@@ -818,10 +822,15 @@ function getGastroPlaces(calcID, gastroData) {
           brands: gastro.fields.Brands || null
         };
       });
-  }
-  
+}
+
+
 
 function getAllLieux(lieuData) {
+    if (!lieuData || !Array.isArray(lieuData)) {
+        console.error("getAllLieux a reçu une donnée invalide :", lieuData);
+        return [];
+    }
     return lieuData.map(lieu => ({
       name: lieu.fields.Nom || "Nom inconnu",
       descriptionC: lieu.fields.DescriptionC || "Description courte indisponible",
@@ -834,7 +843,7 @@ function getAllLieux(lieuData) {
       inout: lieu.fields.Inout || "",
       ticket: lieu.fields.Ticket || ""
     }));
-  }
+}
   
 
 function clearQuartierPolygons() {
