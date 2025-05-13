@@ -249,7 +249,7 @@ if (firstItem && firstItem.fields.CalcID) {
         const activeItem = document.querySelector(".carousel-item.is-visible") || document.querySelector(".carousel-item");
         if (!activeItem) return;
         const activeCalcID = activeItem.getAttribute("data-calcid");
-        const visibleLieux = getVisibleLieux(activeCalcID, gastroData, placesData, currentZoom);
+        //const visibleLieux = getVisibleLieux(activeCalcID, gastroData, placesData, currentZoom);
         updateMapMarkers(visibleLieux);
       }, 200);
   
