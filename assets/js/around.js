@@ -536,9 +536,9 @@ function setupCarouselObserver(gastroData, lieuData) {
                     showQuartierPolygons();
                 } 
                 else if (itemCalcID === "5") {
-                    const relatedRestaurants = getRestaurantPlaces(itemCalcID, gastroData); // gastroData = table "Restaurant"
-                    updateMapMarkers(relatedRestaurants);
-                }                
+                    const restaurantPlaces = getRestaurantPlaces(restaurantData);
+                    updateMapMarkers(restaurantPlaces);
+                }                               
                 else {
                     console.log("🔄 Réinitialisation complète de la carte.");
                 }
@@ -1067,27 +1067,17 @@ function debounce(func, delay) {
     };
   }
   
-  function getRestaurantPlaces(calcID, restaurantData) {
-    console.log("📦 Données restaurants reçues :", restaurantData);
-    console.log("🎯 calcID reçu :", calcID);
+  function getRestaurantPlaces(restaurantData) {
+    if (!Array.isArray(restaurantData)) {
+      console.warn("❌ Données restaurants invalides :", restaurantData);
+      return [];
+    }
   
-    const filtered = restaurantData.filter(r => {
-      const match = r.fields.CalcTags && r.fields.CalcTags.includes(calcID);
-      if (!match) {
-        console.log(`⛔ Restaurant ignoré : ${r.fields.Nom} (tags = ${r.fields.CalcTags})`);
-      }
-      return match;
-    });
-  
-    console.log(`✅ ${filtered.length} restaurants filtrés pour calcID = ${calcID}`);
-  
-    return filtered.map(r => {
+    return restaurantData.map(r => {
       const imageName = r.fields.NURLPhoto?.trim();
       const imageURL = imageName
         ? `/assets/img/photos/Restaurants/${encodeURIComponent(imageName)}`
         : "https://via.placeholder.com/300x150?text=Aucune+Image";
-  
-      console.log(`📍 Marqueur restaurant : ${r.fields.Nom}, image : ${imageURL}`);
   
       return {
         name: r.fields.Nom || "Nom inconnu",
@@ -1099,5 +1089,6 @@ function debounce(func, delay) {
       };
     });
   }
+  
   
   
