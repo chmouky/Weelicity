@@ -204,8 +204,24 @@ aroundData.sort((a, b) => {
 // Affiche les valeurs après le tri pour confirmer
 console.log("Après tri - Affichage:", aroundData.map(item => item.fields.Affichage));
 
-const gastroData = JSON.parse(gastroJSON);
-const placesData = JSON.parse(placesJSON);
+let gastroData = [];
+try {
+  gastroData = JSON.parse(gastroJSON);
+  if (!Array.isArray(gastroData)) gastroData = [];
+} catch (err) {
+  console.error("Erreur de parsing gastro :", err);
+  gastroData = [];
+}
+
+let placesData = [];
+try {
+  placesData = JSON.parse(placesJSON);
+  if (!Array.isArray(placesData)) placesData = [];
+} catch (err) {
+  console.error("Erreur de parsing places :", err);
+  placesData = [];
+}
+
 
 // Construire le carrousel
 const carouselData = aroundData.map(record => {
