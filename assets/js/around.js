@@ -535,6 +535,10 @@ function setupCarouselObserver(gastroData, lieuData) {
                 else if (itemCalcID === "4") {
                     showQuartierPolygons();
                 } 
+                else if (itemCalcID === "5") {
+                    const relatedRestaurants = getRestaurantPlaces(itemCalcID, gastroData); // gastroData = table "Restaurant"
+                    updateMapMarkers(relatedRestaurants);
+                }                
                 else {
                     console.log("🔄 Réinitialisation complète de la carte.");
                 }
@@ -1061,5 +1065,25 @@ function debounce(func, delay) {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => func.apply(this, args), delay);
     };
+  }
+  
+  function getRestaurantPlaces(calcID, restaurantData) {
+    return restaurantData
+      .filter(r => r.fields.CalcTags && r.fields.CalcTags.includes(calcID))
+      .map(r => {
+        const imageName = r.fields.NURLPhoto?.trim();
+        const imageURL = imageName
+          ? `/assets/img/photos/Restaurants/${encodeURIComponent(imageName)}`
+          : "https://via.placeholder.com/300x150?text=Aucune+Image";
+  
+        return {
+          name: r.fields.Nom || "Nom inconnu",
+          description: r.fields.Description || "Description indisponible",
+          image: imageURL,
+          lat: r.fields.Latitude ? parseFloat(r.fields.Latitude) : null,
+          lng: r.fields.Longitude ? parseFloat(r.fields.Longitude) : null,
+          brands: r.fields.Brands || null
+        };
+      });
   }
   
