@@ -242,7 +242,7 @@ const carouselData = aroundData.map(record => {
   });
   
 
-displayCarousel(carouselData, gastroData);
+  displayCarousel(carouselData, gastroData, placesData); // ✅
 setupCarouselObserver(gastroData, placesData);
 
 // Exemple : scroll vers l'élément ayant Affichage = 1
@@ -325,7 +325,8 @@ function waitForStorageReady(keys, callback) {
 /********************************************************
  * Fonction pour afficher le carrousel avec les Tags filtrés
  ********************************************************/
-function displayCarousel(data, gastroData) {
+function displayCarousel(data, gastroData, placesData) {
+
     const carouselContainer = document.getElementById("carousel-container");
     if (!carouselContainer) {
       alert("Erreur : Conteneur du carrousel introuvable !");
@@ -375,7 +376,7 @@ function displayCarousel(data, gastroData) {
       carouselContainer.appendChild(item);
     });
   
-    setupCarouselObserver(gastroData);
+    setupCarouselObserver(gastroData, placesData); // ✅ correct
   }
   
 
