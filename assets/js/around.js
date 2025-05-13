@@ -1087,7 +1087,7 @@ function debounce(func, delay) {
       const imageName = r.fields.NURLPhoto?.trim();
       const imageURL = imageName
         ? `/assets/img/photos/Restaurants/${encodeURIComponent(imageName)}`
-        : "https://via.placeholder.com/300x150?text=Aucune+Image";
+        : `/assets/img/photos/Restaurants/default.jpg`; // ✅ local fallback
   
       return {
         name: r.fields.Nom || "Nom inconnu",
