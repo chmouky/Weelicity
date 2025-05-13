@@ -252,7 +252,7 @@ const carouselData = aroundData.map(record => {
   });
   
 
-  displayCarousel(carouselData, gastroData, placesData); // ✅
+  displayCarousel(carouselData, gastroData, placesData, restaurantData); // ✅ Ajoute le 4e argument
   setupCarouselObserver(gastroData, placesData, restaurantData);
 
 // Exemple : scroll vers l'élément ayant Affichage = 1
@@ -335,7 +335,7 @@ function waitForStorageReady(keys, callback) {
 /********************************************************
  * Fonction pour afficher le carrousel avec les Tags filtrés
  ********************************************************/
-function displayCarousel(data, gastroData, placesData) {
+function displayCarousel(data, gastroData, placesData, restaurantData) {
 
     const carouselContainer = document.getElementById("carousel-container");
     if (!carouselContainer) {
