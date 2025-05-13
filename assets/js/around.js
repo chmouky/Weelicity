@@ -250,7 +250,7 @@ if (firstItem && firstItem.fields.CalcID) {
         if (!activeItem) return;
         const activeCalcID = activeItem.getAttribute("data-calcid");
         //const visibleLieux = getVisibleLieux(activeCalcID, gastroData, placesData, currentZoom);
-        updateMapMarkers(visibleLieux);
+        //updateMapMarkers(visibleLieux);
       }, 200);
   
       map.addListener("zoom_changed", updateMarkersDebounced);
