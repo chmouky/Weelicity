@@ -6,30 +6,28 @@ firebase.auth().onAuthStateChanged(async (user) => {
 
   if (user) {
     console.log("🔐 Utilisateur connecté :", user.email);
-  
+
     authContainer.style.display = "none";
     logoutBtn.style.display = "block";
     userInfo.textContent = `Signed in as: ${user.displayName || user.email}`;
-  
+
     await loadFooterIfNeeded();
-  
+
     if (loadingOverlay) {
       loadingOverlay.style.display = "flex"; 
       document.body.style.pointerEvents = "none";
     }
-  
+
     await loadAirtableDataIfNeeded();
-  }
-   else {
+  } else {
     console.log("🔓 Utilisateur non connecté.");
 
     authContainer.style.display = "block";
     logoutBtn.style.display = "none";
     userInfo.textContent = "";
 
-    // 👉 Pas connecté : cacher tout de suite l'overlay
     if (loadingOverlay) {
-      fadeOutOverlay(); // Utilise l'animation propre
+      fadeOutOverlay();
     }
     document.body.style.pointerEvents = "auto";
   }
@@ -37,18 +35,18 @@ firebase.auth().onAuthStateChanged(async (user) => {
 
 // Gestion du bouton Logout
 document.getElementById("logoutBtn")?.addEventListener("click", () => {
-  logoutUser(); // défini dans auth.js
+  logoutUser();
 });
 
-// Fonction pour fade-out propre de l'overlay
+// Animation de disparition douce
 function fadeOutOverlay() {
   const loadingOverlay = document.getElementById('loadingOverlay');
   if (loadingOverlay) {
-    loadingOverlay.style.transition = "opacity 0.8s ease"; // Animation douce
+    loadingOverlay.style.transition = "opacity 0.8s ease";
     loadingOverlay.style.opacity = "0";
     setTimeout(() => {
       loadingOverlay.style.display = "none";
-    }, 800); // 800ms après (le temps de l'animation)
+    }, 800);
   }
 }
 
@@ -56,7 +54,8 @@ async function loadAirtableDataIfNeeded() {
   const loadingOverlay = document.getElementById('loadingOverlay');
   const keys = [
     'tags', 'places', 'tour', 'themetour', 'quartiers',
-    'gastro', 'brands', 'around', 'street', 'parametre', 'ToursPerso'
+    'gastro', 'brands', 'around', 'street', 'parametre', 'ToursPerso',
+    'restaurant' // ✅ Ajout ici
   ];
 
   const isReady = keys.every(key => {
@@ -66,7 +65,7 @@ async function loadAirtableDataIfNeeded() {
 
   if (isReady) {
     console.log("✅ Données déjà présentes.");
-    fadeOutOverlay(); // ✅ Animation au lieu de brut display:none
+    fadeOutOverlay();
     document.body.style.pointerEvents = "auto";
     return;
   }
@@ -86,12 +85,13 @@ async function loadAirtableDataIfNeeded() {
     sessionStorage.setItem('street', JSON.stringify(data.Street));
     sessionStorage.setItem('parametre', JSON.stringify(data.Parametre));
     sessionStorage.setItem('ToursPerso', JSON.stringify(data.ToursPerso));
+    sessionStorage.setItem('restaurant', JSON.stringify(data.Restaurant)); // ✅ Ajout ici
 
     console.log("📦 Données Airtable chargées.");
   } catch (err) {
     console.error("❌ Erreur de chargement Airtable :", err);
   }
 
-  fadeOutOverlay(); // ✅ Animation de disparition douce à la fin
+  fadeOutOverlay();
   document.body.style.pointerEvents = "auto";
 }
