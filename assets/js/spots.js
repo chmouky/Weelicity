@@ -708,7 +708,9 @@ function showPopup(record) {
   if (!record) {
       return;
   }
-
+  document.body.classList.add("popup-open");
+  document.getElementById("overlay").classList.add("active");
+  
   const popup = document.getElementById("popup");
   if (!popup) {
       return;
@@ -764,7 +766,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const popup = button.closest("#popup, #popup-itinerary");
       if (popup) {
         popup.style.display = "none";
-        document.getElementById("overlay").style.display = "none";
+        document.getElementById("overlay").classList.remove("active");
+        document.body.classList.remove("popup-open");
+
       }
     });
   });

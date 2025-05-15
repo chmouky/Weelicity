@@ -407,7 +407,14 @@ html, body {
     transition: color 0.2s ease;
   }
   
- 
+  body.popup-open {
+    overflow: hidden; /* empêche le scroll */
+  }
+  
+  #overlay.active {
+    display: block;
+    pointer-events: all; /* capture les clics pour bloquer l’arrière-plan */
+  }
 
   #google-maps-button {
     display: block;
