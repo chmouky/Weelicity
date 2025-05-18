@@ -881,10 +881,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (closePopupItinerary) {
       closePopupItinerary.addEventListener("click", () => {
           document.getElementById("popup-itinerary").style.display = "none";
-        document.getElementById("overlay").style.display = "none";
-        document.getElementById("overlay").classList.remove("active");
-        document.body.classList.remove("popup-open");
-
+          document.getElementById("overlay").style.display = "none";
       });
   }
 });
