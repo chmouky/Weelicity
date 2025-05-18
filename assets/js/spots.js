@@ -766,13 +766,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const popup = button.closest("#popup, #popup-itinerary");
       if (popup) {
         popup.style.display = "none";
-        document.getElementById("overlay").classList.remove("active");
-        document.body.classList.remove("popup-open");
 
+        // 🔥 Correction ici :
+        const overlay = document.getElementById("overlay");
+        overlay.style.display = "none"; // <=== AJOUT ESSENTIEL
+        overlay.classList.remove("active");
+        document.body.classList.remove("popup-open");
       }
     });
   });
 });
+
 
 let userPosition = null;
 

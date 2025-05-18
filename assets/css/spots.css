@@ -53,7 +53,7 @@ html, body {
     position: fixed; /* Relatif au viewport */
     bottom: 390px; /* Positionné plus haut, au-dessus du carrousel (100px + 240px + marge) */
     right: 20px;
-    z-index: 1999; /* Supérieur à .carousel-arrow (z-index: 3000) */
+    z-index: 999; /* Supérieur à .carousel-arrow (z-index: 3000) */
     background: transparent; /* Fond temporaire pour débogage */
     border: none;
     padding: 0;
